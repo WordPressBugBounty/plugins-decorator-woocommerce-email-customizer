@@ -1,0 +1,1 @@
+# plugins-decorator-woocommerce-email-customizer
