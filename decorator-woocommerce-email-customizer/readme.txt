@@ -1,12 +1,12 @@
 === Decorator - WooCommerce Email Customizer ===
 Contributors: webtoffee
-Version: 1.3.0
+Version: 1.3.1
 Tags: email customizer, email designer, woocommerce emails, email templates, woocommerce email customizer
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.6
-Stable tag: 1.3.0
+Tested up to: 6.7
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,14 +85,14 @@ Get started and customize your WooCommerce emails now and stand out from the cro
 
 If you have any issues with the plugin, feel free to contact us via [support forum](https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/).
 
-Created by [Webtoffee](https://www.webtoffee.com/plugins).
+Created by [WebToffee](https://www.webtoffee.com/plugins).
 
 == Installation ==
 
 = Automatic installation =
 The automatic installation is the easiest way to install the plugin. You can install the plugin without even leaving your browser window and from within your WordPress dashboard.
 
-From your admin dashboard, go to Plugins > Add New. From the search box, type “woocommerce email customizer” or “decorator” and then search plugins. Click the install button on the Order Import Export Plugin for WooCommerce by WebToffee and then activate the plugin.
+From your admin dashboard, go to Plugins > Add New. From the search box, type "woocommerce email customizer" or "decorator" and then search plugins. Click the install button on the Order Import Export Plugin for WooCommerce by WebToffee and then activate the plugin.
 
 Now you are ready to start customizing your WooCommerce emails.
 
@@ -126,10 +126,15 @@ Yes, you can add social links at the footer of the email.
 
 == Screenshots ==
 
-1. Customized WooCommerce ‘order processing’ email
-2. Customized WooCommerce ‘customer new account’ email
+1. Customized WooCommerce 'order processing' email
+2. Customized WooCommerce 'customer new account' email
 
 == Changelog ==
+
+= 1.3.1 - 22-11-2024 =
+* [Compatibility] - Tested OK with WooCommerce 9.4.2
+* [Compatibility] - Tested OK with WordPress 6.7
+
 = 1.3.0 - 11-07-2024 =
 * [Add] - Filters for adding Custom fonts
 * [Compatibility] - Tested OK with WooCommerce 9.0.2
@@ -219,8 +224,6 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 1.3.0 - 11-07-2024 =
-
-* [Add] - Filters for adding Custom fonts
-* [Compatibility] - Tested OK with WooCommerce 9.0.2
-* [Compatibility] - Tested OK with WordPress 6.6(RC3)
+= 1.3.1 =
+* [Compatibility] - Tested OK with WooCommerce 9.4.2
+* [Compatibility] - Tested OK with WordPress 6.7

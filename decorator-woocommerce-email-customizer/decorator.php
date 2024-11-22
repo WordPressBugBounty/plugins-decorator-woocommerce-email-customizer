@@ -4,12 +4,12 @@
  * Plugin Name: Decorator - WooCommerce Email Customizer
  * Plugin URI: 
  * Description: Use native WordPress Customizer to make WooCommerce emails match your brand
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: WebToffee
  * Author URI: https://www.webtoffee.com
  * Requires at least: 4.4
- * Tested up to: 6.6
- * WC tested up to: 9.0.2
+ * Tested up to: 6.7
+ * WC tested up to: 9.4.2
  * Text Domain: decorator-woocommerce-email-customizer
  * Domain Path: /languages
  *
@@ -42,7 +42,7 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define( 'WT_WOOMAIL_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
-define('RP_DECORATOR_VERSION', '1.3.0');
+define('RP_DECORATOR_VERSION', '1.3.1');
 define('RP_DECORATOR_SUPPORT_PHP', '5.3');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
@@ -277,7 +277,8 @@ class RP_Decorator
 
         $plugin_links = array( '<a href="' . RP_Decorator_Customizer::get_customizer_url() . '"  target="_blank">' . __( 'Customise Email', 'decorator-woocommerce-email-customizer' ) . '</a>',
                 '<a href="https://www.webtoffee.com/decorator-woocommerce-email-customizer-plugin-user-guide/"  target="_blank">' . __( 'Docs', 'decorator-woocommerce-email-customizer' ) . '</a>',
-                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/"  target="_blank">' . __( 'Support', 'decorator-woocommerce-email-customizer' ) . '</a>' );
+                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/"  target="_blank">' . __( 'Support', 'decorator-woocommerce-email-customizer' ) . '</a>',
+                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/reviews/#new-post"  target="_blank">' . __( 'Review', 'decorator-woocommerce-email-customizer' ) . '</a>' );
         
         if (array_key_exists('deactivate', $links)) {
             $links['deactivate'] = str_replace('<a', '<a class="decorator-deactivate-link"', $links['deactivate']);
