@@ -4,7 +4,7 @@
  * Plugin Name: Decorator - WooCommerce Email Customizer
  * Plugin URI: 
  * Description: Use native WordPress Customizer to make WooCommerce emails match your brand
- * Version: 1.3.1
+ * Version: 2.0.0
  * Author: WebToffee
  * Author URI: https://www.webtoffee.com
  * Requires at least: 4.4
@@ -42,7 +42,7 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define( 'WT_WOOMAIL_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
-define('RP_DECORATOR_VERSION', '1.3.1');
+define('RP_DECORATOR_VERSION', '2.0.0');
 define('RP_DECORATOR_SUPPORT_PHP', '5.3');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
@@ -96,13 +96,12 @@ class RP_Decorator
     {
         // Use our templates instead of woocommerce.
         add_filter( 'woocommerce_locate_template', array( $this, 'wt_localize_templates' ), 9999, 3 );
-        // Load translation
-        load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
-        load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+        
+        add_action('init',array($this, 'wt_dec_load_plugin_textdomain'));
 
         // Execute other code when all plugins are loaded
         add_action('plugins_loaded', array($this, 'on_plugins_loaded'), 1);
-        add_action('init', array($this, 'wt_change_style_storage_structure'), 1);
+        add_action('init', array($this, 'wt_change_style_storage_structure'), 11);
     }
 
     /**
@@ -129,6 +128,12 @@ class RP_Decorator
         require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-div-shortcodes-design.php'; 
         require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-label-design.php'; 
         require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-template-design.php'; 
+
+        /**
+         *  Storefrog Connector
+         *  @since 2.0.0
+         */
+        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/storefrog/class-storefrog-connector.php';
 
         // Plugins page links
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugins_page_links'));
@@ -485,7 +490,13 @@ class RP_Decorator
             }
         }
 
+    public function wt_dec_load_plugin_textdomain() {
+        // Load translation
+        load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
+        load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+
     }
+}
 
 RP_Decorator::get_instance();
 
