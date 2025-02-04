@@ -23,14 +23,14 @@ if ( 'tab1' === $tab ) {
 // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- This font is only used in this page. ?>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <style>
-.notice{ display:none; }
+.notice, div.error, p.error, div.updated, p.updated{ display:none; }
 .wbte-sf-connector {
 	width:100%; box-sizing: border-box; margin:0px; margin-left:-20px; padding:0px; font-family:"Poppins", serif;
 }
-.wbte-sf-top-box{ width:calc( 100% + 20px); padding:80px 20px 50px 20px; box-sizing:border-box; background:#F1F8FE; }
+.wbte-sf-top-box{ width:calc( 100% + 20px); padding:30px 20px 1px 20px; box-sizing:border-box; background:#F1F8FE; }
 .wbte-sf-header {
 	text-align: center;
 	margin-bottom: 3rem;
 }
-.wbte-sf-header h1{ font-size:30px; font-weight:700; color:#2d2d2d; }
+.wbte-sf-header h1{ font-size:26px; font-weight:700; color:#2d2d2d; }
 </style>

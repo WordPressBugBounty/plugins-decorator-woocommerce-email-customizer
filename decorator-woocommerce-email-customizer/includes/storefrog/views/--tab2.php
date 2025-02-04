@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					}
 					?>
 				</h1>
-				<p><?php esc_html_e( 'Power e-commerce growth with smart product recommendations, web campaigns, and automated marketing tools.', 'decorator-woocommerce-email-customizer' ); ?></p>
+				<p class="wbte-sf-tab-description"><?php esc_html_e( 'Power e-commerce growth with smart product recommendations, web campaigns, and automated marketing tools.', 'decorator-woocommerce-email-customizer' ); ?></p>
 				<div class="wbte-sf-btnbox">
 					<?php
 					if ( $is_connected ) { // $connected_email
@@ -59,7 +59,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 body{ background:#F1F8FE; }
 .wbte-sf-banner-box{ margin:3rem auto; padding:1rem 3.5rem; padding-left:5rem; padding-right:1rem; box-sizing:border-box; max-width:1100px; background:#ffffff; border-radius:10px; display:flex; justify-content: space-between; flex-wrap:wrap; gap:2rem 0px; }
 .wbte-sf-banner-box h1{ font-size:26px; font-weight:700; color:#2d2d2d; margin-bottom:5px; margin-top:2rem; }
-.wbte-sf-banner-box p{ font-size:14px; font-weight:300; margin-top:0px; }
+.wbte-sf-banner-box .wbte-sf-tab-description{ font-size:14px; font-weight:300; margin-top:0px; margin-bottom:90px; }
 .wbte-sf-banner-box .wbte-sf-item{ flex:0 0 45%; box-sizing:border-box; }
 .wbte-sf-banner-box .wbte-sf-item-left{ padding-right:80px; position:relative; }
 .wbte-sf-banner-box .wbte-sf-item-right{ text-align:right; }

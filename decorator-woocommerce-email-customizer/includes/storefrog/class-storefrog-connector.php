@@ -420,7 +420,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 						'variation_id' => $cart_item['variation_id'],
 						'name'         => $product->get_name(),
 						'quantity'     => $cart_item['quantity'],
-						'price'        => $product->get_price_excluding_tax(), // Product price without tax.
+						'price'        => wc_get_price_excluding_tax( $product ), // Product price without tax.
 						'total'        => $cart_item['line_total'], // Line total without tax.
 					);
 				}

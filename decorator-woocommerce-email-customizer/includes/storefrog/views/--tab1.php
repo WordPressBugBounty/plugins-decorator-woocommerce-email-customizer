@@ -82,7 +82,7 @@ body{ background:#ffffff; }
 
 .wbte-sf-feature-card {
 	background: #fff;
-	padding: 2rem;
+	padding: 20px;
 	border-radius: 10px;
 	text-align: center;
 	box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -91,8 +91,8 @@ body{ background:#ffffff; }
 .wbte-sf-feature-card h3{ color:#132e5a; font-weight:500; font-size:1.1rem; line-height:1.8rem; min-height:55px; margin:0px; display:inline-flex; align-items:center; }
 .wbte-sf-feature-card p{ color:#444444; font-size:.95rem; font-weight:300; line-height:1.5rem; }
 .wbte-sf-icon {
-	width:59px;
-	height:59px;
+	width:32px;
+	height:32px;
 	margin: 0 auto 1.5rem;
 	padding: 1rem;
 	border-radius:15px;

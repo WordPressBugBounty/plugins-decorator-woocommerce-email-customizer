@@ -1,12 +1,12 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.0.0
+Version: 2.0.1
 Tags: email customizer, email marketing, popups, WooCommerce marketing, conversion
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -111,18 +111,37 @@ Created by [WebToffee](https://www.webtoffee.com/plugins).
 
 == Installation ==
 
+= Minimum Requirements =
+
+* PHP 5.6 or higher is recommended
+* WordPress 4.4 or higher is recommended
+
 = Automatic installation =
-The automatic installation is the easiest way to install the plugin. You can install the plugin without even leaving your browser window and from within your WordPress dashboard.
 
-From your admin dashboard, go to Plugins > Add New. From the search box, type "WebToffee Email Automation" or "WebToffee ECommerce Automation" and then search plugins. Click the install button on the WebToffee eCommerce Marketing Automation by WebToffee and then activate the plugin.
-
-Now you are ready to start customizing your WooCommerce emails.
+Step 1: Log in to your WordPress dashboard. 
+Step 2: Navigate to Plugins and select Add New. 
+Step 3: In the search bar, type “WebToffee ECommerce Automation” and click Search Plugins. 
+Step 4: Once you find the WebToffee eCommerce Marketing Automation plugin, click on “Install Now”.
+Step 5: After installation, click “Activate” to activate the plugin. 
 
 = Manual installation =
-In the manual installation, you will need to download the zip file of the plugin from the plugin page in WordPress.org. You can upload the file directly from your WordPress dashboard, or using an FTP application.
-When doing a manual installation,
-1. Upload the plugin folder to the /wp-content/plugins/ directory.
-2. Activate the plugin through the Plugins menu in WordPress.
+
+- Download the WebToffee eCommerce Marketing Automation plugin zip file from the WordPress.org page.
+
+- Go to **Plugins** from your WordPress dashboard and select **Add New Plugin**.
+
+- Click **Upload Plugin** and choose the downloaded zip file.
+
+- Click **Install Now** and after installation, click **Activate Plugin**.
+
+
+= To connect the plugin to the WebToffee Marketing app: =
+
+**_(Please note that the Web App integration is optional. You can still use the plugin as an email editor without connecting it to the app.)_**
+
+- After activating the plugin, click **WebToffee Marketing** on your WordPress dashboard menu.
+
+- Click **Explore WebToffee Marketing** and then click on **Connect now**. You will be prompted to sign up for a new account or log in if you already have one.
 
 = Plugin updates =
 For every update of the plugin, you will be notified of the installed plugins page. You can directly update the plugin from your dashboard. We recommend that you keep the latest version of the plugin so that you can avail yourself of the new functionalities and security features.
@@ -157,10 +176,21 @@ Yes, you can add social links at the footer of the email.
 
 == Screenshots ==
 
-1. Customized WooCommerce 'order processing' email
-2. Customized WooCommerce 'customer new account' email
+1. Customized WooCommerce 'Order Processing' Email
+2. Customized WooCommerce 'Customer New Account' Email
+3. Explore WebToffee Marketing App
+4. Connect to WebToffee Marketing App
+5. WebToffee Marketing Automation Dashboard
+6. Marketing Insights and Suggestions
+7. Pre-built Email Marketing Automations
+8. Ready-to-use Web Campaign Templates
+9. Edit Templates of Campaigns and Automations
 
 == Changelog ==
+
+= 2.0.1 - 2025-02-04 =
+* [Enhancement] - Enhanced functionality and UI/UX.
+* [Compatibility] - Tested OK with WooCommerce 9.6.0
 
 = 2.0.0 - 2025-01-20 =
 * [New] - Added support for integration with WebToffee E-commerce Marketing Automation app
@@ -259,6 +289,6 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 2.0.0 =
-* [New] - Added support for integration with WebToffee E-commerce Marketing Automation app
-* [Fix] - Translation is not working properly
+= 2.0.1 - 2025-02-04 =
+* [Enhancement] - Enhanced functionality and UI/UX.
+* [Compatibility] - Tested OK with WooCommerce 9.6.0

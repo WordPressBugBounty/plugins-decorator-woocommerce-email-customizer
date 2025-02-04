@@ -4,12 +4,12 @@
  * Plugin Name: Decorator - WooCommerce Email Customizer
  * Plugin URI: 
  * Description: Use native WordPress Customizer to make WooCommerce emails match your brand
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: WebToffee
  * Author URI: https://www.webtoffee.com
  * Requires at least: 4.4
  * Tested up to: 6.7
- * WC tested up to: 9.4.2
+ * WC tested up to: 9.6.0
  * Text Domain: decorator-woocommerce-email-customizer
  * Domain Path: /languages
  *
@@ -41,8 +41,8 @@ if (!defined('ABSPATH')) {
 // Define Constants
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
-define( 'WT_WOOMAIL_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
-define('RP_DECORATOR_VERSION', '2.0.0');
+define('WT_WOOMAIL_PATH', realpath(plugin_dir_path(__FILE__)) . DIRECTORY_SEPARATOR);
+define('RP_DECORATOR_VERSION', '2.0.1');
 define('RP_DECORATOR_SUPPORT_PHP', '5.3');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
@@ -50,392 +50,392 @@ define('RP_DECORATOR_SUPPORT_WC', '2.4');
 /**
  * Check if WooCommerce is active
  */
-if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) && !array_key_exists( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_site_option( 'active_sitewide_plugins', array() ) ) ) ) { // deactive if woocommerce in not active
-        require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-        add_action('admin_notices', 'wt_disabled_notice');    
-        return;
- }
- function wt_disabled_notice(){
+if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) && !array_key_exists('woocommerce/woocommerce.php', apply_filters('active_plugins', get_site_option('active_sitewide_plugins', array())))) { // deactive if woocommerce in not active
+    require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    add_action('admin_notices', 'wt_disabled_notice');
+    return;
+}
+function wt_disabled_notice()
+{
     echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WooCommerce to be active. You can download WooCommerce %s.', 'decorator-woocommerce-email-customizer'), '<a href="https://wordpress.org/plugins/woocommerce">' . __('here', 'decorator-woocommerce-email-customizer') . '</a>') . '</p></div>';
 }
 
 if (!class_exists('RP_Decorator')) {
 
-/**
- * Main plugin class
- *
- * @package Decorator
- * @author WebToffee
- */
-class RP_Decorator
-{
-    // Properties
-    private static $admin_capability = null;
-
-    // Singleton instance
-    private static $instance = false;
-
     /**
-     * Singleton control
-     */
-    public static function get_instance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    /**
-     * Class constructor
+     * Main plugin class
      *
-     * @access public
-     * @return void
+     * @package Decorator
+     * @author WebToffee
      */
-    public function __construct()
+    class RP_Decorator
     {
-        // Use our templates instead of woocommerce.
-        add_filter( 'woocommerce_locate_template', array( $this, 'wt_localize_templates' ), 9999, 3 );
-        
-        add_action('init',array($this, 'wt_dec_load_plugin_textdomain'));
+        // Properties
+        private static $admin_capability = null;
 
-        // Execute other code when all plugins are loaded
-        add_action('plugins_loaded', array($this, 'on_plugins_loaded'), 1);
-        add_action('init', array($this, 'wt_change_style_storage_structure'), 11);
-    }
-
-    /**
-     * Code executed when all plugins are loaded
-     *
-     * @access public
-     * @return void
-     */
-    public function on_plugins_loaded()
-    {
-        // Check environment
-        if (!RP_Decorator::check_environment()) {
-            return;
-        }
-
-        // Includes
-        foreach (glob(RP_DECORATOR_PLUGIN_PATH . 'includes/classes/*.class.php') as $filename) {
-            include $filename;
-        }
-        include RP_DECORATOR_PLUGIN_PATH . 'includes/rp-decorator-uninstall-feedback.php';
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-checkbox-design.php'; 
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-social-icon-repeater.php'; 
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-range-design.php'; 
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-div-shortcodes-design.php'; 
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-label-design.php'; 
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-template-design.php'; 
+        // Singleton instance
+        private static $instance = false;
 
         /**
-         *  Storefrog Connector
-         *  @since 2.0.0
+         * Singleton control
          */
-        require_once RP_DECORATOR_PLUGIN_PATH . 'includes/storefrog/class-storefrog-connector.php';
-
-        // Plugins page links
-        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugins_page_links'));
-    }
-
-    /**
-     * Check if environment meets requirements
-     *
-     * @access public
-     * @return bool
-     */
-    public static function check_environment()
-    {
-        $is_ok = true;
-
-        // Check PHP version
-        if (!RP_Decorator::php_version_gte(RP_DECORATOR_SUPPORT_PHP)) {
-            add_action('admin_notices', array('RP_Decorator', 'php_version_notice'));
+        public static function get_instance()
+        {
+            if (!self::$instance) {
+                self::$instance = new self();
+            }
+            return self::$instance;
         }
 
-        // Check WordPress version
-        if (!RP_Decorator::wp_version_gte(RP_DECORATOR_SUPPORT_WP)) {
-            add_action('admin_notices', array('RP_Decorator', 'wp_version_notice'));
-            $is_ok = false;
+        /**
+         * Class constructor
+         *
+         * @access public
+         * @return void
+         */
+        public function __construct()
+        {
+            // Use our templates instead of woocommerce.
+            add_filter('woocommerce_locate_template', array($this, 'wt_localize_templates'), 9999, 3);
+
+            add_action('init', array($this, 'wt_dec_load_plugin_textdomain'));
+
+            // Execute other code when all plugins are loaded
+            add_action('plugins_loaded', array($this, 'on_plugins_loaded'), 1);
+            add_action('init', array($this, 'wt_change_style_storage_structure'), 11);
+            register_activation_hook(__FILE__, array($this, 'wt_decorator_activate'));
+            add_action('admin_init', array($this, 'wt_decorator_activation_redirect'));
         }
 
-        // Check if WooCommerce is enabled
-        if (!class_exists('WooCommerce')) {
-            add_action('admin_notices', array('RP_Decorator', 'wc_disabled_notice'));
-            $is_ok = false;
-        }
-        else if (!RP_Decorator::wc_version_gte(RP_DECORATOR_SUPPORT_WC)) {
-            add_action('admin_notices', array('RP_Decorator', 'wc_version_notice'));
-            $is_ok = false;
-        }
+        /**
+         * Code executed when all plugins are loaded
+         *
+         * @access public
+         * @return void
+         */
+        public function on_plugins_loaded()
+        {
+            // Check environment
+            if (!RP_Decorator::check_environment()) {
+                return;
+            }
 
-        return $is_ok;
-    }
+            // Includes
+            foreach (glob(RP_DECORATOR_PLUGIN_PATH . 'includes/classes/*.class.php') as $filename) {
+                include $filename;
+            }
+            include RP_DECORATOR_PLUGIN_PATH . 'includes/rp-decorator-uninstall-feedback.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-checkbox-design.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-social-icon-repeater.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-range-design.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-div-shortcodes-design.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-label-design.php';
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/classes/components/wt-custom-template-design.php';
 
-    /**
-     * Check PHP version
-     *
-     * @access public
-     * @param string $version
-     * @return bool
-     */
-    public static function php_version_gte($version)
-    {
-        return version_compare(PHP_VERSION, $version, '>=');
-    }
+            /**
+             *  Storefrog Connector
+             *  @since 2.0.0
+             */
+            require_once RP_DECORATOR_PLUGIN_PATH . 'includes/storefrog/class-storefrog-connector.php';
 
-    /**
-     * Check WordPress version
-     *
-     * @access public
-     * @param string $version
-     * @return bool
-     */
-    public static function wp_version_gte($version)
-    {
-        $wp_version = get_bloginfo('version');
-
-        // Treat release candidate strings
-        $wp_version = preg_replace('/-RC.+/i', '', $wp_version);
-
-        if ($wp_version) {
-            return version_compare($wp_version, $version, '>=');
+            // Plugins page links
+            add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugins_page_links'));
         }
 
-        return false;
-    }
+        /**
+         * Check if environment meets requirements
+         *
+         * @access public
+         * @return bool
+         */
+        public static function check_environment()
+        {
+            $is_ok = true;
 
-    /**
-     * Check WooCommerce version
-     *
-     * @access public
-     * @param string $version
-     * @return bool
-     */
-    public static function wc_version_gte($version)
-    {
-        if (defined('WC_VERSION') && WC_VERSION) {
-            return version_compare(WC_VERSION, $version, '>=');
+            // Check PHP version
+            if (!RP_Decorator::php_version_gte(RP_DECORATOR_SUPPORT_PHP)) {
+                add_action('admin_notices', array('RP_Decorator', 'php_version_notice'));
+            }
+
+            // Check WordPress version
+            if (!RP_Decorator::wp_version_gte(RP_DECORATOR_SUPPORT_WP)) {
+                add_action('admin_notices', array('RP_Decorator', 'wp_version_notice'));
+                $is_ok = false;
+            }
+
+            // Check if WooCommerce is enabled
+            if (!class_exists('WooCommerce')) {
+                add_action('admin_notices', array('RP_Decorator', 'wc_disabled_notice'));
+                $is_ok = false;
+            } else if (!RP_Decorator::wc_version_gte(RP_DECORATOR_SUPPORT_WC)) {
+                add_action('admin_notices', array('RP_Decorator', 'wc_version_notice'));
+                $is_ok = false;
+            }
+
+            return $is_ok;
         }
-        else if (defined('WOOCOMMERCE_VERSION') && WOOCOMMERCE_VERSION) {
-            return version_compare(WOOCOMMERCE_VERSION, $version, '>=');
+
+        /**
+         * Check PHP version
+         *
+         * @access public
+         * @param string $version
+         * @return bool
+         */
+        public static function php_version_gte($version)
+        {
+            return version_compare(PHP_VERSION, $version, '>=');
         }
-        else {
+
+        /**
+         * Check WordPress version
+         *
+         * @access public
+         * @param string $version
+         * @return bool
+         */
+        public static function wp_version_gte($version)
+        {
+            $wp_version = get_bloginfo('version');
+
+            // Treat release candidate strings
+            $wp_version = preg_replace('/-RC.+/i', '', $wp_version);
+
+            if ($wp_version) {
+                return version_compare($wp_version, $version, '>=');
+            }
+
             return false;
         }
-    }
 
-    /**
-     * Display PHP version notice
-     *
-     * @access public
-     * @return void
-     */
-    public static function php_version_notice()
-    {
-        echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires PHP %s or later. Please update PHP on your server to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_PHP) . '</p></div>';
-    }
-
-    /**
-     * Display WP version notice
-     *
-     * @access public
-     * @return void
-     */
-    public static function wp_version_notice()
-    {
-        echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WordPress version %s or later. Please update WordPress to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_WP) . '</p></div>';
-    }
-
-    /**
-     * Display WC disabled notice
-     *
-     * @access public
-     * @return void
-     */
-    public static function wc_disabled_notice()
-    {
-        echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WooCommerce to be active. You can download WooCommerce %s.', 'decorator-woocommerce-email-customizer'), '<a href="https://wordpress.org/plugins/woocommerce">' . __('here', 'decorator-woocommerce-email-customizer') . '</a>') . '</p></div>';
-    }
-
-    /**
-     * Display WC version notice
-     *
-     * @access public
-     * @return void
-     */
-    public static function wc_version_notice()
-    {
-        echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WooCommerce version %s or later. Please update WooCommerce to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_WC) . '</p></div>';
-    }
-
-    /**
-     * Plugins page links
-     *
-     * @access public
-     * @param array $links
-     * @return array
-     */
-    public function plugins_page_links($links)
-    {
-
-        $plugin_links = array( '<a href="' . RP_Decorator_Customizer::get_customizer_url() . '"  target="_blank">' . __( 'Customise Email', 'decorator-woocommerce-email-customizer' ) . '</a>',
-                '<a href="https://www.webtoffee.com/decorator-woocommerce-email-customizer-plugin-user-guide/"  target="_blank">' . __( 'Docs', 'decorator-woocommerce-email-customizer' ) . '</a>',
-                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/"  target="_blank">' . __( 'Support', 'decorator-woocommerce-email-customizer' ) . '</a>',
-                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/reviews/#new-post"  target="_blank">' . __( 'Review', 'decorator-woocommerce-email-customizer' ) . '</a>' );
-        
-        if (array_key_exists('deactivate', $links)) {
-            $links['deactivate'] = str_replace('<a', '<a class="decorator-deactivate-link"', $links['deactivate']);
-        }
-         return array_merge($plugin_links, $links);
-    }
-
-    /**
-     * Check if current user has administrative capability
-     *
-     * @access public
-     * @return bool
-     */
-    public static function is_admin()
-    {
-        return current_user_can(RP_Decorator::get_admin_capability());
-    }
-
-    /**
-     * Get admininistrative capability
-     *
-     * @access public
-     * @return string
-     */
-    public static function get_admin_capability()
-    {
-        // Get capability
-        if (self::$admin_capability === null) {
-            self::$admin_capability = apply_filters('rp_decorator_capability', 'manage_woocommerce');
+        /**
+         * Check WooCommerce version
+         *
+         * @access public
+         * @param string $version
+         * @return bool
+         */
+        public static function wc_version_gte($version)
+        {
+            if (defined('WC_VERSION') && WC_VERSION) {
+                return version_compare(WC_VERSION, $version, '>=');
+            } else if (defined('WOOCOMMERCE_VERSION') && WOOCOMMERCE_VERSION) {
+                return version_compare(WOOCOMMERCE_VERSION, $version, '>=');
+            } else {
+                return false;
+            }
         }
 
-        // Return capability
-        return self::$admin_capability;
-    }
+        /**
+         * Display PHP version notice
+         *
+         * @access public
+         * @return void
+         */
+        public static function php_version_notice()
+        {
+            echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires PHP %s or later. Please update PHP on your server to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_PHP) . '</p></div>';
+        }
 
-    /**
-     * Check if current request is own Customizer request
-     *
-     * @access public
-     * @return bool
-     */
-    public static function is_own_customizer_request()
-    {
-        return isset($_REQUEST['rp-decorator-customize']) && $_REQUEST['rp-decorator-customize'] === '1';
-    }
+        /**
+         * Display WP version notice
+         *
+         * @access public
+         * @return void
+         */
+        public static function wp_version_notice()
+        {
+            echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WordPress version %s or later. Please update WordPress to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_WP) . '</p></div>';
+        }
 
-    /**
-     * Check if current request is preview request
-     *
-     * @access public
-     * @return bool
-     */
-    public static function is_own_preview_request()
-    {
-        return isset($_REQUEST['rp-decorator-preview']) && $_REQUEST['rp-decorator-preview'] === '1';
-    }
-    
-    
-    /**
-     * Filter in custom email templates with priority to child themes
-     *
-     * @param string $template the email template file.
-     * @param string $template_name name of email template.
-     * @param string $template_path path to email template.
-     * @access public
-     * @return string
-     */
-    public function wt_localize_templates( $template, $template_name, $template_path ) {
+        /**
+         * Display WC disabled notice
+         *
+         * @access public
+         * @return void
+         */
+        public static function wc_disabled_notice()
+        {
+            echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WooCommerce to be active. You can download WooCommerce %s.', 'decorator-woocommerce-email-customizer'), '<a href="https://wordpress.org/plugins/woocommerce">' . __('here', 'decorator-woocommerce-email-customizer') . '</a>') . '</p></div>';
+        }
+
+        /**
+         * Display WC version notice
+         *
+         * @access public
+         * @return void
+         */
+        public static function wc_version_notice()
+        {
+            echo '<div class="error"><p>' . sprintf(__('<strong>Decorator</strong> requires WooCommerce version %s or later. Please update WooCommerce to use this plugin.', 'decorator-woocommerce-email-customizer'), RP_DECORATOR_SUPPORT_WC) . '</p></div>';
+        }
+
+        /**
+         * Plugins page links
+         *
+         * @access public
+         * @param array $links
+         * @return array
+         */
+        public function plugins_page_links($links)
+        {
+
+            $plugin_links = array(
+                '<a href="' . RP_Decorator_Customizer::get_customizer_url() . '"  target="_blank">' . __('Customise Email', 'decorator-woocommerce-email-customizer') . '</a>',
+                '<a href="https://www.webtoffee.com/decorator-woocommerce-email-customizer-plugin-user-guide/"  target="_blank">' . __('Docs', 'decorator-woocommerce-email-customizer') . '</a>',
+                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/"  target="_blank">' . __('Support', 'decorator-woocommerce-email-customizer') . '</a>',
+                '<a href="https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/reviews/#new-post"  target="_blank">' . __('Review', 'decorator-woocommerce-email-customizer') . '</a>'
+            );
+
+            if (array_key_exists('deactivate', $links)) {
+                $links['deactivate'] = str_replace('<a', '<a class="decorator-deactivate-link"', $links['deactivate']);
+            }
+            return array_merge($plugin_links, $links);
+        }
+
+        /**
+         * Check if current user has administrative capability
+         *
+         * @access public
+         * @return bool
+         */
+        public static function is_admin()
+        {
+            return current_user_can(RP_Decorator::get_admin_capability());
+        }
+
+        /**
+         * Get admininistrative capability
+         *
+         * @access public
+         * @return string
+         */
+        public static function get_admin_capability()
+        {
+            // Get capability
+            if (self::$admin_capability === null) {
+                self::$admin_capability = apply_filters('rp_decorator_capability', 'manage_woocommerce');
+            }
+
+            // Return capability
+            return self::$admin_capability;
+        }
+
+        /**
+         * Check if current request is own Customizer request
+         *
+         * @access public
+         * @return bool
+         */
+        public static function is_own_customizer_request()
+        {
+            return isset($_REQUEST['rp-decorator-customize']) && $_REQUEST['rp-decorator-customize'] === '1';
+        }
+
+        /**
+         * Check if current request is preview request
+         *
+         * @access public
+         * @return bool
+         */
+        public static function is_own_preview_request()
+        {
+            return isset($_REQUEST['rp-decorator-preview']) && $_REQUEST['rp-decorator-preview'] === '1';
+        }
+
+
+        /**
+         * Filter in custom email templates with priority to child themes
+         *
+         * @param string $template the email template file.
+         * @param string $template_name name of email template.
+         * @param string $template_path path to email template.
+         * @access public
+         * @return string
+         */
+        public function wt_localize_templates($template, $template_name, $template_path)
+        {
             // Webtoffee Quote Plugin
-            if(class_exists('Wt_Woo_Request_Quote') )
-            {
-                switch($template_name)
-                {
-                    case 'wtwraq_new_quote_request.php' : 
+            if (class_exists('Wt_Woo_Request_Quote')) {
+                switch ($template_name) {
+                    case 'wtwraq_new_quote_request.php':
                         $template_name = 'emails/wtwraq_new_quote_request.php';
                         break;
-                    case 'wtwraq_quote_accepted.php' : 
+                    case 'wtwraq_quote_accepted.php':
                         $template_name = 'emails/wtwraq_quote_accepted.php';
                         break;
-                    case 'wtwraq_quote_received.php' : 
+                    case 'wtwraq_quote_received.php':
                         $template_name = 'emails/wtwraq_quote_received.php';
                         break;
-                    case 'wtwraq_quote_request_submitted.php' : 
+                    case 'wtwraq_quote_request_submitted.php':
                         $template_name = 'emails/wtwraq_quote_request_submitted.php';
                         break;
-                    case 'wtwraq_quote_declined.php' : 
+                    case 'wtwraq_quote_declined.php':
                         $template_name = 'emails/wtwraq_quote_declined.php';
                         break;
-                    case 'wtwraq_quote_expired.php' : 
+                    case 'wtwraq_quote_expired.php':
                         $template_name = 'emails/wtwraq_quote_expired.php';
                         break;
-                    case 'wtwraq_quote_expiry_reminder.php' : 
+                    case 'wtwraq_quote_expiry_reminder.php':
                         $template_name = 'emails/wtwraq_quote_expiry_reminder.php';
                         break;
-                    case 'wtwraq_quote_reminder.php' : 
+                    case 'wtwraq_quote_reminder.php':
                         $template_name = 'emails/wtwraq_quote_reminder.php';
                         break;
-                    
                 }
             }
-            
+
             // Make sure we are working with an email template.
-            if ( ! in_array( 'emails', explode( '/', $template_name ) ) && ! in_array( 'email', explode( '/', $template_name ) ) ) {
-                    return $template;
+            if (! in_array('emails', explode('/', $template_name)) && ! in_array('email', explode('/', $template_name))) {
+                return $template;
             }
-            
-            if( in_array( 'email', explode( '/', $template_name ) )){
+
+            if (in_array('email', explode('/', $template_name))) {
                 $template_name = str_replace('email', 'emails', $template_name);
             }
             // clone template.
             $_template = $template;
 
             // Get the woocommerce template path if empty.
-            if ( ! $template_path ) {
-                    global $woocommerce;
-                    $template_path = $woocommerce->template_url;
+            if (! $template_path) {
+                global $woocommerce;
+                $template_path = $woocommerce->template_url;
             }
-            wp_enqueue_style( 'font-awesome', RP_DECORATOR_PLUGIN_URL . '/assets/css/customizer-repeater/font-awesome.min.css', array(), RP_DECORATOR_VERSION );
+            wp_enqueue_style('font-awesome', RP_DECORATOR_PLUGIN_URL . '/assets/css/customizer-repeater/font-awesome.min.css', array(), RP_DECORATOR_VERSION);
 
-            wp_enqueue_script( 'customizer-repeater-fontawesome-iconpicker', RP_DECORATOR_PLUGIN_URL . '/assets/js/customizer-repeater/fontawesome-iconpicker.min.js', array( 'jquery' ), RP_DECORATOR_VERSION, true );
+            wp_enqueue_script('customizer-repeater-fontawesome-iconpicker', RP_DECORATOR_PLUGIN_URL . '/assets/js/customizer-repeater/fontawesome-iconpicker.min.js', array('jquery'), RP_DECORATOR_VERSION, true);
 
-            wp_enqueue_style( 'customizer-repeater-fontawesome-iconpicker-script', RP_DECORATOR_PLUGIN_URL . '/assets/css/customizer-repeater/fontawesome-iconpicker.min.css', array(), RP_DECORATOR_VERSION );
-    
+            wp_enqueue_style('customizer-repeater-fontawesome-iconpicker-script', RP_DECORATOR_PLUGIN_URL . '/assets/css/customizer-repeater/fontawesome-iconpicker.min.css', array(), RP_DECORATOR_VERSION);
+
             // Get our template path.
             $plugin_path = WT_WOOMAIL_PATH . 'includes/wt-woo-templates/';
 
             // Look within passed path within the theme - this is priority.
-            $template = locate_template( array( $template_path . $template_name, $template_name ) );
+            $template = locate_template(array($template_path . $template_name, $template_name));
 
             // If theme isn't trying to override get the template from this plugin, if it exists.
-            if ( ! $template && file_exists( $plugin_path . $template_name ) ) {
-                    $template = $plugin_path . $template_name;
+            if (! $template && file_exists($plugin_path . $template_name)) {
+                $template = $plugin_path . $template_name;
             }
 
             // else if we still don't have a template use default.
-            if ( ! $template ) {
-                    $template = $_template;
+            if (! $template) {
+                $template = $_template;
             }
             // Return template.
             return $template;
+        }
 
-    }
-    
-     /**
-     * wt_change_style_storage_structure
-     *
-     * @access public
-     *
-     */
-     public function wt_change_style_storage_structure() {
+        /**
+         * wt_change_style_storage_structure
+         *
+         * @access public
+         *
+         */
+        public function wt_change_style_storage_structure()
+        {
 
-            if ( version_compare( get_option( 'wt_decorator_current_version', '1.0.0' ), RP_DECORATOR_VERSION, '<' ) ) {
+            if (version_compare(get_option('wt_decorator_current_version', '1.0.0'), RP_DECORATOR_VERSION, '<')) {
                 $wc_emails = WC_Emails::instance();
                 $emails = $wc_emails->get_emails();
                 $wt_custom_draft_data = array();
@@ -450,13 +450,13 @@ class RP_Decorator
                     }
                     update_option('wt_decorator_custom_styles', $wt_custom_data);
                     update_option('rp_decorator', array());
-                }else{
+                } else {
                     $style = get_option('wt_decorator_custom_styles', 'empty');
-                    if($style == 'empty' ){
+                    if ($style == 'empty') {
                         update_option('wt_decorator_custom_styles', '');
                     }
                 }
-                
+
                 $drafted_data = $wpdb->get_results('SELECT MAX(id) FROM ' . $wpdb->prefix . "posts WHERE post_status = 'draft' and post_type = 'customize_changeset' and post_content LIKE '%rp_decorator%' ", ARRAY_A);
                 if (isset($drafted_data[0]['MAX(id)']) && !empty($drafted_data[0]['MAX(id)'])) {
                     $data = get_post_field('post_content', $drafted_data[0]['MAX(id)']);
@@ -469,9 +469,9 @@ class RP_Decorator
                                 $custom_data[$key] = $data_value['value'];
                             }
                         }
-                        if(isset($stored) && !empty($stored)){
+                        if (isset($stored) && !empty($stored)) {
                             foreach ($stored as $s_key => $s_value) {
-                                if(!array_key_exists($s_key, $custom_data)){
+                                if (!array_key_exists($s_key, $custom_data)) {
                                     $custom_data[$s_key] = $s_value;
                                 }
                             }
@@ -485,21 +485,50 @@ class RP_Decorator
                         wp_delete_post($drafted_data[0]['MAX(id)']);
                     }
                 }
-                
+
                 update_option('wt_decorator_current_version', RP_DECORATOR_VERSION);
             }
         }
 
-    public function wt_dec_load_plugin_textdomain() {
-        // Load translation
-        load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
-        load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+        public function wt_dec_load_plugin_textdomain()
+        {
+            // Load translation
+            load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
+            load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+        }
+        /**
+         * Plugin activation callback. Registers option to redirect on next admin load.
+         *
+         * Saves user ID to ensure it only redirects for the user who activated the plugin.
+         */
+        public function wt_decorator_activate()
+        {
+            // Don't do redirects when multiple plugins are bulk activated
+            if (
+                (isset($_REQUEST['action']) && 'activate-selected' === $_REQUEST['action']) &&
+                (isset($_POST['checked']) && count($_POST['checked']) > 1)
+            ) {
+                return;
+            }
+            add_option('wt_decorator_activation_redirect', wp_get_current_user()->ID);
+        }
 
+        /**
+         * Redirects the user after plugin activation.
+         */
+        public function wt_decorator_activation_redirect()
+        {
+            // Make sure it's the correct user
+            if (intval(get_option('wt_decorator_activation_redirect', false)) === wp_get_current_user()->ID) {
+                // Make sure we don't redirect again after this one
+                delete_option('wt_decorator_activation_redirect');
+                wp_safe_redirect(admin_url('admin.php?page=wbte-decorator-connector'));
+                exit;
+            }
+        }
     }
-}
 
-RP_Decorator::get_instance();
-
+    RP_Decorator::get_instance();
 }
 
 /**
@@ -511,8 +540,8 @@ RP_Decorator::get_instance();
 add_action(
     'before_woocommerce_init',
     function () {
-        if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
-            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
         }
     }
 );
