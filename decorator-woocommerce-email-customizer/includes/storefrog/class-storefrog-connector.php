@@ -95,7 +95,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *
 		 *  @var string
 		 */
-		private $version = '1.0.2';
+		private $version = '1.0.3';
 
 		/**
 		 *  Constructer.

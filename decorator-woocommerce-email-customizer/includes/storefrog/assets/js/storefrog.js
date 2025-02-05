@@ -54,7 +54,11 @@ function wbteSfDataObjectUpdate() {
 document.addEventListener(
 	'DOMContentLoaded',
 	function () {
-		const { registerCheckoutFilters } = window.wc.blocksCheckout;
+		const registerCheckoutFilters = window?.wc?.blocksCheckout?.registerCheckoutFilters;
+
+		if (typeof registerCheckoutFilters !== "function") {
+            return;
+        }
 
 		var wbteDataObjectUpdateTmr = null;
 

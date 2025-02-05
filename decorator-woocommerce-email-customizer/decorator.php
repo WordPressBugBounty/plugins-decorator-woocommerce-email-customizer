@@ -4,7 +4,7 @@
  * Plugin Name: Decorator - WooCommerce Email Customizer
  * Plugin URI: 
  * Description: Use native WordPress Customizer to make WooCommerce emails match your brand
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: WebToffee
  * Author URI: https://www.webtoffee.com
  * Requires at least: 4.4
@@ -42,7 +42,7 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define('WT_WOOMAIL_PATH', realpath(plugin_dir_path(__FILE__)) . DIRECTORY_SEPARATOR);
-define('RP_DECORATOR_VERSION', '2.0.1');
+define('RP_DECORATOR_VERSION', '2.0.2');
 define('RP_DECORATOR_SUPPORT_PHP', '5.3');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
@@ -103,8 +103,6 @@ if (!class_exists('RP_Decorator')) {
             // Execute other code when all plugins are loaded
             add_action('plugins_loaded', array($this, 'on_plugins_loaded'), 1);
             add_action('init', array($this, 'wt_change_style_storage_structure'), 11);
-            register_activation_hook(__FILE__, array($this, 'wt_decorator_activate'));
-            add_action('admin_init', array($this, 'wt_decorator_activation_redirect'));
         }
 
         /**
@@ -496,36 +494,7 @@ if (!class_exists('RP_Decorator')) {
             load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
             load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
         }
-        /**
-         * Plugin activation callback. Registers option to redirect on next admin load.
-         *
-         * Saves user ID to ensure it only redirects for the user who activated the plugin.
-         */
-        public function wt_decorator_activate()
-        {
-            // Don't do redirects when multiple plugins are bulk activated
-            if (
-                (isset($_REQUEST['action']) && 'activate-selected' === $_REQUEST['action']) &&
-                (isset($_POST['checked']) && count($_POST['checked']) > 1)
-            ) {
-                return;
-            }
-            add_option('wt_decorator_activation_redirect', wp_get_current_user()->ID);
-        }
 
-        /**
-         * Redirects the user after plugin activation.
-         */
-        public function wt_decorator_activation_redirect()
-        {
-            // Make sure it's the correct user
-            if (intval(get_option('wt_decorator_activation_redirect', false)) === wp_get_current_user()->ID) {
-                // Make sure we don't redirect again after this one
-                delete_option('wt_decorator_activation_redirect');
-                wp_safe_redirect(admin_url('admin.php?page=wbte-decorator-connector'));
-                exit;
-            }
-        }
     }
 
     RP_Decorator::get_instance();
