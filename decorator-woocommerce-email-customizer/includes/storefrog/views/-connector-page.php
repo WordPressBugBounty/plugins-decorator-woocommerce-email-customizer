@@ -30,7 +30,7 @@ if ( 'tab1' === $tab ) {
 .wbte-sf-top-box{ width:calc( 100% + 20px); padding:30px 20px 1px 20px; box-sizing:border-box; background:#F1F8FE; }
 .wbte-sf-header {
 	text-align: center;
-	margin-bottom: 3rem;
+	margin-bottom:2rem;
 }
 .wbte-sf-header h1{ font-size:26px; font-weight:700; color:#2d2d2d; }
 </style>

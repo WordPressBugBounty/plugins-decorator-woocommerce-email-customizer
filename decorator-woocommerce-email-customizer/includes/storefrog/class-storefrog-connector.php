@@ -95,7 +95,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *
 		 *  @var string
 		 */
-		private $version = '1.0.3';
+		private $version = '1.0.4';
 
 		/**
 		 *  Constructer.
@@ -145,7 +145,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			$is_connected = $this->is_connected();
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here.
 			$tab             = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'tab1';
-			$tab 			 = $is_connected ? 'tab2' : $tab; // Show tab 2 when connected.
+			$tab             = $is_connected ? 'tab2' : $tab; // Show tab 2 when connected.
 			$tab2_url        = admin_url( 'admin.php?page=wbte-decorator-connector&tab=tab2' );
 			$dashboard_url   = $this->get_dashboard_url();
 			$connection_data = $this->get_connection_data();
@@ -368,7 +368,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		public function enqueue_scripts() {
 			if ( $this->is_connected() ) {
-				
+
 				// Embed script.
 				wp_enqueue_script( 'wbte_sf_embed', $this->script_url, array(), $this->version, true );
 
@@ -407,6 +407,15 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'isLoggedIn' => is_user_logged_in(),
 					'email'      => is_user_logged_in() ? wp_get_current_user()->user_email : '',
 				),
+				'page' => array(
+					'page_type'  => 'generic',
+					'data_id'    => 0,
+					'data_title' => '',
+					'data_slug'  => '',
+					'categories' => array(),
+					'tags'       => array(),
+					'brands'     => array(),
+				),
 			);
 
 			// Add cart items if WC cart is available.
@@ -428,6 +437,76 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 				$cart_data['cart']['hash']          = WC()->cart->get_cart_hash();
 				$cart_data['cart']['currency_code'] = get_woocommerce_currency();
 				$cart_data['cart']['total']         = max( 0, WC()->cart->get_total( 'edit' ) - WC()->cart->get_total_tax() ); // Cart total without tax.
+			}
+
+			// Switch function to check current page.
+			$current_page = get_queried_object();
+			if ( $current_page ) {
+				$cart_data['page']['data_id'] = isset( $current_page->ID ) ? $current_page->ID : ( isset( $current_page->term_id ) ? $current_page->term_id : 0 );
+				if ( function_exists( 'is_shop' ) && is_shop() ) {
+					$cart_data['page']['data_title'] = ! empty( $current_page->label ) ? $current_page->label : __( 'Products', 'decorator-woocommerce-email-customizer' );
+					$cart_data['page']['data_slug']  = ! empty( $current_page->name ) ? $current_page->name : 'shop';
+				} else {
+					$cart_data['page']['data_title'] = ! empty( $current_page->post_title ) ? $current_page->post_title : '';
+					$cart_data['page']['data_title'] = empty( $cart_data['page']['data_title'] ) && ! empty( $current_page->name ) ? $current_page->name : '';
+
+					$cart_data['page']['data_slug'] = ! empty( $current_page->post_name ) ? $current_page->post_name : '';
+					$cart_data['page']['data_slug'] = empty( $cart_data['page']['data_slug'] ) && ! empty( $current_page->slug ) ? $current_page->slug : '';
+				}
+			}
+
+			switch ( true ) {
+				// Single product page.
+				case function_exists( 'is_product' ) && is_product():
+					$product_id                      = get_the_ID();
+					$cart_data['page']['page_type']  = 'product';
+					$cart_data['page']['categories'] = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'slugs' ) );
+					$cart_data['page']['tags']       = wp_list_pluck( get_the_terms( $product_id, 'product_tag' ), 'slug' );
+					$cart_data['page']['brands']     = wp_list_pluck( get_the_terms( $product_id, 'product_brand' ), 'slug' );
+					break;
+
+				// Cart page.
+				case function_exists( 'is_cart' ) && is_cart():
+					$cart_data['page']['page_type'] = 'cart';
+					break;
+
+				// Checkout page.
+				case function_exists( 'is_checkout' ) && is_checkout():
+					$cart_data['page']['page_type'] = 'checkout';
+					break;
+
+				// Category page.
+				case function_exists( 'is_product_category' ) && is_product_category():
+					$cart_data['page']['page_type']  = 'category';
+					$cart_data['page']['categories'] = array( $cart_data['page']['data_slug'] );
+					break;
+
+				// Tag page.
+				case function_exists( 'is_product_tag' ) && is_product_tag():
+					$cart_data['page']['page_type'] = 'tag';
+					$cart_data['page']['tags']      = array( $cart_data['page']['data_slug'] );
+					break;
+
+				// Brand page.
+				case is_tax( 'product_brand' ):
+					$cart_data['page']['page_type'] = 'brand';
+					$cart_data['page']['brands']    = array( $cart_data['page']['data_slug'] );
+					break;
+
+				// Home page.
+				case function_exists( 'is_front_page' ) && is_front_page():
+					$cart_data['page']['page_type'] = 'home';
+					break;
+
+				// Shop page.
+				case function_exists( 'is_shop' ) && is_shop():
+					$cart_data['page']['page_type'] = 'shop';
+					break;
+
+				// Default.
+				default:
+					$cart_data['page']['page_type'] = 'generic';
+					break;
 			}
 
 			return $cart_data;
@@ -588,14 +667,8 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					return $table_html;
 				}
 			} catch ( Exception $e ) {
-				// Do nothing.
-			} finally {
-				// Clear any output buffering that might still be active.
-				if ( ob_get_level() > 0 ) {
-					ob_end_clean();
-				}
-				libxml_clear_errors();
-				libxml_use_internal_errors( false );
+				$unused = $e; // To prevent PHPCS warning.
+				unset( $unused );
 			}
 
 			return '';

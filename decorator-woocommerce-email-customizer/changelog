@@ -1,3 +1,9 @@
+Version 2.0.3 , 18 February 2025 
+------------------------------------------------------------------------------------
+* [Enhancement] - Enhanced functionality and UI/UX.
+* [Compatibility] - Tested OK with WP 6.7.2
+* [Compatibility] - Tested OK with WC 9.6.2
+
 Version 2.0.2 , 05 February 2025 
 ------------------------------------------------------------------------------------
 * [Fix] - Admin AJAX functionality is not working for non-logged-in users.
