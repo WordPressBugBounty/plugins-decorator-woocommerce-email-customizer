@@ -97,6 +97,14 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		private $version = '1.0.4';
 
+
+		/**
+		 *  Show authorization denied warning.
+		 *
+		 *  @var boolean
+		 */
+		private $show_warning = false;
+
 		/**
 		 *  Constructer.
 		 */
@@ -114,6 +122,8 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 
 			// Add ajax action to get cart data.
 			add_action( 'wc_ajax_get_storefrog_data_object', array( $this, 'ajax_get_storefrog_data_object' ) );
+
+			add_action( 'init', array( $this, 'after_auth_redirect' ), 11 );
 		}
 
 		/**
@@ -190,7 +200,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 						'app_name'     => $this->app_name,
 						'scope'        => $this->wc_api_perm,
 						'user_id'      => $website_id,
-						'return_url'   => $this->get_dashboard_url(),
+						'return_url'   => admin_url( 'admin.php?page=wbte-decorator-connector&tab=tab2' ),
 						'callback_url' => $this->get_token_url( $website_id, $session_id ),
 					);
 					$query_string = http_build_query( $params );
@@ -673,6 +683,33 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 
 			return '';
 		}
+
+		/**
+		 *  After auth redirect.
+		 *  If the user approves the API auth, redirect to the dashboard.
+		 *  If the user denies the API auth, show a warning.
+		 * 
+		 *  @since 2.0.4
+		 */
+		public function after_auth_redirect(){
+			if( 
+				is_admin()
+				&& isset( $_GET['page'], $_GET['tab'], $_GET['success'] ) 
+				&& 'wbte-decorator-connector' === $_GET['page'] 
+				&& 'tab2' === $_GET['tab'] 
+			){
+				if( $_GET['success'] ){
+					wp_redirect( $this->get_dashboard_url() );
+					exit;
+				} else{
+					$this->show_warning = true;
+					// Since the user denied the API auth, make the account not connected.
+					delete_option( $this->data_option_name );
+					delete_option( $this->key_option_name );
+				}	
+			}
+		}
+		
 	}
 
 

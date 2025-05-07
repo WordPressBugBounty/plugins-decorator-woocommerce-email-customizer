@@ -11,27 +11,66 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+$show_warning = $this->show_warning ?? false;
 ?>
 <div class="wrap wbte-sf-connector">
 	<div class="wbte-sf-top-box">
 		<div class="wbte-sf-header">
             <img src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/assets/images/webtoffee-logo_small.svg' ); ?>" width="180" alt="Webtoffee Logo">
 		</div>
+		<div class="wbte-sf-auth-denied-warning">
+			<img style="width: 24px;" src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/includes/storefrog/assets/images/warning.svg' ); ?>" alt="<?php esc_html_e( 'Warning', 'decorator-woocommerce-email-customizer' ); ?>">
+			<div class="wbte-sf-auth-denied-warning-content">
+				<p class="wbte-sf-auth-denied-warning-content-title"><?php esc_html_e( 'Authorization Denied', 'decorator-woocommerce-email-customizer' ); ?></p>
+				<span><?php esc_html_e( 'To proceed, please approve the access request on your WooCommerce store.', 'decorator-woocommerce-email-customizer' ); ?></span><br>
+				<span><?php printf( esc_html__( 'Click %s “Connect now” %s to return and complete the setup.', 'decorator-woocommerce-email-customizer' ), '<strong>', '</strong>' ); ?></span>
+			</div>
+			<span class="wbte-sf-auth-denied-warning-close">×</span>
+		</div>
+
 		<div class="wbte-sf-banner-box">
 			<div class="wbte-sf-item wbte-sf-item-left">
-				<h1>
-					<?php
-					if ( $is_connected ) {
-						esc_html_e( 'Welcome Back!', 'decorator-woocommerce-email-customizer' );
-					} else {
-						esc_html_e( 'Welcome to Webtoffee Marketing', 'decorator-woocommerce-email-customizer' );
-					}
+				<h3><?php esc_html_e( 'Welcome to WebToffee Marketing', 'decorator-woocommerce-email-customizer' ); ?></h3>
+				<?php 
+				if( $is_connected ) {
 					?>
-				</h1>
-				<p class="wbte-sf-tab-description"><?php esc_html_e( 'Power e-commerce growth with smart product recommendations, web campaigns, and automated marketing tools.', 'decorator-woocommerce-email-customizer' ); ?></p>
+					<div>
+						<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'You’re All Set! —you’ve successfully connected your store', 'decorator-woocommerce-email-customizer' ); ?></p>
+						<p style="font-size: 14px;"><?php esc_html_e( 'Dive in to explore:', 'decorator-woocommerce-email-customizer' ); ?></p>
+						<ul style="font-size: 14px; list-style-type: disc; margin-left: 25px;">
+							<li><?php esc_html_e( 'Automated email campaigns & drip workflows', 'decorator-woocommerce-email-customizer' ); ?></li>
+							<li><?php esc_html_e( 'On‑site pop‑ups and banners', 'decorator-woocommerce-email-customizer' ); ?></li>
+							<li><?php esc_html_e( 'Detailed sales & engagement analytics', 'decorator-woocommerce-email-customizer' ); ?></li>
+						</ul>
+					</div>
+					<?php
+				} else {
+					?>
+					<div>
+						<p class="wbte-sf-tab-description"><?php esc_html_e( 'Let’s connect your store in just a few simple steps:', 'decorator-woocommerce-email-customizer' ); ?></p>
+						<div class="wbte-sf-tab-steps-container">
+							<div class="wbte-sf-tab-step-number">1</div>
+							<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Log in or sign up to your WebToffee Marketing account.', 'decorator-woocommerce-email-customizer' ); ?></p>
+						</div>
+						<div class="wbte-sf-tab-steps-container">
+							<div class="wbte-sf-tab-step-number">2</div>
+							<span>
+								<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Approve the WooCommerce connection request.', 'decorator-woocommerce-email-customizer' ); ?></p>
+								<span style="font-size: 12px; font-weight: 400; color: #0C1C37;"><?php esc_html_e( 'When prompted, click ‘Approve’ to grant the app the required permission to view/manage store data', 'decorator-woocommerce-email-customizer' ); ?></span>
+							</span>
+						</div>
+						<div class="wbte-sf-tab-steps-container">
+							<div class="wbte-sf-tab-step-number">3</div>
+							<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Access your marketing dashboard and start growing your sales.', 'decorator-woocommerce-email-customizer' ); ?></p>
+						</div>
+					</div>
+					<?php
+				}
+				?>
+				
 				<div class="wbte-sf-btnbox">
 					<?php
-					if ( $is_connected ) { // $connected_email
+					if ( $is_connected ) { // $connected_email.
 						?>
 						<p style="margin-bottom:5px;"><span class="dashicons dashicons-yes-alt" style="color:#36bc77"></span> 
 						<?php
@@ -44,29 +83,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 					} else {
 						?>
 						<a href="<?php echo esc_url( $auth_url ); ?>" class="wbte-sf-btn"><?php esc_html_e( 'Connect now', 'decorator-woocommerce-email-customizer' ); ?></a>
+						<br><span style="font-size: 12px; font-style: italic; font-weight: 400; color: #0C1C37;"><?php esc_html_e( '* Clicking this will redirect you to the WebToffee Marketing app', 'decorator-woocommerce-email-customizer' ); ?></span>
 						<?php
 					}
 					?>
 				</div>
 			</div>
 			<div class="wbte-sf-item wbte-sf-item-right">
-				<img src="<?php echo esc_url( $asset_url . 'images/banner.png' ); ?>">
+				<img src="<?php echo esc_url( $asset_url . 'images/wt-shop-link.svg' ); ?>">
 			</div>
 		</div>
 	</div>
 </div>
 <style type="text/css">
 body{ background:#F1F8FE; }
-.wbte-sf-banner-box{ margin:3rem auto; padding:1rem 3.5rem; padding-left:5rem; padding-right:1rem; box-sizing:border-box; max-width:1100px; background:#ffffff; border-radius:10px; display:flex; justify-content: space-between; flex-wrap:wrap; gap:2rem 0px; }
-.wbte-sf-banner-box h1{ font-size:26px; font-weight:700; color:#2d2d2d; margin-bottom:5px; margin-top:2rem; }
-.wbte-sf-banner-box .wbte-sf-tab-description{ font-size:14px; font-weight:300; margin-top:0px; margin-bottom:90px; }
-.wbte-sf-banner-box .wbte-sf-item{ flex:0 0 45%; box-sizing:border-box; }
-.wbte-sf-banner-box .wbte-sf-item-left{ padding-right:80px; position:relative; }
+.wbte-sf-banner-box{ margin: 3rem auto; padding: 2rem; box-sizing: border-box; max-width: 1100px; background: #ffffff; border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem 0px; }
+.wbte-sf-banner-box h1{ font-size: 22px; font-weight: 700; color: #2d2d2d; }
+.wbte-sf-banner-box .wbte-sf-tab-description{ font-size: 14px; font-weight: 300; }
+.wbte-sf-banner-box .wbte-sf-item-left{ position: relative; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.wbte-sf-banner-box .wbte-sf-item-left h3{ font-weight: 700; font-size: 22px; }
 .wbte-sf-banner-box .wbte-sf-item-right{ text-align:right; }
 .wbte-sf-banner-box .wbte-sf-item-right img{ display:inline-block; max-width:352px; }
-.wbte-sf-banner-box .wbte-sf-btnbox{ position:absolute; bottom:40px; width:100%;}
-.wbte-sf-banner-box .wbte-sf-btn{ background-color:#1763DC; color:white; display:inline-block; text-align:center; padding:.7rem 2rem; min-width: 280px; width:auto; box-sizing:border-box; border: none; border-radius:4px; font-size:.9rem; cursor: pointer; transition: background-color 0.3s; text-decoration:none; margin-top: 5px; }
+.wbte-sf-banner-box .wbte-sf-btnbox{ width:100%;}
+.wbte-sf-banner-box .wbte-sf-btn{ background-color:#1763DC; color:white; display:inline-block; text-align:center; padding:.7rem 2rem; min-width: 326px; width:auto; box-sizing:border-box; border: none; border-radius:4px; font-size:.9rem; cursor: pointer; transition: background-color 0.3s; text-decoration:none; margin-top: 5px; }
 .wbte-sf-banner-box .wbte-sf-disconnect{ color:#2f79b6; cursor: pointer; text-decoration:underline; }
+
+.wbte-sf-tab-steps-container { display: flex; align-items: center; font-family: 'Poppins', sans-serif; margin-bottom: 20px; }
+.wbte-sf-tab-step-number { background-color: #E0EBF5;  color: #1763DC;  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; margin-right: 16px; }
+.wbte-sf-tab-bold-text { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: #0C1C37; margin: 0; }
+
+/* Authorization Denied warning */
+.wbte-sf-auth-denied-warning { align-items: flex-start; justify-content: space-between; background-color: #FCEAED; border: 0.5px solid #D63638; border-radius: 12px; padding: 16px 20px; color: #DF284C; font-family: Arial, sans-serif; max-width: 1100px; margin: 20px auto; position: relative; box-sizing: border-box; gap: 15px; display: <?php echo $show_warning ? 'flex' : 'none'; ?>; }
+.wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content { flex: 1; font-size: 14px; line-height: 20px; font-weight: 400; }
+.wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content-title { font-size: 16px; margin: 0; margin-bottom: 8px; }
+.wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content span strong, .wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content-title { font-weight: 700; }
+.wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-close { color: #D63638; font-size: 25px; cursor: pointer; }
+
+
 @media screen and (max-width: 1100px) {
 	.wbte-sf-banner-box .wbte-sf-btnbox{ position:relative; bottom:0px; margin-top:20px; }
 	.wbte-sf-banner-box .wbte-sf-item img{ max-width:100%; }
@@ -112,6 +165,10 @@ body{ background:#F1F8FE; }
 					}
 				});
 			}
+		});
+
+		$('.wbte-sf-auth-denied-warning-close').on('click', function(){
+			$('.wbte-sf-auth-denied-warning').hide();
 		});
 	});
 </script>

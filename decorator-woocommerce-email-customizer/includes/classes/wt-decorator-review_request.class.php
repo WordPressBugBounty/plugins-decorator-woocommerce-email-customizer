@@ -48,20 +48,34 @@ class Wt_Decorator_Review_Request
         add_action($this->activation_hook, array($this, 'on_activate'));
         add_action($this->deactivation_hook, array($this, 'on_deactivate'));
 
-        if($this->check_condition()) /* checks the banner is active now */
-        {
-            $this->banner_message=sprintf(__("Hi there! We at %sWebToffee%s would like to thank you for using our plugin. We would really appreciate if you could take a moment to drop a quick review that will inspire us to keep going.", 'decorator-woocommerce-email-customizer'), '<b>', '</b>');
-
-            /* button texts */
-            $this->later_btn_text=__("Remind me later", 'decorator-woocommerce-email-customizer');
-            $this->never_btn_text=__("Not interested", 'decorator-woocommerce-email-customizer');
-            $this->review_btn_text=__("Review now", 'decorator-woocommerce-email-customizer');
-
-            add_action('admin_notices', array($this, 'show_banner')); /* show banner */
-            add_action('admin_print_footer_scripts', array($this, 'add_banner_scripts')); /* add banner scripts */
-            add_action('wp_ajax_'.$this->ajax_action_name, array($this, 'process_user_action')); /* process banner user action */
-        }
+        add_action( 'admin_init', array( $this, 'init' ) );
     }
+
+    /**
+	 * Initialize on admin
+     * 
+     * @since 2.0.4 Moved from __construct to init to avoid issues with translating text before init.
+	 */
+	public function init() {
+		if ( $this->check_condition() ) { // Checks if the banner is active now.
+			$this->banner_message = sprintf(
+				/* translators: 1: Opening bold tag, 2: Closing bold tag */
+				__( 'Hi there! We at %s WebToffee %s would like to thank you for using our plugin. We would really appreciate if you could take a moment to drop a quick review that will inspire us to keep going.', 'decorator-woocommerce-email-customizer' ),
+				'<b>',
+				'</b>'
+			);
+
+			// Button texts.
+			$this->later_btn_text = __( 'Remind me later', 'decorator-woocommerce-email-customizer' );
+			$this->never_btn_text = __( 'Not interested', 'decorator-woocommerce-email-customizer' );
+			$this->review_btn_text = __( 'Review now', 'decorator-woocommerce-email-customizer' );
+
+			// Add hooks for banner display and interaction.
+			add_action( 'admin_notices', array( $this, 'show_banner' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, 'add_banner_scripts' ) );
+			add_action( 'wp_ajax_' . $this->ajax_action_name, array( $this, 'process_user_action' ) );
+		}
+	}
 
     /**
     *   Set config vars

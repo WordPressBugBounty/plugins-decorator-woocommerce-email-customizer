@@ -59,7 +59,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'Explore WebToffee Marketing', 'decorator-woocommerce-email-customizer' ); ?> 
 				<span class="dashicons dashicons-arrow-right-alt2"></span>
 			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=decorator-woocommerce-email-customizer' ) ); ?>" class="wbte-sf-link">
+			<p style="margin: 0; margin-top: 1rem; font-weight: 700; font-size: 18px;"><?php esc_html_e( 'Just want to edit Woo emails?', 'decorator-woocommerce-email-customizer' ); ?></p>
+			<p style="margin: 0; font-size: 16px; font-family: sans-serif;"><?php esc_html_e( 'To edit the default WooCommerce email templates,', 'decorator-woocommerce-email-customizer' ); ?></p>
+			<a style="font-weight: 500; font-size: 16px; color: #1763DC;" href="<?php echo esc_url( admin_url( 'admin.php?page=decorator-woocommerce-email-customizer' ) ); ?>" class="wbte-sf-link">
 				<?php esc_html_e( 'Continue with Email Editor', 'decorator-woocommerce-email-customizer' ); ?>
 			</a>
 		</div>
@@ -74,12 +76,7 @@ body{ background:#F1F8FE; }
 	margin-top: 0.5rem; font-weight:300; width:100%; max-width:800px;
 }
 
-.wbte-sf-features-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 2rem;
-	margin:2.5rem auto; max-width:1100px;
-}
+.wbte-sf-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem auto; max-width: 1100px; }
 
 .wbte-sf-feature-card {
 	background: #fff;
@@ -113,9 +110,7 @@ body{ background:#F1F8FE; }
 .wbte-sf-icon-automate { background: #E8F5F0; }
 .wbte-sf-icon-revenue { background: #E8F0FF; }
 
-.wbte-sf-cta{
-	text-align: center;
-	margin:2rem 0; display:flex; flex-direction:column; align-items: center;
+.wbte-sf-cta{ text-align: center; margin: 1.5rem 0; display: flex; flex-direction: column; align-items: center;
 }
 
 .wbte-sf-button {

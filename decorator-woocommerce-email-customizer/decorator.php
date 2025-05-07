@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Plugin Name: Decorator - WooCommerce Email Customizer
+ * Plugin Name: WebToffee eCommerce Marketing Automation – Email marketing, Popups, Email customizer
  * Plugin URI: 
- * Description: Use native WordPress Customizer to make WooCommerce emails match your brand
- * Version: 2.0.3
+ * Description: A complete marketing automation tool for WooCommerce to run email campaigns, popups, signup forms, and customize store emails.
+ * Version: 2.0.4
  * Author: WebToffee
  * Author URI: https://www.webtoffee.com
  * Requires at least: 4.4
- * Tested up to: 6.7
- * WC tested up to: 9.6.2
+ * Tested up to: 6.8
+ * WC tested up to: 9.8
  * Text Domain: decorator-woocommerce-email-customizer
  * Domain Path: /languages
+ * Requires Plugins:  woocommerce
  *
  * Copyright 2020 WebToffee (email: info@webtoffee.com)
  *
@@ -42,7 +43,7 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define('WT_WOOMAIL_PATH', realpath(plugin_dir_path(__FILE__)) . DIRECTORY_SEPARATOR);
-define('RP_DECORATOR_VERSION', '2.0.3');
+define('RP_DECORATOR_VERSION', '2.0.4');
 define('RP_DECORATOR_SUPPORT_PHP', '5.3');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
