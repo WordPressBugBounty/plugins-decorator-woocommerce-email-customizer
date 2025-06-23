@@ -37,7 +37,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *
 		 *  @var string
 		 */
-		private $token_db_url = 'https://api.storefrog.com/functions/v1/';
+		private $token_db_url = 'https://api.marketing.webtoffee.com/api/v1/';
 
 		/**
 		 *  Script url.
@@ -256,7 +256,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *  @return string Token url.
 		 */
 		private function get_token_url( $website_id, $access_token ) {
-			return $this->token_db_url . 'websites/' . $website_id . '?session_id=' . rawurlencode( $access_token );
+			return $this->token_db_url . 'website-auth/' . $website_id . '?session_id=' . rawurlencode( $access_token );
 		}
 
 		/**
@@ -404,6 +404,13 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		private function get_data_object() {
 
+			$load_cart_data = true;
+			if (wp_doing_ajax()) {
+				$load_cart_data = true;
+			}
+			$load_cart_data = apply_filters('wt_ema_load_cart_html_table_data', $load_cart_data);
+
+
 			// Prepare cart data.
 			$cart_data = array(
 				'cart' => array(
@@ -411,11 +418,12 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'hash'          => '',
 					'currency_code' => '',
 					'total'         => 0,
-					'table'         => $this->get_cart_table_html(),
+					'table'         => $load_cart_data ? $this->get_cart_table_html() : '',
 				),
 				'user' => array(
 					'isLoggedIn' => is_user_logged_in(),
 					'email'      => is_user_logged_in() ? wp_get_current_user()->user_email : '',
+					'orders'     => is_user_logged_in() ? wc_get_customer_order_count(get_current_user_id()) : 0,
 				),
 				'page' => array(
 					'page_type'  => 'generic',
@@ -441,6 +449,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 						'quantity'     => $cart_item['quantity'],
 						'price'        => wc_get_price_excluding_tax( $product ), // Product price without tax.
 						'total'        => $cart_item['line_total'], // Line total without tax.
+						'category'     => wp_get_post_terms($cart_item['product_id'], 'product_cat', array('fields' => 'slugs')),
 					);
 				}
 				$cart_data['cart']['items']         = $cart_items;
@@ -462,6 +471,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 
 					$cart_data['page']['data_slug'] = ! empty( $current_page->post_name ) ? $current_page->post_name : '';
 					$cart_data['page']['data_slug'] = empty( $cart_data['page']['data_slug'] ) && ! empty( $current_page->slug ) ? $current_page->slug : '';
+					$cart_data['page']['is_order_received_page'] = (function_exists('is_order_received_page') && is_order_received_page());
 				}
 			}
 
@@ -473,6 +483,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					$cart_data['page']['categories'] = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'slugs' ) );
 					$cart_data['page']['tags']       = wp_list_pluck( get_the_terms( $product_id, 'product_tag' ), 'slug' );
 					$cart_data['page']['brands']     = wp_list_pluck( get_the_terms( $product_id, 'product_brand' ), 'slug' );
+					$cart_data['page']['product_name'] = get_the_title($product_id);
 					break;
 
 				// Cart page.

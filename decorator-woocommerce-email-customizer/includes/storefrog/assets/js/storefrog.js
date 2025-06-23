@@ -90,7 +90,7 @@ jQuery( document ).ready(
 	function () {
 		/* Watch cart change */
 		jQuery( 'body' ).on(
-			'updated_wc_div updated_checkout added_to_cart removed_from_cart',
+			'updated_wc_div updated_checkout added_to_cart removed_from_cart wc-blocks_added_to_cart',
 			function () {
 				getStorefrogDataObject();
 			}
