@@ -1,12 +1,12 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.0.6
+Version: 2.0.7
 Tags: email customizer, email marketing, popups, WooCommerce marketing, conversion
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -109,6 +109,14 @@ If you have any issues with the plugin, feel free to contact us via [support for
 
 Created by [WebToffee](https://www.webtoffee.com/plugins).
 
+== You May Also Need ==
+GDPR Cookie Consent is our flagship cookie consent plugin, which is a Google-certified CMP built specifically for WordPress websites. With this plugin, you can display a fully customizable cookie banner on your site to help ensure compliance with major privacy laws like the GDPR and CCPA.
+
+Key features include an advanced cookie scanner, automatic script blocking, and detailed consent log reporting. It also lets you deploy an IAB-compliant cookie banner and supports Google Consent Mode v2. 
+
+Get [GDPR Cookie Consent Plugin](https://www.webtoffee.com/product/gdpr-cookie-consent/) Now.
+
+
 == Installation ==
 
 = Minimum Requirements =
@@ -187,6 +195,10 @@ Yes, you can add social links at the footer of the email.
 9. Edit Templates of Campaigns and Automations
 
 == Changelog ==
+
+= 2.0.7 - 2025-07-11 =
+* [Compatibility] - Tested OK with WC 9.9.5
+* [Enhancement] - API Changes
 
 = 2.0.6 - 2025-06-23 =
 * [Compatibility] - Tested OK with WP 6.8.1
@@ -308,6 +320,6 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 2.0.6 =
-* [Compatibility] - Tested OK with WP 6.8.1
-* [Compatibility] - Tested OK with WC 9.9.4
+= 2.0.7 =
+* [Compatibility] - Tested OK with WC 9.9.5
+* [Enhancement] - API Changes

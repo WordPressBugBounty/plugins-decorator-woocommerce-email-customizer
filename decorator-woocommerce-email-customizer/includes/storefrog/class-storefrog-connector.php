@@ -106,6 +106,20 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		private $show_warning = false;
 
 		/**
+		 *  Show authorization denied warning.
+		 *
+		 *  @var boolean
+		 */
+		private $show_warning_option = 'wbte_decorator_show_warning';
+
+		/**
+		 *  Token db url.
+		 *
+		 *  @var string
+		 */
+		private $ema_services_url = 'https://ema-services.storefrog.com/api/v1/';
+
+		/**
 		 *  Constructer.
 		 */
 		public function __construct() {
@@ -124,6 +138,92 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			add_action( 'wc_ajax_get_storefrog_data_object', array( $this, 'ajax_get_storefrog_data_object' ) );
 
 			add_action( 'init', array( $this, 'after_auth_redirect' ), 11 );
+
+			// Register WordPress settings.
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
+
+			// Register REST API routes.
+			add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		}
+
+		/**
+		 *  Register WordPress settings.
+		 */
+		public function register_settings() {
+			register_setting( 'general', $this->show_warning_option, array(
+				'show_in_rest' => array(
+					'schema' => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
+				),
+				'type'         => 'boolean',
+				'default'      => false,
+			) );
+		}
+
+		/**
+		 *  Register REST API routes.
+		 */
+		public function register_rest_routes() {
+			// Register with WooCommerce namespace for proper authentication
+			register_rest_route( 'wc/v3', '/decorator/warning-status', array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_warning_status_rest' ),
+				'permission_callback' => '__return_true', // WooCommerce handles auth
+			) );
+
+			register_rest_route( 'wc/v3', '/decorator/clear-warning', array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'clear_warning_rest' ),
+				'permission_callback' => '__return_true', // WooCommerce handles auth
+			) );
+		}
+
+		/**
+		 *  Check admin permissions for REST API.
+		 *
+		 *  @return bool True if user has admin permissions.
+		 */
+		public function check_admin_permissions() {
+			// Check if user is logged in and has manage_woocommerce capability
+			if ( current_user_can( 'manage_woocommerce' ) ) {
+				return true;
+			}
+			
+			// For WooCommerce REST API authentication, allow access if Basic auth is present
+			// WooCommerce will handle the authentication validation
+			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+			if ( ! empty( $auth_header ) && strpos( $auth_header, 'Basic ' ) === 0 ) {
+				return true;
+			}
+			
+			return false;
+		}
+
+		/**
+		 *  Get warning status via REST API.
+		 *
+		 *  @return WP_REST_Response Response object.
+		 */
+		public function get_warning_status_rest() {
+			return new WP_REST_Response( array(
+				'success' => true,
+				'warning' => $this->get_warning_status(),
+			), 200 );
+		}
+
+		/**
+		 *  Clear warning via REST API.
+		 *
+		 *  @return WP_REST_Response Response object.
+		 */
+		public function clear_warning_rest() {
+			$this->clear_warning();
+			return new WP_REST_Response( array(
+				'success' => true,
+				'message' => 'Warning cleared successfully.',
+			), 200 );
 		}
 
 		/**
@@ -365,9 +465,28 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		public function disconnect_storefrog() {
 			if ( isset( $_POST['nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wbte_sf_disconnect' ) ) {
-				delete_option( $this->data_option_name );
-				delete_option( $this->key_option_name );
-				wp_send_json_success( array( 'success' => true ) );
+				$connection_data = $this->get_connection_data();
+				$website_key     = isset( $connection_data['website_key'] ) ? $connection_data['website_key'] : '';
+				$user_email      = isset( $connection_data['email'] ) ? $connection_data['email'] : '';
+				if( $website_key && $user_email ){
+					$response = wp_remote_post( $this->ema_services_url . 'disconnect?user=' . $website_key . '&email=' . $user_email, array(
+						'method' => 'POST',
+						'headers' => array(
+							'Authorization' => 'Bearer ' . $website_key,
+						),
+					) );
+					
+					if ( is_wp_error( $response ) ) {
+						wp_send_json_error( array( 'success' => false ) );
+					}else{
+						delete_option( $this->data_option_name );
+						delete_option( $this->key_option_name );
+						update_option( $this->show_warning_option, false );
+						wp_send_json_success( array( 'success' => true ) );
+					}
+				}else{
+					wp_send_json_error( array( 'success' => false ) );
+				}
 			} else {
 				wp_send_json_error( array( 'success' => false ) );
 			}
@@ -703,22 +822,52 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *  @since 2.0.4
 		 */
 		public function after_auth_redirect(){
+			if ( ! is_admin() ) {
+				return;
+			}
 			if( 
-				is_admin()
-				&& isset( $_GET['page'], $_GET['tab'], $_GET['success'] ) 
+				isset( $_GET['page'], $_GET['tab'], $_GET['success'] ) 
 				&& 'wbte-decorator-connector' === $_GET['page'] 
 				&& 'tab2' === $_GET['tab'] 
 			){
 				if( $_GET['success'] ){
+					update_option($this->show_warning_option, false);
 					wp_redirect( $this->get_dashboard_url() );
 					exit;
 				} else{
 					$this->show_warning = true;
-					// Since the user denied the API auth, make the account not connected.
-					delete_option( $this->data_option_name );
-					delete_option( $this->key_option_name );
+					update_option( $this->show_warning_option, true );
+					wp_redirect($this->get_dashboard_url());
+					exit;
 				}	
+			}else{
+				if( isset( $_GET['page']) && 'wbte-decorator-connector' === $_GET['page'] &&  get_option( $this->show_warning_option, false ) ){
+					$this->show_warning = true;
+				}
 			}
+		}
+		
+
+		/**
+		 *  Clear warning option.
+		 *  This method can be called to clear the warning state.
+		 * 
+		 *  @since 2.0.4
+		 */
+		public function clear_warning() {
+			update_option( $this->show_warning_option, false );
+			$this->show_warning = false;
+		}
+
+		/**
+		 *  Get warning status.
+		 *  Returns the current warning status.
+		 * 
+		 *  @since 2.0.4
+		 *  @return bool True if warning is active, false otherwise.
+		 */
+		public function get_warning_status() {
+			return get_option( $this->show_warning_option, false );
 		}
 		
 	}

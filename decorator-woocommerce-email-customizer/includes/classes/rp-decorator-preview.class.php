@@ -64,6 +64,9 @@ if (!class_exists('RP_Decorator_Preview')) {
             self::$wt_supported_email_class_names = self::wt_supported_email_classes();
             self::$wt_supported_email_order_status = self::wt_supported_email_type_status();
             add_action('admin_menu', array($this, 'admin_menu'));
+
+            /* Add style correction for Woocommerce email preview */
+            add_action( 'admin_footer', array($this,'wt_dec_style_for_woocommerce_email'), 10, 1 );
         }
 
         /**
@@ -488,6 +491,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                         $types = array_merge( $types, array(
                                 'wt_smart_coupon_gift'                 => __( 'Smart coupon gift', 'decorator-woocommerce-email-customizer' ),
                                 'wt_smart_coupon_abandonment_coupon_email' => __( 'Smart coupon abandonment coupon email', 'decorator-woocommerce-email-customizer' ),
+                                'Wbte_Smart_Coupon_Abandonment_Reminder_Email' => __( 'Smart coupon abandonment cart reminder email', 'decorator-woocommerce-email-customizer' ),
                                 'wt_smart_coupon_store_credit'  => __( 'Smart coupon store credit', 'decorator-woocommerce-email-customizer' ),
                                 'wt_smart_coupon_signup_coupon_email'   => __( 'Smart coupon signup coupon email', 'decorator-woocommerce-email-customizer' ),
                                 'wt_smart_coupon'          => __( 'Smart coupon', 'decorator-woocommerce-email-customizer' ),
@@ -651,6 +655,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                 $types = array_merge($types, array(
                     'wt_smart_coupon_gift' => __('Smart Coupon Gift', 'decorator-woocommerce-email-customizer'),
                     'wt_smart_coupon_abandonment_coupon_email' => __('Smart Coupon Abandonment Coupon Email', 'decorator-woocommerce-email-customizer'),
+                    'Wbte_Smart_Coupon_Abandonment_Reminder_Email' => __( 'Smart Coupon Abandonment Cart Reminder Email', 'decorator-woocommerce-email-customizer' ),
                     'wt_smart_coupon_signup_coupon_email'   => __( 'Smart Coupon Signup Coupon Email', 'decorator-woocommerce-email-customizer' ),
                     'wt_smart_coupon'          => __( 'Smart Coupon', 'decorator-woocommerce-email-customizer' ),
                 ));
@@ -1464,6 +1469,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                 'customer_reset_password' => 'WC_Email_Customer_Reset_Password',
                 'wt_smart_coupon_gift' => 'WT_smart_Coupon_Gift',
                 'wt_smart_coupon_abandonment_coupon_email' => 'WT_smart_Coupon_Abandonment_Coupon_Email',
+                'Wbte_Smart_Coupon_Abandonment_Reminder_Email' => 'Wbte_Smart_Coupon_Abandonment_Reminder_Email',
                 'wt_smart_coupon_signup_coupon_email' => 'WT_smart_Coupon_Signup_Coupon_Email',
                 'wt_smart_coupon_store_credit' => 'WT_smart_Coupon_Store_Credit_Email',
                 'wt_smart_coupon' => 'WT_smart_Coupon_Email',
@@ -1608,6 +1614,25 @@ if (!class_exists('RP_Decorator_Preview')) {
             );
             $statuses = apply_filters('wt_decorator_wt_supported_email_type_status', $statuses);
             return $statuses;
+        }
+
+
+        /**
+         * Woocomerce email preview style corrections
+         * @return void
+         */
+        public function wt_dec_style_for_woocommerce_email(){
+            global $hook_suffix;
+            if('woocommerce_page_wc-settings' === $hook_suffix){
+                ?>
+                    <style>
+                        .wc-settings-email-preview-container-floating{
+                            position: unset !important;
+                            left: 0px !important;
+                        }
+                    </style>
+                <?php
+            }
         }
 
     }

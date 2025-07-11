@@ -2618,14 +2618,17 @@ The following note has been added to your order:', 'decorator-woocommerce-email-
 
                                                                                         If you didn\'t make this request, just ignore this email. If you\'d like to proceed:', 'decorator-woocommerce-email-customizer'
                     ),'{customer_first_name}','{site_title}','{customer_username}'),
-                    'wt_smart_coupon_abandonment_coupon_email_body' => __(
-                            'Hi there,
-                                
-                                                                                        Did you forget something? You\'ve left behind some products in your cart. Grab them before they go out of stock at an additional discount of ${coupon_amount}. Hurry up!!
+                    'wt_smart_coupon_abandonment_coupon_email_body' => __( 'Hi {customer_first_name},
 
-                                                                                        If this was a mistake, just ignore this email and nothing will happen.
+We noticed you left some amazing items in your cart! They\'re still available—but not forever. Stock is running low, and we don\'t want you to miss out!
 
-                                                                                        To reset your password, visit the following address:', 'decorator-woocommerce-email-customizer'
+Grab them before they sell out!', 'decorator-woocommerce-email-customizer'
+                    ),
+                    'Wbte_Smart_Coupon_Abandonment_Reminder_Email_body' => __( 'Hi {customer_first_name},
+
+We noticed you left some amazing items in your cart! They\'re still available—but not forever. Stock is running low, and we don\'t want you to miss out!
+
+Grab them before they sell out!', 'decorator-woocommerce-email-customizer'
                     ),
                     'wt_smart_coupon_gift_body' => __(
                             'Hi there,

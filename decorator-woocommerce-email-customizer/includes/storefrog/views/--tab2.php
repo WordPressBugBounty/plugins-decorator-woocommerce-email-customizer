@@ -21,9 +21,8 @@ $show_warning = $this->show_warning ?? false;
 		<div class="wbte-sf-auth-denied-warning">
 			<img style="width: 24px;" src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/includes/storefrog/assets/images/warning.svg' ); ?>" alt="<?php esc_html_e( 'Warning', 'decorator-woocommerce-email-customizer' ); ?>">
 			<div class="wbte-sf-auth-denied-warning-content">
-				<p class="wbte-sf-auth-denied-warning-content-title"><?php esc_html_e( 'Authorization Denied', 'decorator-woocommerce-email-customizer' ); ?></p>
-				<span><?php esc_html_e( 'To proceed, please approve the access request on your WooCommerce store.', 'decorator-woocommerce-email-customizer' ); ?></span><br>
-				<span><?php printf( esc_html__( 'Click %s “Connect now” %s to return and complete the setup.', 'decorator-woocommerce-email-customizer' ), '<strong>', '</strong>' ); ?></span>
+				<p class="wbte-sf-auth-denied-warning-content-title"><?php esc_html_e( 'Access to your store is pending authorization', 'decorator-woocommerce-email-customizer' ); ?></p>
+				<span><?php esc_html_e( 'Some features may be limited until permission is granted.', 'decorator-woocommerce-email-customizer' ); ?> <a href="<?php echo esc_url( $auth_url ); ?>" class="wbte-sf-auth-link"><?php esc_html_e( 'Authorize access', 'decorator-woocommerce-email-customizer' ); ?></a></span>
 			</div>
 			<span class="wbte-sf-auth-denied-warning-close">×</span>
 		</div>

@@ -284,7 +284,7 @@ if (!class_exists('RP_Decorator_WC')) {
                     }
                     $body_text = str_replace('{invoice_pay_link}', $pay_link, $body_text);
                 }
-            } elseif (strstr($key, 'wt_smart_coupon')) {
+            } elseif ( 'wt_smart_coupon' === $key ) {
                 $body_text = get_option('rp_decorator_' . $key . '_body')?  get_option('rp_decorator_' . $key . '_body') : RP_Decorator_Settings::get_default_value('wt_smart_coupon_body');;
             } else {
                 $body_text = get_option('rp_decorator_' . $key . '_body') ?  get_option('rp_decorator_' . $key . '_body') : RP_Decorator_Settings::get_default_value($key.'_body');              

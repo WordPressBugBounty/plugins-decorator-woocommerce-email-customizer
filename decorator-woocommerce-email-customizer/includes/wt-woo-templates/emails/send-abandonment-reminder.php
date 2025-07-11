@@ -1,41 +1,28 @@
 <?php
 /**
- * Cart abandonment email template with coupon.
+ * Cart abandonment reminder email template (without coupon).
  *
- * @package    Wt_Smart_Coupon
+ * @package Wt_Smart_Coupon
+ * @since 2.0.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$coupon_data = Wt_Smart_Coupon_Public::get_coupon_meta_data( $coupon );
-if ( ! $coupon_data || ! is_array( $coupon_data ) ) {
-	$coupon_data = array(
-		'coupon_code'        => __( 'coupon-code', 'wt-smart-coupons-for-woocommerce-pro' ),
-		'coupon_amount'      => 10,
-		'coupon_description' => __( 'This is a sample coupon description', 'wt-smart-coupons-for-woocommerce-pro' ),
-		'coupon_type'        => __( 'Cart discount', 'wt-smart-coupons-for-woocommerce-pro' ),
-		'is_email_preview'   => true,
-	);
-	$coupon_code = $coupon_data['coupon_code'];
-} else {
-	$coupon_code = $coupon->get_code();
-}
-
 /**
  * Action hook to trigger before coupon email
  *
- * @since 1.0.0
+ * @since 2.0.7
  */
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
 /**
  * Action hook to execute the email body content
  *
- * @since 1.0.0
+ * @since 2.0.7
  */
-do_action( 'wt_decorator_email_body_content', $coupon, $sent_to_admin, $plain_text, $email );
+do_action( 'wt_decorator_email_body_content', $cart_data, $sent_to_admin, $plain_text, $email );
 ?>
 
 <?php
@@ -59,46 +46,28 @@ if ( ! empty( $cart_data['cart'] ) ) :
 				$_product = wc_get_product( $cart_item['product_id'] );
 
 				/**
-				 * Filter the cart item product.
+				 * Filter to alter the product object
 				 *
-				 * @since 1.0.0
-				 *
-				 * @param object $_product The cart item product.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @since 2.0.7
 				 */
 				$_product = apply_filters( 'woocommerce_cart_item_product', $_product, $cart_item, $cart_item_key );
-
 				/**
-				 * Filter the cart item product ID.
+				 * Filter to alter the product ID
 				 *
-				 * @since 1.0.0
-				 *
-				 * @param int $product_id The cart item product ID.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @since 2.0.7
 				 */
 				$product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
-
 				/**
-				 * Filter the cart item name.
+				 * Filter to alter the product name
 				 *
-				 * @since 1.0.0
-				 *
-				 * @param string $product_name The cart item name.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @since 2.0.7
 				 */
 				$product_name = apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key );
 
 				/**
-				 * Filter the cart item visibility.
+				 * Filter to alter the product visibility
 				 *
-				 * @since 1.0.0
-				 *
-				 * @param bool $visible Whether the cart item is visible.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @since 2.0.7
 				 */
 				if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) :
 					$unit_price  = $cart_item['line_subtotal'] / $cart_item['quantity'];
@@ -109,11 +78,9 @@ if ( ! empty( $cart_data['cart'] ) ) :
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
 							<?php
 							/**
-							 * Filter the cart item thumbnail.
+							 * Filter to alter the product thumbnail
 							 *
-							 * @since 1.0.0
-							 *
-							 * @param string $thumbnail The cart item thumbnail.
+							 * @since 2.0.7
 							 */
 							echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array( 80, 80 ) ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 							?>
@@ -160,43 +127,25 @@ if ( ! empty( $cart_data['cart'] ) ) :
 endif;
 ?>
 
-<div style="margin-top: 20px; text-align: center;">
-	<div style="display: inline-block;">
-		<?php
-		echo Wt_Smart_Coupon_Public::get_coupon_html( $coupon, $coupon_data, 'email_coupon' );
-		?>
-	</div>
-</div>
-
-<p style="margin-top: 16px;">
-	<?php
-	esc_html_e( 'Just enter the code at checkout & SAVE BIG! This deal won\'t last—complete your order before it\'s too late!', 'wt-smart-coupons-for-woocommerce-pro' );
-	?>
-</p>
-
 <div style="text-align: center; margin: 16px 0;">
 	<?php
 	$style = 'display: inline-block; background: #3175A6; border:none; border-radius: 4px; color:#fff; text-decoration:none; padding: 8px 12px; text-align:center; font-weight: 500; font-size: 14px; font-family: Inter, sans-serif;';
 	/**
-	 * Alter the cart abandonment email button style.
+	 * Filter to alter the abandonment reminder email button style
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $style The button style.
-	 * @param object $coupon The coupon object.
+	 * @since 2.0.7
 	 */
-	$style    = apply_filters( 'wt_sc_alter_abandonment_email_button_style', $style, $coupon );
-	$cart_url = add_query_arg( 'wt_coupon', $coupon_code, wc_get_cart_url() );
+	$style = apply_filters( 'wt_sc_alter_abandonment_reminder_email_button_style', $style );
 	?>
-	<a style="<?php echo esc_attr( $style ); ?>" href="<?php echo esc_url( $cart_url ); ?>">
-		<?php esc_html_e( 'Claim My Discount Now!', 'wt-smart-coupons-for-woocommerce-pro' ); ?>
+	<a style="<?php echo esc_attr( $style ); ?>" href="<?php echo esc_url( wc_get_cart_url() ); ?>">
+		<?php esc_html_e( 'Complete My Purchase', 'wt-smart-coupons-for-woocommerce-pro' ); ?>
 	</a>
 </div>
 
 <p>
 	<?php
 	printf(
-		// translators: %s: site name.
+		/* translators: %s: site name */
 		esc_html__( 'Thank you for choosing %s! We look forward to serving you again.', 'wt-smart-coupons-for-woocommerce-pro' ),
 		esc_html( get_bloginfo( 'name' ) )
 	);
@@ -205,7 +154,7 @@ endif;
 
 <p>
 	<?php
-	esc_html_e( 'If you\'ve already checked out or no longer want these items, you can ignore this email( but we hope you don\'t!).', 'wt-smart-coupons-for-woocommerce-pro' );
+	esc_html_e( "If you've already checked out or no longer want these items, you can ignore this email (but we hope you don't!).", 'wt-smart-coupons-for-woocommerce-pro' );
 	?>
 </p>
 
@@ -219,13 +168,11 @@ if ( $additional_content ) :
 	</p>
 	<?php
 endif;
-?>
 
-<?php
 /**
  * Action hook to trigger after coupon email
  *
- * @since 1.0.0
+ * @since 2.0.7
  */
 do_action( 'woocommerce_email_footer', $email );
 ?>
