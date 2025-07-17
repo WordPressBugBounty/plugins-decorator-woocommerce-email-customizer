@@ -1630,7 +1630,18 @@ if (!class_exists('RP_Decorator_Preview')) {
                             position: unset !important;
                             left: 0px !important;
                         }
+                        label[for="woocommerce_email_header_image_width"], label[for="woocommerce_email_header_alignment"], label[for="woocommerce_email_font_family"] {
+                            display: none !important;
+                        }
+                       .woocommerce_email_header_alignment, #woocommerce_email_header_image_width, .wc-settings-email-color-palette-header, .wc-settings-email-color-palette-separator, #woocommerce_email_font_family { display: none; }
                     </style>
+                    <script>
+                        jQuery(document).ready(function() {
+                            jQuery('#woocommerce_email_header_alignment').next('span').hide();
+                            jQuery('#woocommerce_email_font_family').next('span').hide();
+                            jQuery('.wc-settings-email-color-palette-header').next('.form-table').hide();
+                        });
+                    </script>
                 <?php
             }
         }

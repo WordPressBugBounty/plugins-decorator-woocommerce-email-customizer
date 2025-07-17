@@ -1,12 +1,12 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.0.7
+Version: 2.0.8
 Tags: email customizer, email marketing, popups, WooCommerce marketing, conversion
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,17 +93,17 @@ Include additional shortcodes like customer name, order details, company name, e
 The Email customizer by WebToffee is compatible with the following plugins:
 
 * [Subscriptions for WooCommerce](https://www.webtoffee.com/product/woocommerce-subscriptions/)
-* [Webtoffee Woocommerce Request a Quote](https://www.webtoffee.com/product/woocommerce-request-a-quote/)
+* [Webtoffee Woocommerce Request a Quote](https://www.webtoffee.com/product/woocommerce-request-a-quote/?utm_source=free_plugin_readme&utm_medium=decorator&utm_campaign=Request_Quote)
 * [Germanized for WooCommerce](https://wordpress.org/plugins/woocommerce-germanized/)
 * [WooCommerce Subscriptions](https://woocommerce.com/products/woocommerce-subscriptions/)
 * [Multivendor Marketplace Solution for WooCommerce – WC Marketplace](https://wordpress.org/plugins/dc-woocommerce-multi-vendor/)
 * [WooCommerce Memberships](https://woocommerce.com/products/woocommerce-memberships/)
-* [Smart Coupons for WooCommerce](https://www.webtoffee.com/product/smart-coupons-for-woocommerce/)
+* [Smart Coupons for WooCommerce](https://www.webtoffee.com/product/smart-coupons-for-woocommerce/?utm_source=free_plugin_readme&utm_medium=decorator&utm_campaign=smart_coupons)
 
 
 Get started and customize your WooCommerce emails now and stand out from the crowd! The detailed [setup guide](https://www.webtoffee.com/decorator-woocommerce-email-customizer-plugin-user-guide/) will help you get started with the plugin.
 
-To connect your WooCommerce store with the SAAS application, refer to this [guide.](https://www.webtoffee.com/setup-ecommerce-marketing-automation/)
+To connect your WooCommerce store with the [WooCommerce Marketing Automation](https://www.webtoffee.com/product/ecommerce-marketing-automation/?utm_source=free_plugin_readme&utm_medium=decorator&utm_campaign=EMA) app, refer to this [guide.](https://www.webtoffee.com/setup-ecommerce-marketing-automation/)
 
 If you have any issues with the plugin, feel free to contact us via [support forum](https://wordpress.org/support/plugin/decorator-woocommerce-email-customizer/).
 
@@ -114,7 +114,7 @@ GDPR Cookie Consent is our flagship cookie consent plugin, which is a Google-cer
 
 Key features include an advanced cookie scanner, automatic script blocking, and detailed consent log reporting. It also lets you deploy an IAB-compliant cookie banner and supports Google Consent Mode v2. 
 
-Get [GDPR Cookie Consent Plugin](https://www.webtoffee.com/product/gdpr-cookie-consent/) Now.
+Get [GDPR Cookie Consent Plugin](https://www.webtoffee.com/product/gdpr-cookie-consent/?utm_source=free_plugin_readme&utm_medium=decorator&utm_campaign=GDPR) Now.
 
 
 == Installation ==
@@ -196,9 +196,9 @@ Yes, you can add social links at the footer of the email.
 
 == Changelog ==
 
-= 2.0.7 - 2025-07-11 =
-* [Compatibility] - Tested OK with WC 9.9.5
-* [Enhancement] - API Changes
+= 2.0.8 - 2025-07-17 =
+* [Compatibility] - Tested OK with WC 10.0.2
+* [Compatibility] - Tested OK with WP 6.8.2
 
 = 2.0.6 - 2025-06-23 =
 * [Compatibility] - Tested OK with WP 6.8.1
@@ -320,6 +320,6 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 2.0.7 =
-* [Compatibility] - Tested OK with WC 9.9.5
-* [Enhancement] - API Changes
+= 2.0.8 =
+* [Compatibility] - Tested OK with WC 10.0.2
+* [Compatibility] - Tested OK with WP 6.8.2

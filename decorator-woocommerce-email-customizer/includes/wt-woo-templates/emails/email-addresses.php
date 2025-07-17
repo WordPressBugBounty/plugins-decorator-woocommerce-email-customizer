@@ -60,7 +60,7 @@ $shipping   = $order->get_formatted_shipping_address();
                 </div>
 		</td>
 		<?php if ( ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() && $shipping ) : ?>
-                     <?php if ( defined('WC_VERSION') && (WC_VERSION >= 5.6) ) : ?>
+                     <?php if ( defined('WC_VERSION') && (version_compare(WC_VERSION, '5.6','>=') ) ) : ?>
 			<td id="wt_shipping_addresses_wrapper" style="text-align:<?php echo esc_attr( $text_align ); ?>; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; padding:0;" valign="top">
                             <div id="wt_shipping_address_wrap">
                                 <h2 id="wt_shipping_address"><?php echo wp_kses_post($shipping_address_subtitle); ?></h2>
