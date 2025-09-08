@@ -144,6 +144,9 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 
 			// Register REST API routes.
 			add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+			
+			// Add footer script for Storefrog data object initialization.
+			add_action( 'wp_footer', array( $this, 'add_storefrog_footer_script' ), 99 );
 		}
 
 		/**
@@ -240,9 +243,24 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			/**
 			 *  Add menu pages.
 			 */
-			add_menu_page( __( 'WebToffee Marketing', 'decorator-woocommerce-email-customizer' ), __( 'WebToffee Marketing', 'decorator-woocommerce-email-customizer' ), $allow_role, 'wbte-decorator-connector', array( $this, 'render_admin_page' ), 'dashicons-minus', 56 );
+			add_menu_page( __( 'WebToffee Marketing', 'decorator-woocommerce-email-customizer' ), __( 'WebToffee Marketing', 'decorator-woocommerce-email-customizer' ), $allow_role, 'wbte-decorator-connector', array( $this, 'render_admin_page' ), $this->get_menu_icon(), 56 );
 			add_submenu_page( 'wbte-decorator-connector', __( 'Connector', 'decorator-woocommerce-email-customizer' ), __( 'Connector', 'decorator-woocommerce-email-customizer' ), $allow_role, 'wbte-decorator-connector', array( $this, 'render_admin_page' ) );
 			add_submenu_page( 'wbte-decorator-connector', __( 'Email editor', 'decorator-woocommerce-email-customizer' ), __( 'Email editor', 'decorator-woocommerce-email-customizer' ), $allow_role, 'decorator-woocommerce-email-customizer' );
+		}
+
+		/**
+		 * Get menu icon URL.
+		 *
+		 * @return string Data URI for the menu icon SVG.
+		 */
+		private function get_menu_icon() {
+			$svg = '<svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M25.673 21.5837C25.673 21.974 25.3662 22.2941 24.9919 22.2941H20.2436C19.8693 22.2941 19.5625 21.974 19.5625 21.5837V16.6308C19.5625 16.2404 19.8693 15.9204 20.2436 15.9204H24.9919C25.3662 15.9204 25.673 16.2404 25.673 16.6308V21.5837Z" fill="#9DA1A6"/>
+					<path d="M31.8566 15.3395C31.8566 15.7299 31.5498 16.0499 31.1755 16.0499H26.4272C26.0529 16.0499 25.7461 15.7299 25.7461 15.3395V10.3867C25.7461 9.9963 26.0529 9.67627 26.4272 9.67627H31.1755C31.5498 9.67627 31.8566 9.9963 31.8566 10.3867V15.3395Z" fill="#9DA1A6"/>
+					<path d="M13.4738 21.5837C13.4738 21.9741 13.167 22.2941 12.7927 22.2941H8.04435C7.6701 22.2941 7.36328 21.9741 7.36328 21.5837V16.6308C7.36328 16.2404 7.6701 15.9204 8.04435 15.9204H12.7927C13.167 15.9204 13.4738 16.2404 13.4738 16.6308V21.5837Z" fill="#9DA1A6"/>
+					<path d="M7.2941 15.3405C7.2941 15.7309 6.98728 16.0509 6.61303 16.0509H1.86466C1.49041 16.0509 1.18359 15.7321 1.18359 15.3405V10.3876C1.18359 9.99728 1.49041 9.67725 1.86466 9.67725H6.61303C6.98728 9.67725 7.2941 9.99728 7.2941 10.3876V15.3405Z" fill="#9DA1A6"/>
+					</svg>';		
+			return 'data:image/svg+xml;base64,' . base64_encode( $svg );
 		}
 
 		/**
@@ -523,11 +541,13 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		private function get_data_object() {
 
-			$load_cart_data = true;
+			$load_cart_data = false;
 			if (wp_doing_ajax()) {
 				$load_cart_data = true;
 			}
 			$load_cart_data = apply_filters('wt_ema_load_cart_html_table_data', $load_cart_data);
+
+			$last_added_product_id = $this->get_last_added_product_id();
 
 
 			// Prepare cart data.
@@ -543,6 +563,9 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'isLoggedIn' => is_user_logged_in(),
 					'email'      => is_user_logged_in() ? wp_get_current_user()->user_email : '',
 					'orders'     => is_user_logged_in() ? wc_get_customer_order_count(get_current_user_id()) : 0,
+					'last_added_product_id' => isset( $last_added_product_id['variation_id'] ) ? $last_added_product_id['variation_id'] : 0,
+					'last_added_product_id_parent' => isset( $last_added_product_id['product_id'] ) ? $last_added_product_id['product_id'] : 0,
+					'last_added_product_category' => $this->get_last_added_product_category(),
 				),
 				'page' => array(
 					'page_type'  => 'generic',
@@ -869,7 +892,101 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		public function get_warning_status() {
 			return get_option( $this->show_warning_option, false );
 		}
+
+		/**
+		 *  Get last added product ID safely.
+		 *  Works for both logged-in and guest users.
+		 *  Returns variation ID if product is a variation, otherwise product ID.
+		 * 
+		 *  @since 2.0.9
+		 *  @return int Product ID or variation ID or 0 if not available.
+		 */
+		private function get_last_added_product_id() {
+			// Check if WooCommerce and cart are available
+			if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+				return 0;
+			}
+
+			// Try to get the last added product ID using different methods
+			$cart_items = WC()->cart->get_cart();
+			
+			if ( empty( $cart_items ) ) {
+				return 0;
+			}
+
+			// Get the last item added to cart (most recent)
+			$last_item = end( $cart_items );
+			
+			if ( isset( $last_item['product_id'] ) ) {
+				// If it's a variation, return variation ID, otherwise return product ID
+				if ( isset( $last_item['variation_id'] ) && $last_item['variation_id'] > 0 ) {
+					return array( 'variation_id' => $last_item['variation_id'], 'product_id' => $last_item['product_id'] );
+				} else {
+					return array( 'variation_id' => $last_item['product_id'],'product_id' => $last_item['product_id'] );
+				}
+			}
+
+			return 0;
+		}
+
+		/**
+		 *  Get last added product category.
+		 * 
+		 *  @since 2.0.9
+		 *  @return string Comma-separated product categories or empty string if not available.
+		 */
 		
+		private function get_last_added_product_category() {
+			$product_id = $this->get_last_added_product_id();
+			$last_added_product_id = isset( $product_id['product_id'] ) ? $product_id['product_id'] : 0;
+			if ( $last_added_product_id ) {
+				// Check if WooCommerce and cart are available
+				if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+					return '';
+				}
+
+				$cart_items = WC()->cart->get_cart();
+				if ( empty( $cart_items ) ) {
+					return '';
+				}
+
+				// Get the last item added to cart (most recent)
+				$last_item = end( $cart_items );
+				
+				// if variation, get the parent product category
+				if ( isset( $last_item['variation_id'] ) && $last_item['variation_id'] > 0 ) {
+					$categories = wp_get_post_terms( $last_item['product_id'], 'product_cat', array( 'fields' => 'slugs' ) );
+				} else {
+					$categories = wp_get_post_terms( $last_added_product_id, 'product_cat', array( 'fields' => 'slugs' ) );
+				}
+				
+				// Convert array to comma-separated string
+				return is_array( $categories ) ? implode( ',', $categories ) : '';
+			}
+			return '';
+		}
+
+		/**
+		 *  Add footer script for Storefrog data object initialization.
+		 *  Calls getStorefrogDataObject() function when jQuery is ready.
+		 * 
+		 *  @since 2.0.9
+		 */
+		public function add_storefrog_footer_script() {
+			if ( $this->is_connected() ) {
+				?>
+				<script>
+					if (typeof jQuery !== 'undefined') {
+						jQuery(document).ready(function() {
+							if (typeof getStorefrogDataObject === 'function') {
+								getStorefrogDataObject(true);
+							}
+						});
+					}
+				</script>
+				<?php
+			}
+		}
 	}
 
 

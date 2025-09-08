@@ -4,6 +4,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 /**
  * Customizer Settings
@@ -2538,6 +2539,7 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'shipping_address_subtitle' => __('Shipping address', 'decorator-woocommerce-email-customizer'),
                     'new_order_heading' => __('New order', 'decorator-woocommerce-email-customizer'),
                     'cancelled_order_heading' => __('Cancelled order', 'decorator-woocommerce-email-customizer'),
+                    'customer_cancelled_order_heading' => sprintf(__('Order Cancelled: %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     'customer_processing_order_heading' => __('Thank you for your order', 'decorator-woocommerce-email-customizer'),
                     'new_order_additional_content' => __('Congratulations on the sale!', 'decorator-woocommerce-email-customizer'),
                     'customer_processing_order_additional_content' => sprintf(__('Thanks for using %s!', 'decorator-woocommerce-email-customizer'),'{site_address}'),
@@ -2553,6 +2555,7 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'customer_invoice_heading' => sprintf(__('Invoice for order %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     'customer_invoice_heading_paid' => __('Your order details', 'decorator-woocommerce-email-customizer'),
                     'failed_order_heading' => __('Failed order', 'decorator-woocommerce-email-customizer'),
+                    'customer_failed_order_heading' => __('Sorry, your order was unsuccessful', 'decorator-woocommerce-email-customizer'),
                     'customer_new_account_heading' => sprintf(__('Welcome to %s', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     'customer_note_heading' => __('A note has been added to your order', 'decorator-woocommerce-email-customizer'),
                     'customer_reset_password_heading' => __('Password reset instructions', 'decorator-woocommerce-email-customizer'),
@@ -2560,6 +2563,7 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'body_text_enable_switch' => true,
                     'new_order_subject' => sprintf(__('[%s] New order (%s) - %s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}','{order_date}'),
                     'cancelled_order_subject' => sprintf(__('[%s] Cancelled order (%s)', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'customer_cancelled_order_subject' => sprintf(__('[%s]: Your order #%s has been cancelled', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
                     'customer_processing_order_subject' => sprintf(__('Your %s order receipt from %s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
                     'customer_completed_order_subject' => sprintf(__('Your %s order from %s is complete', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
                     'customer_refunded_order_subject_full' => sprintf(__('Your %s order from %s has been refunded', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
@@ -2568,11 +2572,13 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'customer_invoice_subject' => sprintf(__('Invoice for order %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     'customer_invoice_subject_paid' => sprintf(__('Your %s order from %s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
                     'failed_order_subject' => sprintf(__('[%s] Failed order (%s)', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'customer_failed_order_subject' => sprintf(__('Your order at %s was unsuccessful', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     'customer_new_account_subject' => sprintf(__('Your account on %s', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     'customer_note_subject' => sprintf(__('Note added to your %s order from %s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
                     'customer_reset_password_subject' => sprintf(__('Password reset for %s', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     'new_order_body' => sprintf(__('You’ve received the following order from %s:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),
                     'cancelled_order_body' => sprintf(__('Notification to let you know &mdash; order %s belonging to %s has been cancelled:', 'decorator-woocommerce-email-customizer'),'#{order_number}','{customer_full_name}'),
+                    'customer_cancelled_order_body' => sprintf(__('We’re sorry to let you know that your order #%s has been cancelled.', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     'customer_processing_order_body' => sprintf(__('Hi %s,
                         
 Just to let you know &mdash; we\'ve received your order %s, and it is now being processed:', 'decorator-woocommerce-email-customizer'),'{customer_first_name}','#{order_number}'),
@@ -2602,6 +2608,7 @@ An order has been created for you on %s. Your invoice is below:', 'decorator-woo
                     'order_items_image_size' => '50x50',
                     'order_items_sku' => 'normal',
                     'failed_order_body' => sprintf(__('Payment for order %s from %s has failed. The order was as follows:', 'decorator-woocommerce-email-customizer'),'#{order_number}','{customer_full_name}'),
+                    'customer_failed_order_body' => sprintf(__("Hi %s,%s Unfortunately, we couldn't complete your order due to an issue with your payment method.%s If you'd like to continue with your purchase, please return to %s and try a different method of payment. %s Your order details are as follows: ", 'decorator-woocommerce-email-customizer'),'{customer_first_name}','<br><br>','<br><br>', '{site_title}','<br><br>'),
                     'customer_new_account_btn_switch' => false,
                     'customer_new_account_account_section' => true,
                     'customer_new_account_body' => sprintf(__('Hi %s,
@@ -2673,6 +2680,11 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                     'WC_Memberships_User_Membership_Renewal_Reminder_Email_subject' => sprintf(__('Renew your %s membership!', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     'customer_delivered_order_heading' => __('Thanks for shopping with us', 'decorator-woocommerce-email-customizer'),
                 );
+                $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+                if($email_improvements_enabled){
+                    self::$default_values['customer_cancelled_order_body'] = sprintf(__('We’re getting in touch to let you know that your order #%s has been cancelled.', 'decorator-woocommerce-email-customizer'),'{order_number}' );
+                }
+                
             }
 
             // Return default values

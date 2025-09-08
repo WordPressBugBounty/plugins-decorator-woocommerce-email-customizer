@@ -1,12 +1,12 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.0.8
+Version: 2.0.9
 Tags: email customizer, email marketing, popups, WooCommerce marketing, conversion
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 2.0.8
+Stable tag: 2.0.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -196,9 +196,8 @@ Yes, you can add social links at the footer of the email.
 
 == Changelog ==
 
-= 2.0.8 - 2025-07-17 =
-* [Compatibility] - Tested OK with WC 10.0.2
-* [Compatibility] - Tested OK with WP 6.8.2
+= 2.0.9 - 2025-09-08 =
+* [Compatibility] - Tested OK with WC 10.1.2
 
 = 2.0.6 - 2025-06-23 =
 * [Compatibility] - Tested OK with WP 6.8.1
@@ -320,6 +319,5 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 2.0.8 =
-* [Compatibility] - Tested OK with WC 10.0.2
-* [Compatibility] - Tested OK with WP 6.8.2
+= 2.0.9 =
+* [Compatibility] - Tested OK with WC 10.1.2

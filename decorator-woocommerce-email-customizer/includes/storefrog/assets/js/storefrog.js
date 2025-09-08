@@ -18,7 +18,7 @@ var wbteSfDataObject = {
 };
 
 /* Fetch data object via ajax. And update it to  */
-function getStorefrogDataObject() {
+function getStorefrogDataObject( forceLoadTable = false ) {
 	jQuery.ajax(
 		{
 			url: wbte_sf_script_params.home_url + '/?wc-ajax=get_storefrog_data_object&nonce=' + wbte_sf_script_params.nonce,
@@ -27,7 +27,7 @@ function getStorefrogDataObject() {
 			success:function (data) {
 				if (data.success) {
 					wbteSfDataObject = data.data;
-					wbteSfDataObjectUpdate();
+					wbteSfDataObjectUpdate(forceLoadTable);
 				}
 			}
 		}
@@ -35,9 +35,16 @@ function getStorefrogDataObject() {
 }
 
 /* Populate the cart updates to global object */
-function wbteSfDataObjectUpdate() {
-	/* Create a deep copy of the original object. */
-	let tempObj = JSON.parse( JSON.stringify( wbteSfDataObject ) );
+function wbteSfDataObjectUpdate(forceLoadTable = false) {
+
+	let tempObj = null;
+	if (forceLoadTable) {
+		tempObj = window.storefrogDataObject;
+		tempObj.cart.table = wbteSfDataObject.cart.table;
+	}else{
+		/* Create a deep copy of the original object. */
+		 tempObj = JSON.parse(JSON.stringify(wbteSfDataObject));
+	}
 
 	/* Clear the array keys. */
 	tempObj.cart.items = Object.values( tempObj.cart.items );

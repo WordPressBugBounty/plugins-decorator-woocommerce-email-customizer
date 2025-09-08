@@ -20,6 +20,8 @@ if (!class_exists('RP_Decorator_Preview')) {
         public static $email_classes = array(
             'WC_Email_New_Order' => 'processing',
             'WC_Email_Cancelled_Order' => 'cancelled',
+            'WC_Email_Customer_Cancelled_Order' => 'cancelled',
+            'WC_Email_Customer_Failed_Order' => 'failed',
             'WC_Email_Failed_Order' => 'failed',
             'WC_Email_Customer_On_Hold_Order' => 'on-hold',
             'WC_Email_Customer_Processing_Order' => 'processing',
@@ -476,13 +478,15 @@ if (!class_exists('RP_Decorator_Preview')) {
             if (is_null(self::$email_types)) {
                 $types = array(
                     'new_order' => __('New order', 'decorator-woocommerce-email-customizer'),
-                    'cancelled_order' => __('Cancelled order', 'decorator-woocommerce-email-customizer'),
+                    'cancelled_order' => __('Admin Cancelled order', 'decorator-woocommerce-email-customizer'),
+                    'customer_cancelled_order' => __('Customer Cancelled order', 'decorator-woocommerce-email-customizer'),
                     'customer_processing_order' => __('Customer processing order', 'decorator-woocommerce-email-customizer'),
                     'customer_completed_order' => __('Customer completed order', 'decorator-woocommerce-email-customizer'),
                     'customer_refunded_order' => __('Customer refunded order', 'decorator-woocommerce-email-customizer'),
                     'customer_on_hold_order' => __('Customer on hold order', 'decorator-woocommerce-email-customizer'),
                     'customer_invoice' => __('Customer invoice', 'decorator-woocommerce-email-customizer'),
-                    'failed_order' => __('Failed order', 'decorator-woocommerce-email-customizer'),
+                    'customer_failed_order' => __('Customer Failed order', 'decorator-woocommerce-email-customizer'),
+                    'failed_order' => __('Admin Failed order', 'decorator-woocommerce-email-customizer'),
                     'customer_new_account' => __('Customer new account', 'decorator-woocommerce-email-customizer'),
                     'customer_note' => __('Customer note', 'decorator-woocommerce-email-customizer'),
                     'customer_reset_password' => __('Customer reset password', 'decorator-woocommerce-email-customizer'),
@@ -611,12 +615,14 @@ if (!class_exists('RP_Decorator_Preview')) {
             $types = array(
                 'new_order' => __('New Order', 'decorator-woocommerce-email-customizer'),
                 'cancelled_order' => __('Cancelled Order', 'decorator-woocommerce-email-customizer'),
+                'customer_cancelled_order' => __('Customer Cancelled Order', 'decorator-woocommerce-email-customizer'),
                 'customer_processing_order' => __('Customer Processing Order', 'decorator-woocommerce-email-customizer'),
                 'customer_completed_order' => __('Customer Completed Order', 'decorator-woocommerce-email-customizer'),
                 'customer_refunded_order' => __('Customer Refunded Order', 'decorator-woocommerce-email-customizer'),
                 'customer_on_hold_order' => __('Customer On Hold Order', 'decorator-woocommerce-email-customizer'),
                 'customer_invoice' => __('Customer Invoice', 'decorator-woocommerce-email-customizer'),
                 'failed_order' => __('Failed Order', 'decorator-woocommerce-email-customizer'),
+                'customer_failed_order' => __('Customer Failed Order', 'decorator-woocommerce-email-customizer'),
                 'customer_new_account' => __('Customer New Account', 'decorator-woocommerce-email-customizer'),
                 'customer_note' => __('Customer Note', 'decorator-woocommerce-email-customizer'),
                 'customer_reset_password' => __('Customer Reset Password', 'decorator-woocommerce-email-customizer'),
@@ -1450,7 +1456,7 @@ if (!class_exists('RP_Decorator_Preview')) {
         /**
          * wt_supported_email_classes
          * @access public
-         * @return arrray
+         * @return array
          * 
          * @since 1.2.5   Webtoffee Quote plugin and Webtoffee Subscription compatibility
          */
@@ -1458,11 +1464,13 @@ if (!class_exists('RP_Decorator_Preview')) {
             $classes = array(
                 'new_order' => 'WC_Email_New_Order',
                 'cancelled_order' => 'WC_Email_Cancelled_Order',
+                'customer_cancelled_order' => 'WC_Email_Customer_Cancelled_Order',
                 'customer_processing_order' => 'WC_Email_Customer_Processing_Order',
                 'customer_completed_order' => 'WC_Email_Customer_Completed_Order',
                 'customer_refunded_order' => 'WC_Email_Customer_Refunded_Order',
                 'customer_on_hold_order' => 'WC_Email_Customer_On_Hold_Order',
                 'customer_invoice' => 'WC_Email_Customer_Invoice',
+                'customer_failed_order' => 'WC_Email_Customer_Failed_Order',
                 'failed_order' => 'WC_Email_Failed_Order',
                 'customer_new_account' => 'WC_Email_Customer_New_Account',
                 'customer_note' => 'WC_Email_Customer_Note',
