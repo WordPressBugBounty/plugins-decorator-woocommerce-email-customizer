@@ -25,20 +25,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$currency_symbol = get_woocommerce_currency_symbol();
 
 
-	$coupons = $credit_email_args['coupon_id'] ?? 0;
+	$coupons = isset( $credit_email_args['coupon_id'] ) ? $credit_email_args['coupon_id'] : 0;
 	$coupons = maybe_unserialize( $coupons );
-	$from    = $credit_email_args['from_name'] ?? '';
+	$from    = isset( $credit_email_args['from_name'] ) ? $credit_email_args['from_name'] : '';
 if ( '' === $from ) {
 	$from = get_bloginfo( 'name' );
 }
-	$template = $credit_email_args['template'] ?? 'general';
+	$template = isset( $credit_email_args['template'] ) ? $credit_email_args['template'] : 'general';
 
 	$store_credit_templates = Wt_Smart_Coupon_Customisable_Gift_Card::get_template_image( $template );
 
 	/* custom caption */
-	$caption = $credit_email_args['caption'] ?? Wt_Smart_Coupon_Store_Credit::get_gift_card_caption( $template );
+	$caption = isset( $credit_email_args['caption'] ) ? $credit_email_args['caption'] : Wt_Smart_Coupon_Store_Credit::get_gift_card_caption( $template );
 
-	$coupon_message = $credit_email_args['message'] ?? Wt_Smart_Coupon_Store_Credit::get_gift_card_message( $template );
+	$coupon_message = isset( $credit_email_args['message'] ) ? $credit_email_args['message'] : Wt_Smart_Coupon_Store_Credit::get_gift_card_message( $template );
 
 	$top_background    = $store_credit_templates['top_bg_color'];
 	$bottom_background = $store_credit_templates['bottom_bg_color'];
@@ -108,7 +108,7 @@ if ( ! $coupon_title ) {
 				<tr>
 					<td class="coupon-message" style="text-align:left; padding:20px;"><?php echo esc_html( $coupon_message ); ?></td>
 					<?php if ( $from ) { ?>
-						<td class="coupon-from" style="text-align:right; padding:20px;"><?php esc_html_e( 'FROM:', 'wt-smart-coupons-for-woocommerce-pro' ); ?> <span><?php echo esc_html( $from ); ?></span></td>
+						<td class="coupon-from" style="text-align:right; padding:20px;"><?php esc_html_e( 'FROM:', 'decorator-woocommerce-email-customizer' ); ?> <span><?php echo esc_html( $from ); ?></span></td>
 					<?php } ?>
 				</tr>
 			</table>

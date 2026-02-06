@@ -12,10 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 $coupon_data = Wt_Smart_Coupon_Public::get_coupon_meta_data( $coupon );
 if ( ! $coupon_data || ! is_array( $coupon_data ) ) {
 	$coupon_data = array(
-		'coupon_code'        => __( 'coupon-code', 'wt-smart-coupons-for-woocommerce-pro' ),
+		'coupon_code'        => __( 'coupon-code', 'decorator-woocommerce-email-customizer' ),
 		'coupon_amount'      => 10,
-		'coupon_description' => __( 'This is a sample coupon description', 'wt-smart-coupons-for-woocommerce-pro' ),
-		'coupon_type'        => __( 'Cart discount', 'wt-smart-coupons-for-woocommerce-pro' ),
+		'coupon_description' => __( 'This is a sample coupon description', 'decorator-woocommerce-email-customizer' ),
+		'coupon_type'        => __( 'Cart discount', 'decorator-woocommerce-email-customizer' ),
 		'is_email_preview'   => true,
 	);
 	$coupon_code = $coupon_data['coupon_code'];
@@ -44,11 +44,11 @@ if ( ! empty( $cart_data['cart'] ) ) :
 	<table cellspacing="0" style="width: 100%; border: 1px solid #e5e5e5; font-size: 13px;">
 		<thead>
 			<tr style="background-color: #f8f8f8">
-				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Image', 'wt-smart-coupons-for-woocommerce-pro' ); ?></th>
-				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Product', 'wt-smart-coupons-for-woocommerce-pro' ); ?></th>
-				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Price', 'wt-smart-coupons-for-woocommerce-pro' ); ?></th>
-				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Quantity', 'wt-smart-coupons-for-woocommerce-pro' ); ?></th>
-				<th style="text-align: right; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Subtotal', 'wt-smart-coupons-for-woocommerce-pro' ); ?></th>
+				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Image', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Product', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Price', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th style="text-align: left; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Quantity', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th style="text-align: right; border-bottom: 1px solid #e5e5e5; padding: 12px;"><?php esc_html_e( 'Subtotal', 'decorator-woocommerce-email-customizer' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -143,9 +143,9 @@ if ( ! empty( $cart_data['cart'] ) ) :
 					<strong>
 					<?php
 					if ( $tax_total > 0 ) {
-						esc_html_e( 'Total (including tax):', 'wt-smart-coupons-for-woocommerce-pro' );
+						esc_html_e( 'Total (including tax):', 'decorator-woocommerce-email-customizer' );
 					} else {
-						esc_html_e( 'Total:', 'wt-smart-coupons-for-woocommerce-pro' );
+						esc_html_e( 'Total:', 'decorator-woocommerce-email-customizer' );
 					}
 					?>
 					</strong>
@@ -163,20 +163,20 @@ endif;
 <div style="margin-top: 20px; text-align: center;">
 	<div style="display: inline-block;">
 		<?php
-		echo Wt_Smart_Coupon_Public::get_coupon_html( $coupon, $coupon_data, 'email_coupon' );
+		echo Wt_Smart_Coupon_Public::get_coupon_html( $coupon, $coupon_data, 'email_coupon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 	</div>
 </div>
 
 <p style="margin-top: 16px;">
 	<?php
-	esc_html_e( 'Just enter the code at checkout & SAVE BIG! This deal won\'t last—complete your order before it\'s too late!', 'wt-smart-coupons-for-woocommerce-pro' );
+	esc_html_e( 'Just enter the code at checkout & SAVE BIG! This deal won\'t last—complete your order before it\'s too late!', 'decorator-woocommerce-email-customizer' );
 	?>
 </p>
 
-<div style="text-align: center; margin: 16px 0;">
+<div style="margin: 16px 0;" class="wbte_decorator_button_container">
 	<?php
-	$style = 'display: inline-block; background: #3175A6; border:none; border-radius: 4px; color:#fff; text-decoration:none; padding: 8px 12px; text-align:center; font-weight: 500; font-size: 14px; font-family: Inter, sans-serif;';
+	$style = 'display: inline-block; background: #3175A6; border-radius: 4px; color:#ffffff; text-decoration:none; padding: 8px 12px; text-align:center; font-weight: 500; font-size: 14px; font-family: Inter, sans-serif; border: 0px solid #3175A6';
 	/**
 	 * Alter the cart abandonment email button style.
 	 *
@@ -188,16 +188,19 @@ endif;
 	$style    = apply_filters( 'wt_sc_alter_abandonment_email_button_style', $style, $coupon );
 	$cart_url = add_query_arg( 'wt_coupon', $coupon_code, wc_get_cart_url() );
 	?>
-	<a style="<?php echo esc_attr( $style ); ?>" href="<?php echo esc_url( $cart_url ); ?>">
-		<?php esc_html_e( 'Claim My Discount Now!', 'wt-smart-coupons-for-woocommerce-pro' ); ?>
-	</a>
+	<span>
+		<a href="<?php echo esc_url( $cart_url ); ?>">
+			<button type="button" class="button" style="<?php echo esc_attr( $style ); ?>"><?php esc_html_e( 'Claim My Discount Now!', 'decorator-woocommerce-email-customizer' ); ?></button>
+		</a>
+	</span>
+	
 </div>
 
 <p>
 	<?php
 	printf(
 		// translators: %s: site name.
-		esc_html__( 'Thank you for choosing %s! We look forward to serving you again.', 'wt-smart-coupons-for-woocommerce-pro' ),
+		esc_html__( 'Thank you for choosing %s! We look forward to serving you again.', 'decorator-woocommerce-email-customizer' ),
 		esc_html( get_bloginfo( 'name' ) )
 	);
 	?>
@@ -205,7 +208,7 @@ endif;
 
 <p>
 	<?php
-	esc_html_e( 'If you\'ve already checked out or no longer want these items, you can ignore this email( but we hope you don\'t!).', 'wt-smart-coupons-for-woocommerce-pro' );
+	esc_html_e( 'If you\'ve already checked out or no longer want these items, you can ignore this email( but we hope you don\'t!).', 'decorator-woocommerce-email-customizer' );
 	?>
 </p>
 

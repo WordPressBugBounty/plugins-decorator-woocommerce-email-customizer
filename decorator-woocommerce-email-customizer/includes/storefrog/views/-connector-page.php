@@ -11,11 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( 'tab1' === $tab ) {
-	include plugin_dir_path( __FILE__ ) . '--tab1.php';
-} else {
-	include plugin_dir_path( __FILE__ ) . '--tab2.php';
-}
+include plugin_dir_path(__FILE__) . '--tab2.php';
+
 ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,5 +29,5 @@ if ( 'tab1' === $tab ) {
 	text-align: center;
 	margin-bottom:2rem;
 }
-.wbte-sf-header h1{ font-size:26px; font-weight:700; color:#2d2d2d; }
+.wbte-sf-header h1{ font-size:28px; font-weight:700; color:#2d2d2d; }
 </style>

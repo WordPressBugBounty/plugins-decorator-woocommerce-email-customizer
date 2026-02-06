@@ -50,7 +50,7 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
 <html <?php language_attributes(); ?>>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
-        <title><?php echo get_bloginfo('name', 'display'); ?></title>
+        <title><?php echo esc_html( get_bloginfo('name', 'display') ); ?></title>
     </head>
     <body <?php echo is_rtl() ? 'rightmargin' : 'leftmargin'; ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
         <div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
@@ -65,7 +65,7 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
                                 if (isset($image_link_btn) && $image_link_btn) {
                                     echo '<a href="' . esc_url(get_home_url()) . '" target="_blank" style="display:inline-block;text-decoration: none;">';
                                 }
-                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . get_bloginfo('name', 'display') . '" />';
+                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
                                 if (isset($image_link_btn) && $image_link_btn) {
                                     echo '</a>';
                                 }
@@ -88,7 +88,7 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
                                 if (isset($image_link_btn) && $image_link_btn) {
                                     echo '<a href="' . esc_url(get_home_url()) . '" target="_blank" style="display:inline-block;text-decoration: none;">';
                                 }
-                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . get_bloginfo('name', 'display') . '" />';
+                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
                                 if (isset($image_link_btn) && $image_link_btn) {
                                     echo '</a>';
                                 }
@@ -116,7 +116,7 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
                                                     <?php if ('above' === $subtitle_placement && !empty($email_subtitle)) { ?>
                                                         <div class="subtitle" style="padding-bottom: 10px;margin-left: 0px;padding-right: 0px"><?php echo wp_kses_post($email_subtitle); ?></div>
                                                     <?php } ?>
-                                                    <h1><?php echo $email_heading; ?></h1>
+                                                    <h1><?php echo esc_html( $email_heading ); ?></h1>
                                                     <?php if ('below' === $subtitle_placement && !empty($email_subtitle)) { ?>
                                                         <div class="subtitle" style="padding-top: 10px;padding-left: 0px;padding-right: 0px"><?php echo wp_kses_post($email_subtitle); ?></div>
                                                     <?php } ?>

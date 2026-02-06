@@ -127,6 +127,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 			add_action( 'init', array( $this, 'save_tokens' ) );
 			add_action( 'wp_ajax_wbte_sf_disconnect', array( $this, 'disconnect_storefrog' ) );
+			add_action( 'wp_ajax_wbte_sf_set_first_time_connect', array( $this, 'set_first_time_connect' ) );
 
 			// Enqueue scripts to frontend.
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -147,7 +148,11 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			
 			// Add footer script for Storefrog data object initialization.
 			add_action( 'wp_footer', array( $this, 'add_storefrog_footer_script' ), 99 );
-		}
+
+			// Add back in stock notification.
+			add_action( 'woocommerce_single_product_summary', array( $this, 'ema_single_page_back_in_stock_notification' ), 21 );
+			add_action( 'wp_footer', array( $this, 'ema_single_page_variation_script' ), 100 );
+	}
 
 		/**
 		 *  Register WordPress settings.
@@ -196,7 +201,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			
 			// For WooCommerce REST API authentication, allow access if Basic auth is present
 			// WooCommerce will handle the authentication validation
-			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ) ) : '';
 			if ( ! empty( $auth_header ) && strpos( $auth_header, 'Basic ' ) === 0 ) {
 				return true;
 			}
@@ -336,6 +341,12 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 */
 		private function get_auth_url() {
 			$nonce = wp_create_nonce( $this->nonce_action );
+			$first_time = get_option('wt_ema_first_time_connect', false);
+			$from_app = get_option('wt_ema_from_app', false);
+			if( version_compare(RP_DECORATOR_VERSION, '2.1.5', '>=') && $from_app === false && $first_time === false ){
+				return $this->storefrog_url . 'oauth?session_type=oauth&platform=woocommerce&_wpnonce=' . $nonce . '&redirect_uri=' . home_url() . '&utm_source=free_plugin_signup&utm_medium=connect_now_btn&utm_campaign=EMA';
+			}
+			
 			return $this->storefrog_url . 'oauth?session_type=oauth&platform=woocommerce&_wpnonce=' . $nonce . '&redirect_uri=' . home_url();
 		}
 
@@ -511,6 +522,18 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		}
 
 		/**
+		 *  Set first time connect flag when Connect Now button is clicked.
+		 */
+		public function set_first_time_connect() {
+			if ( isset( $_POST['nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wbte_sf_set_first_time_connect' ) && version_compare(RP_DECORATOR_VERSION, '2.1.5', '>=') ) {
+				update_option('wt_ema_first_time_connect', true);
+				wp_send_json_success( array( 'success' => true ) );
+			} else {
+				wp_send_json_error( array( 'success' => false ) );
+			}
+		}
+
+		/**
 		 *  Enqueue scripts to frontend.
 		 */
 		public function enqueue_scripts() {
@@ -557,6 +580,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'hash'          => '',
 					'currency_code' => '',
 					'total'         => 0,
+					'subtotal'      => 0,
 					'table'         => $load_cart_data ? $this->get_cart_table_html() : '',
 				),
 				'user' => array(
@@ -566,6 +590,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'last_added_product_id' => isset( $last_added_product_id['variation_id'] ) ? $last_added_product_id['variation_id'] : 0,
 					'last_added_product_id_parent' => isset( $last_added_product_id['product_id'] ) ? $last_added_product_id['product_id'] : 0,
 					'last_added_product_category' => $this->get_last_added_product_category(),
+					'store_currency' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '$',	
 				),
 				'page' => array(
 					'page_type'  => 'generic',
@@ -598,6 +623,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 				$cart_data['cart']['hash']          = WC()->cart->get_cart_hash();
 				$cart_data['cart']['currency_code'] = get_woocommerce_currency();
 				$cart_data['cart']['total']         = max( 0, WC()->cart->get_total( 'edit' ) - WC()->cart->get_total_tax() ); // Cart total without tax.
+				$cart_data['cart']['subtotal']      = max( 0, WC()->cart->get_subtotal( 'edit' ) - WC()->cart->get_subtotal_tax() );
 			}
 
 			// Switch function to check current page.
@@ -626,6 +652,13 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					$cart_data['page']['tags']       = wp_list_pluck( get_the_terms( $product_id, 'product_tag' ), 'slug' );
 					$cart_data['page']['brands']     = wp_list_pluck( get_the_terms( $product_id, 'product_brand' ), 'slug' );
 					$cart_data['page']['product_name'] = get_the_title($product_id);
+					// check simple or variable
+					$product = wc_get_product($product_id);
+					if($product->is_type('simple')){
+						$cart_data['page']['product_type'] = 'simple';
+					}else{
+						$cart_data['page']['product_type'] = 'variable';
+					}
 					break;
 
 				// Cart page.
@@ -849,22 +882,20 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 				return;
 			}
 			if( 
-				isset( $_GET['page'], $_GET['tab'], $_GET['success'] ) 
-				&& 'wbte-decorator-connector' === $_GET['page'] 
-				&& 'tab2' === $_GET['tab'] 
+				isset( $_GET['page'], $_GET['tab'], $_GET['success'] ) //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				&& 'wbte-decorator-connector' === $_GET['page'] //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				&& 'tab2' === $_GET['tab'] //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			){
-				if( $_GET['success'] ){
+				if( sanitize_text_field( wp_unslash( $_GET['success'] ) ) ){ //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					update_option($this->show_warning_option, false);
-					wp_redirect( $this->get_dashboard_url() );
-					exit;
 				} else{
 					$this->show_warning = true;
 					update_option( $this->show_warning_option, true );
-					wp_redirect($this->get_dashboard_url());
-					exit;
 				}	
+				wp_redirect( $this->get_dashboard_url() ); //phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+				exit;
 			}else{
-				if( isset( $_GET['page']) && 'wbte-decorator-connector' === $_GET['page'] &&  get_option( $this->show_warning_option, false ) ){
+				if( isset( $_GET['page']) && 'wbte-decorator-connector' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) &&  get_option( $this->show_warning_option, false ) ){ //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					$this->show_warning = true;
 				}
 			}
@@ -986,6 +1017,94 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 				</script>
 				<?php
 			}
+		}
+
+		/**
+		 *  Show back in stock notification button after quantity on product page.
+		 *  Displays a hidden button that will be shown for out of stock products.
+		 * 
+		 *  @since 2.0.10
+		 */
+		public function ema_single_page_back_in_stock_notification() {
+			if ( ! is_product() ) {
+				return;
+			}
+		echo '<div class="ema-bis-wrap" data-product_id="">
+				<button type="button"
+					class="wt-notify-btn"
+					aria-label="' . esc_attr__( 'Notify me when this product is back in stock', 'decorator-woocommerce-email-customizer' ) . '"
+					data-product_id="" style="display:none">
+					' . esc_html__( 'Notify me when available', 'decorator-woocommerce-email-customizer' ) . '
+				</button>
+			  </div>';
+		}
+
+		/**
+		 *  Front-end logic for variable & simple products.
+		 *  Handles showing/hiding the back in stock notification based on product stock status.
+		 * 
+		 *  @since 2.0.10
+		 */
+		public function ema_single_page_variation_script() {
+			if ( ! is_product() ) {
+				return;
+			}
+
+			global $product;
+
+			?>
+			<script>
+			jQuery(function($){
+				var $form = $('form.variations_form');
+				var $wrap = $('.ema-bis-wrap');
+				$wrap.hide();
+				// ====== Variable Products ======
+				if($form.length){
+					$form.on('found_variation.wtStock', function(e, variation){
+						if (variation && variation.is_in_stock === false) {
+							//$wrap.show();
+							$wrap.attr('data-product_id', variation.variation_id);
+							$wrap.find('.wt-notify-btn').attr('data-product_id', variation.variation_id);
+							$wrap.find('.wt-notify-btn').addClass('wt-notify-btn-style');
+							$wrap.addClass('ema-bis-wrap-style');
+						} else {
+							// $wrap.hide();
+							$wrap.find('.wt-notify-btn').attr('data-product_id', '');
+							$wrap.find('.wt-notify-btn').removeClass('wt-notify-btn-style');
+							$wrap.removeClass('ema-bis-wrap-style');
+						}
+					});
+
+					$form.on('reset_data.wtStock hide_variation.wtStock', function(){
+						$wrap.hide();
+						$wrap.find('.wt-notify-btn').attr('data-product_id', '');
+						$wrap.find('.wt-notify-btn').removeClass('wt-notify-btn-style');
+						$wrap.removeClass('ema-bis-wrap-style');
+					});
+				}
+
+				// ====== Simple Products ======
+				<?php if ( $product && $product->is_type( 'simple' ) ) : ?>
+					var isInStock = <?php echo esc_js($product->is_in_stock() ? 'true' : 'false'); ?>;
+					var productId  = <?php echo esc_js($product->get_id()); ?>;
+
+					if(!isInStock){
+						//$wrap.show();
+						$wrap.attr('data-product_id', productId);
+						$wrap.find('.wt-notify-btn').attr('data-product_id', productId);
+						$wrap.find('.wt-notify-btn').addClass('wt-notify-btn-style');
+						$wrap.find('.wt-notify-btn').css('margin-bottom', '20px');
+						$wrap.addClass('ema-bis-wrap-style');
+					} else {
+						//$wrap.hide();
+						$wrap.find('.wt-notify-btn').attr('data-product_id', '');
+						$wrap.find('.wt-notify-btn').removeClass('wt-notify-btn-style');
+						$wrap.removeClass('ema-bis-wrap-style');
+					}
+				<?php endif; ?>
+			});
+			</script>
+			<?php
 		}
 	}
 

@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+$email_improvements_enabled = class_exists( FeaturesUtil::class ) ? FeaturesUtil::feature_is_enabled( 'email_improvements' ) : false;
 
 /**
  * Hook for the woocommerce_email_header.

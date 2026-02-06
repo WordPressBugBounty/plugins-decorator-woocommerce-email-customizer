@@ -1,26 +1,31 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.0.9
-Tags: email customizer, email marketing, popups, WooCommerce marketing, conversion
+Version: 2.1.5
+Tags: email automation, email marketing, popups, WooCommerce marketing, email customizer
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.8
-Stable tag: 2.0.9
+Tested up to: 6.9
+Stable tag: 2.1.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Create powerful email marketing campaigns with dynamic popups to increase your newsletter subscribers, generate high-quality leads, and drive more sales on your WooCommerce store.
+Create and send marketing emails and campaigns. Enable email automations, Popups, spin-a-wheel, sign-up forms, and more. Customize WooCommerce emails.
 
 == Description ==
-WebToffee eCommerce Marketing Automation (formerly known as Decorator WooCommerce Email Customizer) is the ultimate solution for boosting your WooCommerce store’s performance by helping you create dynamic popups and automation for your email marketing campaigns. Whether you want to recover abandoned carts, welcome new users, or engage your audience with targeted offers, WebToffee makes it easy.
+WebToffee eCommerce Marketing Automation (formerly known as Decorator WooCommerce Email Customizer) is an email automation tool designed specifically for WooCommerce stores. It enables you to create powerful marketing automation emails and dynamic popups. 
 
-With a variety of popup campaigns and marketing automation, you can tailor the user experience and drive more leads, conversions, and sales.
+This email marketing automation plugin enables you to automate your marketing campaigns, driving growth and increasing revenue for your business. It also includes a built-in email customizer that lets you customize your WooCommerce emails with pre-built templates and a drag-and-drop editor. 
 
-The plugin includes several marketing campaigns, such as cart recovery, exit intent popups, and simple lead capture popups. You can also create special welcome offers and sign-up incentives for newly joined users, allowing you to engage with your audience right from the start. Plus, WebToffee helps you recover abandoned carts and win back lost customers through automated email marketing sequences.
 
-WebToffee integrates seamlessly with your WooCommerce store, empowering you to create high-converting email and popup campaigns. Whether you're a small business or an enterprise, this email marketing plugin gives you the tools to scale your online store’s marketing campaigns to the next level.
+<strong> What’s included? </strong>
+- **Email Automation**: Welcome emails, Abandoned cart recovery, Winback emails, Thank you emails
+- **Popups**: Welcome popups, Spin-a-wheel, Exit intent popups, Cart abandonment popups
+- **BFCM-ready templates**: BFCM ready popups templates and embed forms.
+- **Email Customizer**: Pre-built email templates and WooCommerce email editor
+- **Upsells & Cross-sells**: Add upsells and cross-sell recommendations on popups and emails.
 
+<strong> Limited-time offer: </strong> Get full access to all premium email marketing features in the WebToffee eCommerce Marketing Automation app — completely free. 
 
 == Key Features ==
 - **Welcome Campaigns**: Welcome new users with personalized offers or promotions
@@ -29,54 +34,67 @@ WebToffee integrates seamlessly with your WooCommerce store, empowering you to c
 - **Lead Capture Campaign**: Offer discounts or incentives to capture leads and grow your email list
 - **Sign-up and Welcome Offers**: Encourage new users to join with special sign-up offers
 - **Email Marketing Automations**: Automate email campaigns for welcome messages, abandoned cart recovery, win-back strategies, and post-purchase thank-you notifications
-- **Pre-built Email Templates**: Choose from multiple pre-built email templates and personalize them for your WooCommerce store
-- **Email Content Customization**: Edit text, subject lines, and design elements with sliders and color pickers
-- **Real-Time Email Preview**: Preview your customizations as you make them to ensure the perfect design
-- **Add Logo & Social Media Links**: Add your company logo and social media links to your emails for consistent branding
-- **Test Email Functionality**: Send test emails to multiple recipients to check how they appear in customer inboxes
-- **Custom CSS**: Apply additional CSS to style your emails the way you want
-- **Scheduled Email Customizations**: Publish or schedule your email changes for later
+- **Fortune Wheel Campaigns**: Create fun, interactive spin-the-wheel popups to gamify your marketing and boost engagement.
+- **Detailed Analytics**: Track performance metrics for each campaign to measure conversions and optimize for better results.
+- **Upsell & Cross-sells**: Add upsell, cross-sell, and frequently bought together produt recommendations on popups and marketing emails.
+- **Pre-built Email Templates**: Choose from multiple pre-built email templates and personalize them for your WooCommerce store.
+- **Free Shipping Bar**: Motivate customers to increase their cart value by displaying a dynamic free shipping progress bar that updates in real-time as they shop.
+- **Email Content Customization**: Edit text, subject lines, and design elements with sliders and color pickers.
+- **Real-Time Email Preview**: Preview your customizations as you make them to ensure the perfect design.
+- **Add Logo & Social Media Links**: Add your company logo and social media links to your emails for consistent branding.
+- **Test Email Functionality**: Send test emails to multiple recipients to check how they appear in customer inboxes.
+- **Custom CSS**: Apply additional CSS to style your emails the way you want.
+- **Scheduled Email Customizations**: Publish or schedule your email changes for later.
 
-= Create Dynamic Popup Campaigns =
+== Create Dynamic Popup Campaigns ==
 This eCommerce marketing automation solution allows you to create highly customizable popups for your WooCommerce store, designed to increase conversions and engage visitors. With a variety of pre-built popup campaigns, including cart recovery, exit intent, and lead capture, you can effortlessly enhance your marketing strategy. 
 
-= Powerful Email Marketing Automation =
+== Powerful Email Marketing Automation ==
 You can create automated marketing campaigns to connect with your customers at every stage of their journey. You can set up welcome emails, abandoned cart recovery, win-back campaigns, and post-purchase thank-you notifications, all with no hassle. With WebToffee WooCommerce Marketing Automation plugin, you can automate key interactions, save time, and boost conversions with personalized, timely emails that help you stay connected with your customers.
 
-= Prebuilt WooCommerce email templates = 
+== Upsell & Cross-sells ==
+This eCommerce marketing automation solution enables you to add upsell, cross-sell, and frequently bought together product recommendations to your popups and marketing emails. By showcasing relevant products based on customer behavior, you can effortlessly increase your store’s average order value and drive more repeat purchases.
+
+== Free Shipping Bar ==
+This feature allows you to create an engaging free shipping progress bar that motivates customers to spend more. As shoppers add items to their cart, the bar updates in real-time, showing how close they are to earning free shipping. By turning your shipping threshold into a goal, you can boost average order value and enhance the overall shopping experience.
+
+== Prebuilt WooCommerce email templates == 
 The WooCommerce email template plugin offers multiple pre-built templates that you can use to personalize the WooCommerce emails. You can fully transform the design and feel of your WooCommerce emails by just loading the template that you need. Moreover, the templates in the plugin can be customized. This means that you can edit the prebuilt template to make your emails better suited for your store.  
 
-= Customize Email Content =
+== Fortune Wheel Campaigns ==
+This eCommerce marketing automation solution allows you to create interactive spin-the-wheel popups to engage visitors and boost conversions. With customizable rewards like discounts, free shipping, or special offers, you can gamify your marketing strategy and make lead generation more fun. These attention-grabbing popups encourage user participation, helping you grow your email list while driving more sales.
+
+== Customize Email Content ==
 The WooCommerce email content such as subject, heading, subtitle, and body text can be edited or modified to your preference. You can use sliders and color pickers for designing email backgrounds, containers, headers, footers, texts, and everything. Also, add shortcodes/placeholders within the email templates to change the content and appearance. There are provisions to add images (company logo), social media links, and many more in the email templates of your WooCommerce custom emails.
 
-= Customize all WooCommerce Email Types =
+== Customize all WooCommerce Email Types ==
 The WooCommerce email plugins give provision to customize and edit all the default WooCommerce emails for each order status. You can easily choose an email type and customize it on the go. 
 
-= Send Test Mail To Your Inbox =
+== Send Test Mail To Your Inbox ==
 You can send test emails to multiple recipients with the WooCommerce email template customization plugin. This would help you understand how the customizations you made would look in your customer's inboxes.
 
-= Dynamic Preview =
+== Dynamic Preview ==
 Get a real-time preview of the email customizations made as and when you make the edits with the WooCommerce email templates plugin. You can view the changes you make as you make them in the email preview helping you get everything just right.
 
-= Add Logo in Emails =
+== Add Logo in Emails ==
 You can easily upload your company logo in email templates to align with your branding styles.
 
-= Show Social Media Links in Email =
+== Show Social Media Links in Email ==
 Insert the social media links like Facebook, Twitter, Instagram, Youtube, LinkedIn, Vimeo into your WooCommerce email templates by using icons, URLs, titles, etc.
 
-= Reset to Default =
+== Reset to Default ==
 You always have the option to reset your WooCommerce email templates to the default style.
 
-= Save, Publish, or Schedule Your Customizations =
+== Save, Publish, or Schedule Your Customizations ==
 Email customizations can be published instantly or scheduled to be published at a later time with this email customizer for WooCommerce. 
 
-= Apply Customizations to All Emails =
+== Apply Customizations to All Emails ==
 Easily update the customizations to all the default email templates with a single click.
 
-= Additional Customization using Custom CSS =
+== Additional Customization using Custom CSS ==
 Use additional CSS to style the emails in your desired manner.
 
-= Additional Shortcodes =
+== Additional Shortcodes ==
 Include additional shortcodes like customer name, order details, company name, etc., to create custom email content. The following shortcodes are available in the WooCommerce emails plugin:
 
 * {customer_username}
@@ -89,10 +107,10 @@ Include additional shortcodes like customer name, order details, company name, e
 * {order_number}
 * {site_title}
 
-= Compatibility =
+== Compatibility ==
 The Email customizer by WebToffee is compatible with the following plugins:
 
-* [Subscriptions for WooCommerce](https://www.webtoffee.com/product/woocommerce-subscriptions/)
+* [Subscriptions for WooCommerce](https://www.themehigh.com/product/subscriptions-for-woocommerce/)
 * [Webtoffee Woocommerce Request a Quote](https://www.webtoffee.com/product/woocommerce-request-a-quote/?utm_source=free_plugin_readme&utm_medium=decorator&utm_campaign=Request_Quote)
 * [Germanized for WooCommerce](https://wordpress.org/plugins/woocommerce-germanized/)
 * [WooCommerce Subscriptions](https://woocommerce.com/products/woocommerce-subscriptions/)
@@ -195,6 +213,28 @@ Yes, you can add social links at the footer of the email.
 9. Edit Templates of Campaigns and Automations
 
 == Changelog ==
+
+= 2.1.5 - 2026-1-21 =
+* [Enhancement] - Code stability improved.
+
+= 2.1.4 - 2026-1-13 =
+* [Compatibility] - Tested OK with WC 10.4.3
+
+= 2.1.3 - 2025-12-15 =
+* [Compatibility] - Tested OK with WP 6.9
+* [Compatibility] - Tested OK with WC 10.4.0
+
+= 2.1.2 - 2025-11-28 =
+* [Fix] Vulnerability. Props to **Legion Hunter** and **Patchstack**.
+
+= 2.1.1 - 2025-11-05 =
+* [Compatibility] - Tested OK with WC 10.2.2
+* [Enhancement] - Code stability improved.
+* [Fix] - Plugin Check Plugin fixes.
+
+= 2.1.0 - 2025-10-13 =
+* [Compatibility] - Tested OK with WP 6.8.3
+* [Compatibility] - Tested OK with WC 10.2.2
 
 = 2.0.9 - 2025-09-08 =
 * [Compatibility] - Tested OK with WC 10.1.2
@@ -319,5 +359,5 @@ Yes, you can add social links at the footer of the email.
 
 == Upgrade Notice ==
 
-= 2.0.9 =
-* [Compatibility] - Tested OK with WC 10.1.2
+= 2.1.5 - 2026-1-21 =
+* [Enhancement] - Code stability improved.

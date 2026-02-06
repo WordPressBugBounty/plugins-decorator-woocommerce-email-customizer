@@ -84,7 +84,7 @@ if (!class_exists('RP_Decorator_Preview')) {
          * Admin Screen output
          */
         public function output() {
-            wp_redirect(RP_Decorator_Customizer::get_customizer_url());
+            wp_redirect(RP_Decorator_Customizer::get_customizer_url()); //phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
         }
 
         /**
@@ -121,10 +121,10 @@ if (!class_exists('RP_Decorator_Preview')) {
             $content = self::get_preview_email($send_email, $email_addresses, $email_type, $order_id);
 
             if (false == $content) {
-                echo __('An error occurred trying to load this email type. Make sure this email type is enabled or please try another type.', 'decorator-woocommerce-email-customizer');
+                esc_html_e('An error occurred trying to load this email type. Make sure this email type is enabled or please try another type.', 'decorator-woocommerce-email-customizer');
             } elseif (!empty($content)) {
                 // Print email content
-                echo $content;
+                echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 // Print live preview scripts in footer
                 add_action('wp_footer', array('RP_Decorator_Preview', 'print_live_preview_scripts'), 99);
             }
@@ -174,7 +174,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                         'billing_country' => 'GB',
                         'billing_email' => 'sherlock@holmes.co.uk',
                         'billing_phone' => '02079304832',
-                        'date_created' => date('Y-m-d H:i:s'),
+                        'date_created' => gmdate('Y-m-d H:i:s'),
                         'total' => 24.90,
                     ));
 
@@ -450,7 +450,7 @@ if (!class_exists('RP_Decorator_Preview')) {
             }
 
             // Close container and return
-            echo $scripts . '});</script>';
+            echo $scripts . '});</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
 
         /**
@@ -691,7 +691,7 @@ if (!class_exists('RP_Decorator_Preview')) {
          *
          */
         public static function get_preview_email($send_email = false, $email_addresses = null, $email_type = null, $order_id = null) {
-            error_reporting(E_ERROR | E_PARSE);
+            error_reporting(E_ERROR | E_PARSE); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_error_reporting
             // Load WooCommerce emails.
             $wc_emails = WC_Emails::instance();
             $emails = $wc_emails->get_emails();
@@ -793,6 +793,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                     case 'cancelled_order':
                     case 'customer_processing_order':
                     case 'customer_completed_order':
+                    case 'customer_cancelled_order':
                     case 'customer_on_hold_order':
                     case 'failed_renewal_authentication':
                     case 'failed_preorder_sca_authentication':
@@ -818,6 +819,9 @@ if (!class_exists('RP_Decorator_Preview')) {
                         $email->user_email = stripslashes($email->object->user_email);
                         $email->recipient = $email->user_email;
                         $email->password_generated = true;
+                        if ( version_compare( WC()->version, '6.0.0', '>=' ) ) {
+                            $email->set_password_url = 'https://example.com/lost-password';
+                        }
                         $email = self::wt_header_shortcode_replace($email);
                         break;
                     case 'customer_note':
@@ -1241,8 +1245,8 @@ if (!class_exists('RP_Decorator_Preview')) {
                 $wt_custom_style = RP_Decorator_Customizer::wt_get_current_template();
             }
             
-            if (isset($_POST['customized']) && !empty($_POST['customized'])) {
-                $enable_data = json_decode(wp_unslash($_POST['customized']), true);
+            if (isset($_POST['customized']) && !empty($_POST['customized'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+                $enable_data = json_decode(wc_clean( wp_unslash( $_POST['customized'] ) ), true); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Already sanitized.
                 if (isset($enable_data['rp_decorator_'.$wt_custom_style.'_body_text_enable_switch']) ) {
                     $enable_value = !empty($enable_data['rp_decorator_'.$wt_custom_style.'_body_text_enable_switch']) ? $enable_data['rp_decorator_'.$wt_custom_style.'_body_text_enable_switch'] : '';
                     update_option( 'rp_decorator_'.$wt_custom_style.'_body_text_enable_switch', $enable_value);
@@ -1383,7 +1387,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                 }
                 if ($stored) {
                     if (array_key_exists('email_type', $stored) || $current_temp !== 'new_order') {
-                        $key = $stored['email_type'] ? $stored['email_type'] : $current_temp;
+                        $key = ( isset ( $stored['email_type'] ) && ! empty( $stored['email_type'] ) ) ? $stored['email_type'] : $current_temp;
                         foreach ($stored as $st_key => $st_value) {
                             $wt_stored[$key][$st_key] = $st_value;
                         }

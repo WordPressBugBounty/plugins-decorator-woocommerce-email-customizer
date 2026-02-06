@@ -51,7 +51,7 @@ $shipping   = $order->get_formatted_shipping_address();
 			<address class="address">
 				<?php echo wp_kses_post( $address ? $address : esc_html__( 'N/A', 'decorator-woocommerce-email-customizer' ) ); ?>
 				<?php if ( $order->get_billing_phone() ) : ?>
-					<br/><?php echo wc_make_phone_clickable( $order->get_billing_phone() ); ?>
+					<br/><?php echo wp_kses_post( wc_make_phone_clickable( $order->get_billing_phone() ) ); ?>
 				<?php endif; ?>
 				<?php if ( $order->get_billing_email() ) :?>
 					<br/><a href="mailto:<?php echo esc_attr( $order->get_billing_email() ); ?>"><?php echo esc_html( $order->get_billing_email() ); ?></a>
@@ -68,7 +68,7 @@ $shipping   = $order->get_formatted_shipping_address();
 				<address class="address">
 					<?php echo wp_kses_post( $shipping ); ?>
 					<?php if ( $order->get_shipping_phone() ) : ?>
-						<br /><?php echo wc_make_phone_clickable( $order->get_shipping_phone() ); ?>
+						<br /><?php echo wp_kses_post( wc_make_phone_clickable( $order->get_shipping_phone() ) ); ?>
 					<?php endif; ?>
 				</address>
                             </div>   

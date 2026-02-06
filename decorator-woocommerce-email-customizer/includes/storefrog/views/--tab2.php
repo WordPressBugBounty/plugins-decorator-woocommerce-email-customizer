@@ -11,12 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$show_warning = $this->show_warning ?? false;
+$show_warning = isset( $this->show_warning ) ? $this->show_warning : false;
 ?>
 <div class="wrap wbte-sf-connector">
 	<div class="wbte-sf-top-box">
 		<div class="wbte-sf-header">
-            <img src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/assets/images/webtoffee-logo_small.svg' ); ?>" width="180" alt="Webtoffee Logo">
+			<h1><?php esc_html_e( 'Increase Conversions with Advanced Marketing Automation', 'decorator-woocommerce-email-customizer' ); ?></h1>
+			<p class="wbte-sf-subtitle"><?php esc_html_e( 'Create automated email campaigns and dynamic popups to boost conversions, drive engagement, increase revenue, and recover lost sales.', 'decorator-woocommerce-email-customizer' ); ?></p>
 		</div>
 		<div class="wbte-sf-auth-denied-warning">
 			<img style="width: 24px;" src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/includes/storefrog/assets/images/warning.svg' ); ?>" alt="<?php esc_html_e( 'Warning', 'decorator-woocommerce-email-customizer' ); ?>">
@@ -26,15 +27,14 @@ $show_warning = $this->show_warning ?? false;
 			</div>
 			<span class="wbte-sf-auth-denied-warning-close">×</span>
 		</div>
-
+       <div class="wbte-sf-banner-box-container">
 		<div class="wbte-sf-banner-box">
 			<div class="wbte-sf-item wbte-sf-item-left">
-				<h3><?php esc_html_e( 'Welcome to WebToffee Marketing', 'decorator-woocommerce-email-customizer' ); ?></h3>
-				<?php 
-				if( $is_connected ) {
-					?>
+				<?php
+                if ($is_connected) {
+				?>
+				<h3><?php esc_html_e( 'You’re All Set! —you’ve successfully connected your store:', 'decorator-woocommerce-email-customizer' ); ?></h3>
 					<div>
-						<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'You’re All Set! —you’ve successfully connected your store', 'decorator-woocommerce-email-customizer' ); ?></p>
 						<p style="font-size: 14px;"><?php esc_html_e( 'Dive in to explore:', 'decorator-woocommerce-email-customizer' ); ?></p>
 						<ul style="font-size: 14px; list-style-type: disc; margin-left: 25px;">
 							<li><?php esc_html_e( 'Automated email campaigns & drip workflows', 'decorator-woocommerce-email-customizer' ); ?></li>
@@ -45,22 +45,21 @@ $show_warning = $this->show_warning ?? false;
 					<?php
 				} else {
 					?>
+					<h3><?php esc_html_e( 'Let’s connect your store in just a few simple steps:', 'decorator-woocommerce-email-customizer' ); ?></h3>
 					<div>
-						<p class="wbte-sf-tab-description"><?php esc_html_e( 'Let’s connect your store in just a few simple steps:', 'decorator-woocommerce-email-customizer' ); ?></p>
 						<div class="wbte-sf-tab-steps-container">
 							<div class="wbte-sf-tab-step-number">1</div>
-							<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Log in or sign up to your WebToffee Marketing account.', 'decorator-woocommerce-email-customizer' ); ?></p>
+							<span>
+								<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Login or Signup.', 'decorator-woocommerce-email-customizer' ); ?></p>
+								<span style="font-size: 13px; font-weight: 400; color: #0C1C37;"><?php esc_html_e( 'Create a new account or log in to your existing account.', 'decorator-woocommerce-email-customizer' ); ?></span>
+							</span>
 						</div>
 						<div class="wbte-sf-tab-steps-container">
 							<div class="wbte-sf-tab-step-number">2</div>
 							<span>
-								<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Approve the WooCommerce connection request.', 'decorator-woocommerce-email-customizer' ); ?></p>
-								<span style="font-size: 12px; font-weight: 400; color: #0C1C37;"><?php esc_html_e( 'When prompted, click ‘Approve’ to grant the app the required permission to view/manage store data', 'decorator-woocommerce-email-customizer' ); ?></span>
+								<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Approve the authentication request.', 'decorator-woocommerce-email-customizer' ); ?></p>
+								<span style="font-size: 13px; font-weight: 400; color: #0C1C37;"><?php esc_html_e( 'This grants WebToffee permission to access your store data needed for web campaigns and automation.', 'decorator-woocommerce-email-customizer' ); ?></span>
 							</span>
-						</div>
-						<div class="wbte-sf-tab-steps-container">
-							<div class="wbte-sf-tab-step-number">3</div>
-							<p class="wbte-sf-tab-bold-text"><?php esc_html_e( 'Access your marketing dashboard and start growing your sales.', 'decorator-woocommerce-email-customizer' ); ?></p>
 						</div>
 					</div>
 					<?php
@@ -81,26 +80,71 @@ $show_warning = $this->show_warning ?? false;
 						<?php
 					} else {
 						?>
-						<a href="<?php echo esc_url( $auth_url ); ?>" class="wbte-sf-btn"><?php esc_html_e( 'Connect now', 'decorator-woocommerce-email-customizer' ); ?></a>
-						<br><span style="font-size: 12px; font-style: italic; font-weight: 400; color: #0C1C37;"><?php esc_html_e( '* Clicking this will redirect you to the WebToffee Marketing app', 'decorator-woocommerce-email-customizer' ); ?></span>
+						<a href="<?php echo esc_url( $auth_url ); ?>" class="wbte-sf-btn" id="wbte-sf-connect-btn" data-auth-url="<?php echo esc_url( $auth_url ); ?>"><?php esc_html_e( 'Connect now', 'decorator-woocommerce-email-customizer' ); ?></a>
+						<br><span style="font-size: 12px; font-style: italic; font-weight: 400; color: #0C1C37;"><?php esc_html_e( '* Redirects you to the WebToffee Marketing app', 'decorator-woocommerce-email-customizer' ); ?></span>
 						<?php
 					}
 					?>
 				</div>
 			</div>
-			<div class="wbte-sf-item wbte-sf-item-right">
-				<img src="<?php echo esc_url( $asset_url . 'images/wt-shop-link.svg' ); ?>">
+		</div>
+		<div class="wbte-sf-banner-box-container-right">
+			<div class="wbte-sf-image-slider">
+				<div class="wbte-sf-slider-wrapper">
+					<div class="wbte-sf-slide active">
+						<div class="wbte-sf-slide-image">
+							<img src="<?php echo esc_url( $asset_url . 'images/block1_bg.webp' ); ?>" alt="<?php esc_attr_e( 'Slide 1', 'decorator-woocommerce-email-customizer' ); ?>">
+						</div>
+						<div class="wbte-sf-slide-content">
+							<h4 class="wbte-sf-slide-title"><?php esc_html_e( 'Up to 40% More Conversion with Popups', 'decorator-woocommerce-email-customizer' ); ?></h4>
+							<p class="wbte-sf-slide-description"><?php esc_html_e( 'Boost conversion by up to 40% using dynamic popups for Welcome Campaigns, Exit Intent, and Cart Abandonment Recovery.', 'decorator-woocommerce-email-customizer' ); ?></p>
+						</div>
+					</div>
+					<div class="wbte-sf-slide">
+						<div class="wbte-sf-slide-image">
+							<img src="<?php echo esc_url( $asset_url . 'images/block2_bg.webp' ); ?>" alt="<?php esc_attr_e( 'Slide 2', 'decorator-woocommerce-email-customizer' ); ?>">
+						</div>
+						<div class="wbte-sf-slide-content">
+							<h4 class="wbte-sf-slide-title"><?php esc_html_e( 'Automated Email Campaigns', 'decorator-woocommerce-email-customizer' ); ?></h4>
+							<p class="wbte-sf-slide-description"><?php esc_html_e( 'Create powerful automated email workflows to engage customers, recover abandoned carts, and drive repeat purchases.', 'decorator-woocommerce-email-customizer' ); ?></p>
+						</div>
+					</div>
+					<div class="wbte-sf-slide">
+						<div class="wbte-sf-slide-image">
+							<img src="<?php echo esc_url( $asset_url . 'images/block3_bg.webp' ); ?>" alt="<?php esc_attr_e( 'Slide 3', 'decorator-woocommerce-email-customizer' ); ?>">
+						</div>
+						<div class="wbte-sf-slide-content">
+							<h4 class="wbte-sf-slide-title"><?php esc_html_e( 'Advanced Analytics & Insights', 'decorator-woocommerce-email-customizer' ); ?></h4>
+							<p class="wbte-sf-slide-description"><?php esc_html_e( 'Track performance with detailed analytics, monitor engagement rates, and optimize your marketing strategies for maximum ROI.', 'decorator-woocommerce-email-customizer' ); ?></p>
+						</div>
+					</div>
+				</div>
+				<div class="wbte-sf-slider-dots">
+					<button class="wbte-sf-slider-arrow wbte-sf-slider-arrow-left" aria-label="<?php esc_attr_e( 'Previous slide', 'decorator-woocommerce-email-customizer' ); ?>">
+						&lt;
+					</button>
+					<span class="wbte-sf-dot active" data-slide="0"></span>
+					<span class="wbte-sf-dot" data-slide="1"></span>
+					<span class="wbte-sf-dot" data-slide="2"></span>
+					<button class="wbte-sf-slider-arrow wbte-sf-slider-arrow-right" aria-label="<?php esc_attr_e( 'Next slide', 'decorator-woocommerce-email-customizer' ); ?>">
+						&gt;
+					</button>
+				</div>
 			</div>
 		</div>
+	   </div>
 	</div>
 </div>
 <style type="text/css">
 body{ background:#F1F8FE; }
-.wbte-sf-banner-box{ margin: 3rem auto; padding: 2rem; box-sizing: border-box; max-width: 1100px; background: #ffffff; border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem 0px; }
+.wbte-sf-subtitle {font-size: 16px;color: #2d2d2d;margin: 0 auto;margin-top: 0.5rem;font-weight: 300;max-width: 700px;line-height: 1.4;text-align: center;}
+.wbte-sf-banner-box-container{ display: flex; align-items: stretch; gap: 1.5rem; max-width: 95%; margin: 3rem auto; }
+.wbte-sf-banner-box{ width: 68%; padding: 2rem; box-sizing: border-box; background: #ffffff; border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem 0px; }
+.wbte-sf-banner-box-container-right{ width: 32%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border-radius: 15px; }
 .wbte-sf-banner-box h1{ font-size: 22px; font-weight: 700; color: #2d2d2d; }
 .wbte-sf-banner-box .wbte-sf-tab-description{ font-size: 14px; font-weight: 300; }
 .wbte-sf-banner-box .wbte-sf-item-left{ position: relative; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.wbte-sf-banner-box .wbte-sf-item-left h3{ font-weight: 700; font-size: 22px; }
+.wbte-sf-banner-box .wbte-sf-item-left h3{ font-weight: 600; font-size: 18px; }
 .wbte-sf-banner-box .wbte-sf-item-right{ text-align:right; }
 .wbte-sf-banner-box .wbte-sf-item-right img{ display:inline-block; max-width:352px; }
 .wbte-sf-banner-box .wbte-sf-btnbox{ width:100%;}
@@ -118,6 +162,25 @@ body{ background:#F1F8FE; }
 .wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content span strong, .wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-content-title { font-weight: 700; }
 .wbte-sf-auth-denied-warning .wbte-sf-auth-denied-warning-close { color: #D63638; font-size: 25px; cursor: pointer; }
 
+/* Image Slider Styles */
+.wbte-sf-image-slider { position: relative; width: 100%; display: flex; flex-direction: column;background: #FFF; }
+.wbte-sf-slider-wrapper { position: relative; width: 100%; overflow: hidden; border-radius: 10px; }
+.wbte-sf-slide { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
+.wbte-sf-slide.active { opacity: 1; position: relative; }
+.wbte-sf-slide-image { width: 100%; position: relative; }
+.wbte-sf-slide img { width: 100%; height: 200px; }
+.wbte-sf-slide-content { padding: 20px 0 0 0; width: 100%; text-align: center; }
+.wbte-sf-slide-title { font-size: 16px; font-weight: 600; color: #2d2d2d; margin: 0 0 10px 0; line-height: 1.3; }
+.wbte-sf-slide-description { font-size: 13px; font-weight: 400; color: #2d2d2d; margin: 0 12px; line-height: 1.8; }
+.wbte-sf-slider-dots { position: relative; margin-top: 20px; display: flex; gap: 15px; justify-content: center; align-items: center; width: 100%; margin-bottom: 20px; }
+.wbte-sf-slider-arrow { position: absolute; background: transparent; border: none; color: #2d2d2d; font-size: 18px; font-weight: 300; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; transition: color 0.3s ease; line-height: 1; padding: 50px; top: 50%; transform: translateY(-50%); }
+.wbte-sf-slider-arrow:hover { color: #1763DC; }
+.wbte-sf-slider-arrow-left { left: 0; }
+.wbte-sf-slider-arrow-right { right: 0; }
+.wbte-sf-dot { width: 6px; height: 6px; border-radius: 50%; background: #9CA3AF; cursor: pointer; transition: all 0.3s ease; border: none; padding: 0; }
+.wbte-sf-dot.active { background: #2d2d2d; width: 8px; height: 8px; }
+.wbte-sf-dot:hover { background: #6B7280; }
+
 
 @media screen and (max-width: 1100px) {
 	.wbte-sf-banner-box .wbte-sf-btnbox{ position:relative; bottom:0px; margin-top:20px; }
@@ -134,6 +197,25 @@ body{ background:#F1F8FE; }
 </style>
 <script type="text/javascript">
 	jQuery(document).ready(function($){
+		$('#wbte-sf-connect-btn').on('click', function(e){
+			e.preventDefault();
+			var $btn = $(this);
+			var authUrl = $btn.data('auth-url') || $btn.attr('href');			
+			$.ajax({
+				url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+				type: 'POST',
+				data: { 
+					action: 'wbte_sf_set_first_time_connect', 
+					nonce: '<?php echo esc_html( wp_create_nonce( 'wbte_sf_set_first_time_connect' ) ); ?>' 
+				},
+				dataType: 'json',
+				async: true
+			});
+			if(authUrl){
+				window.location.href = authUrl;
+			}
+		});
+
 		var disconnection_in_progress = false;
 		$('.wbte-sf-disconnect').on('click', function(){
 			if(disconnection_in_progress){
@@ -169,5 +251,76 @@ body{ background:#F1F8FE; }
 		$('.wbte-sf-auth-denied-warning-close').on('click', function(){
 			$('.wbte-sf-auth-denied-warning').hide();
 		});
+
+		// Image Slider Functionality
+		var currentSlide = 0;
+		var slides = $('.wbte-sf-slide');
+		var dots = $('.wbte-sf-dot');
+		var totalSlides = slides.length;
+		var autoSlideInterval;
+
+		function showSlide(index) {
+			// Remove active class from all slides and dots
+			slides.removeClass('active');
+			dots.removeClass('active');
+			
+			// Add active class to current slide and dot
+			slides.eq(index).addClass('active');
+			dots.eq(index).addClass('active');
+			
+			currentSlide = index;
+		}
+
+		function nextSlide() {
+			var next = (currentSlide + 1) % totalSlides;
+			showSlide(next);
+		}
+
+		function prevSlide() {
+			var prev = (currentSlide - 1 + totalSlides) % totalSlides;
+			showSlide(prev);
+		}
+
+		function startAutoSlide() {
+			autoSlideInterval = setInterval(nextSlide, 4000); // Change slide every 4 seconds
+		}
+
+		function stopAutoSlide() {
+			clearInterval(autoSlideInterval);
+		}
+
+		// Arrow navigation
+		$('.wbte-sf-slider-arrow-right').on('click', function() {
+			stopAutoSlide();
+			nextSlide();
+			startAutoSlide();
+		});
+
+		$('.wbte-sf-slider-arrow-left').on('click', function() {
+			stopAutoSlide();
+			prevSlide();
+			startAutoSlide();
+		});
+
+		// Dot navigation
+		$('.wbte-sf-dot').on('click', function() {
+			var slideIndex = $(this).data('slide');
+			stopAutoSlide();
+			showSlide(slideIndex);
+			startAutoSlide();
+		});
+
+		// Pause auto-slide on hover
+		$('.wbte-sf-image-slider').on('mouseenter', function() {
+			stopAutoSlide();
+		}).on('mouseleave', function() {
+			startAutoSlide();
+		});
+
+		// Initialize slider
+		if (totalSlides > 0) {
+			showSlide(0);
+			startAutoSlide();
+		}
 	});
 </script>
