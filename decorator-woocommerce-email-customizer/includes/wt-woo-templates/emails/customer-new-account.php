@@ -13,13 +13,16 @@
  * @see 	    https://docs.woocommerce.com/document/template-structure/
  * @author 		WooThemes
  * @package 	WooCommerce/Templates/Emails
- * @version     3.7.0
+ * @version     10.4.0
  */
 
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+
+$rp_decorator_email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
 ?>
 <style>  
      .wt_template_button{
@@ -42,23 +45,25 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php
 
 do_action( 'woocommerce_email_header', $email_heading, $email );
-$wt_custom_style = RP_Decorator_Customizer::$wt_template_type;
+$rp_decorator_custom_style = RP_Decorator_Customizer::$wt_template_type;
 
-if (empty($wt_custom_style)) {
-    $wt_custom_style = RP_Decorator_Customizer::wt_get_current_template();
+if (empty($rp_decorator_custom_style)) {
+    $rp_decorator_custom_style = RP_Decorator_Customizer::wt_get_current_template();
 }
-$button_check    = get_option( 'rp_decorator_customer_new_account_btn_switch' );//RP_Decorator_Customizer::opt( 'customer_new_account_btn_switch' );
-$account_section = true;//RP_Decorator_Customizer::opt( 'customer_new_account_account_section' );
+$rp_decorator_button_check    = get_option( 'rp_decorator_customer_new_account_btn_switch' );//RP_Decorator_Customizer::opt( 'customer_new_account_btn_switch' );
+$rp_decorator_account_section = true;//RP_Decorator_Customizer::opt( 'customer_new_account_account_section' );
 if(isset($_POST['customized']) && !empty($_POST['customized'])){ // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $data = json_decode(wc_clean( wp_unslash( $_POST['customized'] ) ), true); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Already sanitized.
-    if(array_key_exists('rp_decorator_customer_new_account_btn_switch' , $data)){
-        if($button_check != $data['rp_decorator_customer_new_account_btn_switch'] ){            
-            $button_check = $data['rp_decorator_customer_new_account_btn_switch'];
+    $rp_decorator_data = json_decode(wc_clean( wp_unslash( $_POST['customized'] ) ), true); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Already sanitized.
+    if(array_key_exists('rp_decorator_customer_new_account_btn_switch' , $rp_decorator_data)){
+        if($rp_decorator_button_check != $rp_decorator_data['rp_decorator_customer_new_account_btn_switch'] ){            
+            $rp_decorator_button_check = $rp_decorator_data['rp_decorator_customer_new_account_btn_switch'];
         }
     }
 }
 
-do_action( 'wt_decorator_email_body_content_text', $email ); ?>
+echo $rp_decorator_email_improvements_enabled ? '<div class="email-introduction">' : '';
+
+do_action( 'wt_decorator_email_body_content_text', $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility. ?>
 
 <?php if ( 'yes' === get_option( 'woocommerce_registration_generate_password' ) && $password_generated ) : ?>
 
@@ -75,8 +80,8 @@ do_action( 'wt_decorator_email_body_content_text', $email ); ?>
 
 <?php
 endif;
-if ( true == $account_section ) {
-	if ( true == $button_check ) {
+if ( true == $rp_decorator_account_section ) {
+	if ( true == $rp_decorator_button_check ) {
 		echo '<p>' . esc_html__( 'You can access your account area to view your orders and change your password.', 'decorator-woocommerce-email-customizer' ) . '</p>';
 		echo '<p class="btn-container"><a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '" class="wt_template_button">' . esc_html__( 'View Account', 'decorator-woocommerce-email-customizer' ) . '</a></p>';
 	} else {
@@ -90,11 +95,16 @@ if ( true == $account_section ) {
 	<?php
 	}
 }
+
+echo $rp_decorator_email_improvements_enabled ? '</div>' : '';
+
 /**
  * Show user-defined additonal content - this is set in each email's settings.
  */
 if ( isset( $additional_content ) && ! empty( $additional_content ) ) {
+	echo $rp_decorator_email_improvements_enabled ? '<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td class="email-additional-content email-additional-content-aligned">' : '';
 	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
+	echo $rp_decorator_email_improvements_enabled ? '</td></tr></table>' : '';
 }
 
 do_action( 'woocommerce_email_footer', $email );

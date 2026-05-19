@@ -11,13 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$responsive_check = RP_Decorator_Customizer::opt( 'responsive_mode' );
+$rp_decorator_responsive_check = RP_Decorator_Customizer::opt( 'responsive_mode' );
 
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
-do_action( 'wt_decorator_email_body_content', $subscription, $sent_to_admin, $plain_text, $email );
+do_action( 'wt_decorator_email_body_content', $subscription, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 
-if ( true == $responsive_check ) {
+if ( true == $rp_decorator_responsive_check ) {
 	?>
 	<div class="email-spacing-wrap" style="margin-bottom: 40px;">
 		<table class="td" cellspacing="0" cellpadding="6" style="width: 100%;" border="1">
@@ -37,9 +37,9 @@ if ( true == $responsive_check ) {
 						<p style="margin-bottom: 0"><strong><?php echo esc_html_x( 'Last Order Date', 'table heading', 'decorator-woocommerce-email-customizer' ); ?></strong></p>
 						<p style="margin-bottom: 0">
 							<?php
-							$last_order_time_created = $subscription->get_time( 'last_order_date_created', 'site' );
-							if ( ! empty( $last_order_time_created ) ) {
-								echo esc_html( date_i18n( wc_date_format(), $last_order_time_created ) );
+							$rp_decorator_last_order_time_created = $subscription->get_time( 'last_order_date_created', 'site' );
+							if ( ! empty( $rp_decorator_last_order_time_created ) ) {
+								echo esc_html( date_i18n( wc_date_format(), $rp_decorator_last_order_time_created ) );
 							} else {
 								echo '-';
 							}
@@ -77,9 +77,9 @@ if ( true == $responsive_check ) {
 					</td>
 					<td class="td" style="text-align:left; vertical-align:middle;">
 						<?php
-						$last_order_time_created = $subscription->get_time( 'last_order_date_created', 'site' );
-						if ( ! empty( $last_order_time_created ) ) {
-							echo esc_html( date_i18n( wc_date_format(), $last_order_time_created ) );
+						$rp_decorator_last_order_time_created = $subscription->get_time( 'last_order_date_created', 'site' );
+						if ( ! empty( $rp_decorator_last_order_time_created ) ) {
+							echo esc_html( date_i18n( wc_date_format(), $rp_decorator_last_order_time_created ) );
 						} else {
 							echo '-';
 						}

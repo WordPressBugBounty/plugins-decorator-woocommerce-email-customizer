@@ -4,6 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook names retained for backward compatibility with existing third-party integrations.
 
 if (!class_exists('WP_Customize_Control')) {
     include_once ABSPATH . 'wp-includes/class-wp-customize-control.php';
@@ -400,7 +401,7 @@ class WP_Customize_Repeater_Control extends WP_Customize_Control {
             ?>
             <div class="customizer-repeater-general-control-repeater-container">
                 <div class="customizer-repeater-customize-control-title">
-                    <label style="padding: 0px 6px;"><?php echo esc_html_e('Social icon settings', 'decorator-woocommerce-email-customizer'); ?></label>
+                    <label style="padding: 0px 6px;"><?php esc_html_e('Social icon settings', 'decorator-woocommerce-email-customizer'); ?></label>
                     <button type="button" class="social-repeater-general-control-remove-field" style="display:none;border:none !important;" >
                         <span class="dashicons dashicons-trash"></span>
                     </button>

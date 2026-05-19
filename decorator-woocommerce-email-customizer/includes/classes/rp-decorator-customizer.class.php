@@ -1203,7 +1203,7 @@ if (!class_exists('RP_Decorator_Customizer')) {
                 }
             }
 
-            $rest_arr = array('social_links_enable', 'wt_decorator_' . $email_type . '_image_link_btn_switch', 'footer_social_repeater', 'woocommerce_' . $email_type . '_settings', 'rp_decorator_' . $email_type . '_subtitle', 'rp_decorator_' . $email_type . '_btn_switch', 'rp_decorator_' . $email_type . '_body_full', 'rp_decorator_' . $email_type . '_body_partial', 'rp_decorator_' . $email_type . '_btn_switch',
+            $rest_arr = array('social_links_enable', 'wt_decorator_' . $email_type . '_image_link_btn_switch', 'footer_social_repeater', RP_Decorator_Settings::get_wc_email_settings_option_base( $email_type ), 'rp_decorator_' . $email_type . '_subtitle', 'rp_decorator_' . $email_type . '_btn_switch', 'rp_decorator_' . $email_type . '_body_full', 'rp_decorator_' . $email_type . '_body_partial', 'rp_decorator_' . $email_type . '_btn_switch',
                 'rp_decorator_' . $email_type . '_body', 'rp_decorator_' . $email_type . '_body_failed','rp_decorator_' . $email_type . '_billing_address_subtitle','rp_decorator_' . $email_type . '_shipping_address_subtitle','social_links_icon_color');
             foreach ($rest_arr as $rest_key => $rest_value) {
                 delete_option($rest_value);
@@ -1411,6 +1411,9 @@ if (!class_exists('RP_Decorator_Customizer')) {
                                                     #wt_template_footers{
                                                     border-bottom-right-radius: 16px !important;
                                                         border-bottom-left-radius: 16px !important;
+                                                    }
+                                                    #template_header_image{
+                                                        padding: 32px 0px 0px;
                                                     }',
                                 'footer_content_text' => 'Copyright &#169; 2018 WooCommerce Emails, All rights reserved.',
                                 'border_radius' => '0',
@@ -1495,6 +1498,15 @@ if (!class_exists('RP_Decorator_Customizer')) {
                                                                 #template_header_image{
                                                                             border-top-left-radius: 16px !important;
                                                                             border-top-right-radius: 16px !important;
+                                                                            padding: 32px 0px 0px;
+                                                                }
+
+                                                                #template_header_image > p > img,
+                                                                #template_header_image > p > a > img {
+                                                                            width: 150px !important;
+                                                                            height: auto;
+                                                                            display: block;
+                                                                            margin: 0 auto;
                                                                 }',
 
                                                 'preview_order_id' => 'mockup',
@@ -1503,7 +1515,7 @@ if (!class_exists('RP_Decorator_Customizer')) {
                                                 'footer_content_text' => 'Copyright &#169; 2018 WooCommerce Emails, All rights reserved.',
                                             );
                             
-                             $data['header_image']   = RP_DECORATOR_PLUGIN_URL .'/'.'assets/images/webtoffee-logo_small.png';
+                             $data['header_image']   = RP_DECORATOR_PLUGIN_URL .'/'.'assets/images/add-logo.png';
 
             }elseif ($template == 'rose_theme') {
                             $social_links_enable = get_option('social_links_enable','disabled');
@@ -1581,13 +1593,25 @@ if (!class_exists('RP_Decorator_Customizer')) {
                                                             }
                                                             #wt_billing_address_wrap > .address{
                                                             border-right: 1px solid #eee !important;
+                                                            }
+                                                            #template_header_image { 
+                                                                padding: 32px 0px 0px; 
+                                                                border-top-left-radius: 16px !important;
+                                                                border-top-right-radius: 16px !important;
+                                                            }
+                                                            #template_header_image > p > img,
+                                                            #template_header_image > p > a > img {
+                                                                width: 150px !important;
+                                                                height: auto;
+                                                                display: block;
+                                                                margin: 0 auto;
                                                             }',
                                             'header_image_maxwidth' => '220',
                                             'preview_order_id' => 'mockup',
                                             'footer_background_color' => '#f3f3f3',
                                             'footer_content_text' => 'Copyright &#169; 2018 WooCommerce Emails, All rights reserved.',
                                         );
-                            $data['header_image']   = RP_DECORATOR_PLUGIN_URL .'/'.'assets/images/webtoffee-logo_small.png';
+                            $data['header_image']   = RP_DECORATOR_PLUGIN_URL .'/'.'assets/images/add-logo.png';
                                
             }
            $template_type =  RP_Decorator_Preview::get_email_types();
@@ -1718,6 +1742,12 @@ if (!class_exists('RP_Decorator_Customizer')) {
                             $subtitle = str_replace('{quote_accepted_date}', esc_html( get_date_from_gmt( wtwraq_get_date( $email->object, '_wtwraq_quote_accepted_date' ), get_option( 'date_format' ) ) ), $subtitle);
                             break;
                     }
+                }
+
+                if ( class_exists( 'WCS_Email_Customer_Notification' ) && class_exists( 'WC_Subscription' )
+                    && is_a( $email, 'WCS_Email_Customer_Notification' )
+                    && is_a( $email->object, 'WC_Subscription' ) ) {
+                    $subtitle = RP_Decorator_WC::replace_wcs_customer_notification_body_placeholders( $subtitle, $email, $email->object );
                 }
 
             } elseif (is_a($email->object, 'WC_Product')) {

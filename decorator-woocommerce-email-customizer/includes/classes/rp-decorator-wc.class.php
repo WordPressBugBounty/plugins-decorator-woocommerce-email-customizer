@@ -66,6 +66,52 @@ if (!class_exists('RP_Decorator_WC')) {
             foreach (RP_Decorator_WC::$default_setting_replacement as $option => $replacement) {
                 add_filter('pre_option_' . $option, array($this, 'overwrite_default_email_settings'), 9999, 2);
             }
+
+            // Map legacy woocommerce_* options saved by older Decorator builds into WCS customer-notification options.
+            $wcs_notification_opts = array(
+                'woocommerce-subscriptions_customer_notification_auto_renewal_settings',
+                'woocommerce-subscriptions_customer_notification_manual_renewal_settings',
+                'woocommerce-subscriptions_customer_notification_auto_trial_expiry_settings',
+                'woocommerce-subscriptions_customer_notification_manual_trial_expiry_settings',
+                'woocommerce-subscriptions_customer_notification_subscription_expiry_settings',
+            );
+            foreach ( $wcs_notification_opts as $wcs_opt ) {
+                add_filter( 'option_' . $wcs_opt, array( $this, 'merge_legacy_wcs_notification_email_option' ), 10, 2 );
+            }
+        }
+
+        /**
+         * Copy heading/subject/etc. from mistaken woocommerce_* option when WCS option fields are empty.
+         *
+         * @param mixed  $value  Current option value.
+         * @param string $option Option name.
+         * @return mixed
+         */
+        public function merge_legacy_wcs_notification_email_option( $value, $option ) {
+            static $legacy_map = array(
+                'woocommerce-subscriptions_customer_notification_auto_renewal_settings'          => 'woocommerce_customer_notification_auto_renewal_settings',
+                'woocommerce-subscriptions_customer_notification_manual_renewal_settings'         => 'woocommerce_customer_notification_manual_renewal_settings',
+                'woocommerce-subscriptions_customer_notification_auto_trial_expiry_settings'     => 'woocommerce_customer_notification_auto_trial_expiry_settings',
+                'woocommerce-subscriptions_customer_notification_manual_trial_expiry_settings' => 'woocommerce_customer_notification_manual_trial_expiry_settings',
+                'woocommerce-subscriptions_customer_notification_subscription_expiry_settings'   => 'woocommerce_customer_notification_subscription_expiry_settings',
+            );
+            if ( ! isset( $legacy_map[ $option ] ) ) {
+                return $value;
+            }
+            $value  = is_array( $value ) ? $value : array();
+            $legacy = get_option( $legacy_map[ $option ], array() );
+            if ( ! is_array( $legacy ) || empty( $legacy ) ) {
+                return $value;
+            }
+            $fields = array( 'heading', 'subject', 'additional_content', 'email_type', 'enabled' );
+            foreach ( $fields as $field ) {
+                $cur      = isset( $value[ $field ] ) ? $value[ $field ] : null;
+                $is_empty = ( null === $cur || '' === $cur );
+                if ( $is_empty && isset( $legacy[ $field ] ) && '' !== $legacy[ $field ] && null !== $legacy[ $field ] ) {
+                    $value[ $field ] = $legacy[ $field ];
+                }
+            }
+            return $value;
         }
 
         /**
@@ -203,7 +249,7 @@ if (!class_exists('RP_Decorator_WC')) {
                 </th>
                 <td class="forminp forminp-<?php echo esc_attr( $options['type'] ); ?>">
                     <a href="<?php echo esc_url( RP_Decorator_Customizer::get_customizer_url() ); ?>" target="_blank">
-                        <button type="button" class="button button-secondary" value="<?php esc_html_e('Open Decorator', 'decorator-woocommerce-email-customizer'); ?>">
+                        <button type="button" class="button button-secondary" value="<?php esc_attr_e( 'Open Decorator', 'decorator-woocommerce-email-customizer' ); ?>">
                             <?php esc_html_e('Open Decorator', 'decorator-woocommerce-email-customizer'); ?>
                         </button>
                     </a>
@@ -311,6 +357,43 @@ if (!class_exists('RP_Decorator_WC')) {
             $body_text = str_replace('{site_url}', wp_parse_url(home_url(), PHP_URL_HOST), $body_text);
             $body_text = str_replace('{blog_url}', get_bloginfo('url'), $body_text);
 
+            $smart_coupon_user_email_ids = array(
+                'Wbte_Smart_Coupon_Abandonment_Reminder_Email',
+                'wt_smart_coupon_abandonment_coupon_email',
+                'wt_smart_coupon_signup_coupon_email',
+                'wt_smart_coupon',
+            );
+            $user = null;
+            if ( in_array( $key, $smart_coupon_user_email_ids, true ) ) {
+                if ( ! empty( $email->user ) && is_a( $email->user, 'WP_User' ) ) {
+                    $user = $email->user;
+                } elseif ( ! empty( $email->recipient ) && is_string( $email->recipient ) ) {
+                    $user = get_user_by( 'email', $email->recipient );
+                }
+            }
+            if ( $user && is_a( $user, 'WP_User' ) ) {
+                $first_name = get_user_meta( $user->ID, 'first_name', true );
+                if ( '' === $first_name ) {
+                    $first_name = get_user_meta( $user->ID, 'billing_first_name', true );
+                }
+                if ( '' === $first_name ) {
+                    $first_name = __( 'there', 'decorator-woocommerce-email-customizer' );
+                }
+                $last_name  = get_user_meta( $user->ID, 'last_name', true );
+                if ( '' === $last_name ) {
+                    $last_name = get_user_meta( $user->ID, 'billing_last_name', true );
+                }
+                $full_name = trim( $first_name . ' ' . $last_name );
+                if ( '' === $full_name ) {
+                    $full_name = $user->display_name;
+                }
+                $body_text = str_replace( '{customer_first_name}', $first_name, $body_text );
+                $body_text = str_replace( '{customer_last_name}', $last_name, $body_text );
+                $body_text = str_replace( '{customer_full_name}', $full_name, $body_text );
+                $body_text = str_replace( '{customer_email}', $user->user_email, $body_text );
+                $body_text = str_replace( '{customer_username}', $user->user_login, $body_text );
+            }
+
             if ($order && (($order instanceof WC_Order) || ($order instanceof WC_Subscription))) {
                 
                 if (0 === ( $user_id = (int) RP_Decorator_WC::get_order_meta($order->get_id(), '_customer_user') )) {
@@ -383,6 +466,12 @@ if (!class_exists('RP_Decorator_WC')) {
                             break;
                     }
                 }
+
+                if ( class_exists( 'WCS_Email_Customer_Notification' ) && class_exists( 'WC_Subscription' )
+                    && $order instanceof WC_Subscription
+                    && is_a( $email, 'WCS_Email_Customer_Notification' ) ) {
+                    $body_text = self::replace_wcs_customer_notification_body_placeholders( $body_text, $email, $order );
+                }
                 
             } else if ($order) {
                 if(strstr($body_text, '{coupon_amount}')){
@@ -394,6 +483,7 @@ if (!class_exists('RP_Decorator_WC')) {
                 }
             }
 
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $body_text = apply_filters('wt_woomail_order_body_text', $body_text, $order, $sent_to_admin, $plain_text, $email);
 
             // auto wrap text.
@@ -484,6 +574,7 @@ if (!class_exists('RP_Decorator_WC')) {
                 $body_text = str_replace('{product_link}', $email->object->get_permalink(), $body_text);
             }
 
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $body_text = apply_filters('wt_woomail_no_order_body_text', $body_text, $email);
 
             // auto wrap text.
@@ -549,6 +640,26 @@ if (!class_exists('RP_Decorator_WC')) {
         }
 
         /**
+         * Replace WCS customer-notification placeholders in raw strings (e.g. Decorator body), matching template logic.
+         *
+         * Call only when WCS is active, $email is WCS_Email_Customer_Notification, and $subscription is WC_Subscription.
+         *
+         * @param string                $string       Text that may contain {subscription_event_date} or {time_until_renewal}.
+         * @param WCS_Email_Customer_Notification $email        Customer notification email instance.
+         * @param WC_Subscription       $subscription Subscription object.
+         * @return string
+         */
+        public static function replace_wcs_customer_notification_body_placeholders( $string, $email, $subscription ) {
+            if ( ! is_string( $string ) || '' === $string ) {
+                return $string;
+            }
+            $date_type = $email->get_relevant_date_type();
+            $string    = str_replace( '{subscription_event_date}', $email->get_formatted_date( $subscription, $date_type ), $string );
+            $string    = str_replace( '{time_until_renewal}', $email->get_time_until_date( $subscription, $date_type ), $string );
+            return $string;
+        }
+
+        /**
          * Filter through strings to add support for extra placeholders
          *
          * @param string $string string of text.
@@ -601,6 +712,11 @@ if (!class_exists('RP_Decorator_WC')) {
                 $string = str_replace( '{customer_username}', self::get_username_from_id( $user_id ), $string );
                 $string = str_replace('{order_date}', wc_format_datetime($email->object->get_date_created()), $string);
                 $string = str_replace('{order_number}', $email->object->get_order_number(), $string);
+                if ( class_exists( 'WCS_Email_Customer_Notification' ) && class_exists( 'WC_Subscription' )
+                    && is_a( $email, 'WCS_Email_Customer_Notification' )
+                    && is_a( $email->object, 'WC_Subscription' ) ) {
+                    $string = self::replace_wcs_customer_notification_body_placeholders( $string, $email, $email->object );
+                }
             }
 
             return $string;

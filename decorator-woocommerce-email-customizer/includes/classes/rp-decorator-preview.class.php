@@ -225,6 +225,7 @@ if (!class_exists('RP_Decorator_Preview')) {
          */
         public static function print_live_preview_scripts() {
             $font_families = (class_exists('RP_Decorator_Settings') && property_exists('RP_Decorator_Settings', 'font_family_mapping')) ? RP_Decorator_Settings::$font_family_mapping : array();
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $font_families = apply_filters('wbte_dec_add_custom_fonts',$font_families);
             // Open container
             $scripts = '<script type="text/javascript">jQuery(document).ready(function() {';
@@ -504,11 +505,22 @@ if (!class_exists('RP_Decorator_Preview')) {
                 if (class_exists('WC_Subscriptions') && !class_exists('HF_Subscription')) {
                     $types = array_merge($types, array(
                         'new_renewal_order' => __('New renewal order', 'decorator-woocommerce-email-customizer'),
+                        'new_switch_order' => __('New subscription switch order', 'decorator-woocommerce-email-customizer'),
                         'customer_processing_renewal_order' => __('Customer processing renewal order', 'decorator-woocommerce-email-customizer'),
+                        'customer_on_hold_renewal_order' => __('Customer on-hold renewal order', 'decorator-woocommerce-email-customizer'),
                         'customer_completed_renewal_order' => __('Customer completed renewal order', 'decorator-woocommerce-email-customizer'),
                         'customer_completed_switch_order' => __('Customer completed switch order', 'decorator-woocommerce-email-customizer'),
                         'customer_renewal_invoice' => __('Customer renewal invoice', 'decorator-woocommerce-email-customizer'),
                         'cancelled_subscription' => __('Cancelled subscription', 'decorator-woocommerce-email-customizer'),
+                        'expired_subscription' => __('Expired subscription', 'decorator-woocommerce-email-customizer'),
+                        'suspended_subscription' => __('Suspended subscription', 'decorator-woocommerce-email-customizer'),
+                        'customer_notification_auto_renewal' => __('Customer notification: Automatic renewal notice', 'decorator-woocommerce-email-customizer'),
+                        'customer_notification_manual_renewal' => __('Customer notification: Manual renewal notice', 'decorator-woocommerce-email-customizer'),
+                        'customer_notification_auto_trial_expiry' => __('Customer notification: Free trial Expiration (automatic payment notice)', 'decorator-woocommerce-email-customizer'),
+                        'customer_notification_manual_trial_expiry' => __('Customer notification: Free trial Expiration (manual payment required)', 'decorator-woocommerce-email-customizer'),
+                        'customer_notification_subscription_expiry' => __('Customer notification: Subscription Expiration notice', 'decorator-woocommerce-email-customizer'),
+                        'payment_retry' => __('Admin payment retry', 'decorator-woocommerce-email-customizer'),
+                        'customer_payment_retry' => __('Customer payment retry', 'decorator-woocommerce-email-customizer'),
                     ));
                 }
 
@@ -595,6 +607,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                     ));
                 }
 
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
                 self::$email_types = apply_filters('wt_decorator_email_template_types', $types);
             }
 
@@ -629,15 +642,25 @@ if (!class_exists('RP_Decorator_Preview')) {
             );
 
             if (class_exists('WC_Subscriptions') && !class_exists('HF_Subscription')) {
+                // Avoid class_exists() on WCS email classes (autoload fatal before WC email parents load).
                 $types = array_merge($types, array(
                     'new_renewal_order' => __('New Renewal Order', 'decorator-woocommerce-email-customizer'),
+                    'new_switch_order' => __('New Subscription Switch Order (Admin)', 'decorator-woocommerce-email-customizer'),
                     'customer_processing_renewal_order' => __('Customer Processing Renewal Order', 'decorator-woocommerce-email-customizer'),
+                    'customer_on_hold_renewal_order' => __('Customer On-Hold Renewal Order', 'decorator-woocommerce-email-customizer'),
                     'customer_completed_renewal_order' => __('Customer Completed Renewal Order', 'decorator-woocommerce-email-customizer'),
                     'customer_completed_switch_order' => __('Customer Completed Switch Order', 'decorator-woocommerce-email-customizer'),
                     'customer_renewal_invoice' => __('Customer Renewal Invoice', 'decorator-woocommerce-email-customizer'),
                     'cancelled_subscription' => __('Cancelled Subscription', 'decorator-woocommerce-email-customizer'),
                     'expired_subscription' => __('Expired Subscription', 'decorator-woocommerce-email-customizer'),
                     'suspended_subscription' => __('Suspended Subscription', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_auto_renewal' => __('Customer Notification: Automatic Renewal', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_manual_renewal' => __('Customer Notification: Manual Renewal', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_auto_trial_expiry' => __('Customer Notification: Trial (Auto-Renewal)', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_manual_trial_expiry' => __('Customer Notification: Trial (Manual Renewal)', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_subscription_expiry' => __('Customer Notification: Subscription Expiring', 'decorator-woocommerce-email-customizer'),
+                    'payment_retry' => __('Admin Payment Retry', 'decorator-woocommerce-email-customizer'),
+                    'customer_payment_retry' => __('Customer Payment Retry', 'decorator-woocommerce-email-customizer'),
                 ));
             }
             // Webtoffee Subscription 
@@ -725,6 +748,7 @@ if (!class_exists('RP_Decorator_Preview')) {
             if (isset($emails[$email_type]) && is_object($emails[$email_type])) {
                 $email = $emails[$email_type];
             };
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $preview_id = apply_filters('wt_decorator_current_preview_id', $preview_id);
             // Get an order
             $order = self::get_wc_order_for_preview($order_status, $preview_id);
@@ -849,11 +873,14 @@ if (!class_exists('RP_Decorator_Preview')) {
                     case 'wt_smart_coupon':
                         $email->coupon_id = isset($coupon_id) && $coupon_id ? $coupon_id : '';
                         $email->object = $coupon ? $coupon : '';
+                        $email->user      = $user;
                         $email = self::wt_header_shortcode_replace($email);
                         break;
+                    case 'Wbte_Smart_Coupon_Abandonment_Reminder_Email':
                     case 'wt_smart_coupon_signup_coupon_email':
                     case 'wt_smart_coupon_abandonment_coupon_email':
                         $email->object = $coupon ? $coupon : '';
+                        $email->user   = $user;
                         $email = self::wt_header_shortcode_replace($email);
                         break;
                     //WooCommerce Subscriptions and Webtoffee Subscriptions
@@ -887,17 +914,30 @@ if (!class_exists('RP_Decorator_Preview')) {
                     case 'expired_subscription':
                     case 'suspended_subscription':
                     case 'cancelled_subscription':
-                    case 'customer_completed_renewal_order':
-                    case 'customer_processing_renewal_order':
                     case 'subscription_intimation':
                     case 'subscription_expiry_intimation':
+                    case 'customer_notification_auto_renewal':
+                    case 'customer_notification_manual_renewal':
+                    case 'customer_notification_auto_trial_expiry':
+                    case 'customer_notification_manual_trial_expiry':
+                    case 'customer_notification_subscription_expiry':
                         $subscription = false;
-                        if (!empty($preview_id) && 'mockup' != $preview_id) {
-                            if (function_exists('wcs_get_subscriptions_for_order')) {
-                                $subscriptions_ids = wcs_get_subscriptions_for_order($preview_id);
-                                if ($subscriptions_ids) {
-                                    foreach ($subscriptions_ids as $subscription_id => $subscription_obj) {
-                                        if ($subscription_obj->get_parent_id() == $preview_id) {
+                        $preview_id_int = ! empty($preview_id) && 'mockup' !== $preview_id ? absint($preview_id) : 0;
+                        if ($preview_id_int && function_exists('wcs_is_subscription') && function_exists('wcs_get_subscription') && wcs_is_subscription($preview_id_int)) {
+                            $subscription = wcs_get_subscription($preview_id_int);
+                        }
+                        if (! $subscription && $preview_id_int && function_exists('wcs_get_subscriptions_for_order')) {
+                            $subscriptions_ids = wcs_get_subscriptions_for_order($preview_id_int);
+                            if (is_array($subscriptions_ids)) {
+                                foreach ($subscriptions_ids as $subscription_obj) {
+                                    if (is_object($subscription_obj) && function_exists('wcs_is_subscription') && wcs_is_subscription($subscription_obj) && (int) $subscription_obj->get_parent_id() === $preview_id_int) {
+                                        $subscription = $subscription_obj;
+                                        break;
+                                    }
+                                }
+                                if (! $subscription) {
+                                    foreach ($subscriptions_ids as $subscription_obj) {
+                                        if (is_object($subscription_obj) && function_exists('wcs_is_subscription') && wcs_is_subscription($subscription_obj)) {
                                             $subscription = $subscription_obj;
                                             break; // Stop the loop).
                                         }
@@ -905,7 +945,18 @@ if (!class_exists('RP_Decorator_Preview')) {
                                 }
                             }
                         }
-                        if ($subscription) {
+                        if (! $subscription && is_object($order) && function_exists('wcs_get_subscriptions_for_order')) {
+                            $subscriptions_ids = wcs_get_subscriptions_for_order($order->get_id());
+                            if (is_array($subscriptions_ids)) {
+                                foreach ($subscriptions_ids as $subscription_obj) {
+                                    if (is_object($subscription_obj) && function_exists('wcs_is_subscription') && wcs_is_subscription($subscription_obj)) {
+                                        $subscription = $subscription_obj;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (is_object($subscription) && function_exists('wcs_is_subscription') && wcs_is_subscription($subscription)) {
                             $email->object = $subscription;
                         } else {
                             $email->object = 'subscription';
@@ -927,6 +978,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                                 $email->object = $user_membership;
                                 $email_id = strtolower($email_template);
                                 $email_body = $email->object->get_plan()->get_email_content($email_template);
+                                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Dynamic hook name uses email ID provided by WooCommerce email classes.
                                 $member_body = (string) apply_filters("{$email_id}_email_body", $email->format_string($email_body), $email->object);
 
                                 if (empty($member_body) || !is_string($member_body) || '' === trim($member_body)) {
@@ -1077,6 +1129,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                     //default here.
                     default:
                         $email->object = $order;
+                        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
                         $email = apply_filters('wt_decorator_preview_email_object', $email);
                         break;
                 }
@@ -1199,6 +1252,13 @@ if (!class_exists('RP_Decorator_Preview')) {
                 $object->replace['customer_company'] = $object->object->get_billing_company();
                 $object->find['customer_email'] = '{customer_email}';
                 $object->replace['customer_email'] = $object->object->get_billing_email();
+                if ( class_exists( 'WCS_Email_Customer_Notification' ) && class_exists( 'WC_Subscription' ) && is_a( $object->object, 'WC_Subscription' ) && is_a( $object, 'WCS_Email_Customer_Notification' ) ) {
+                    $date_type = $object->get_relevant_date_type();
+                    $object->find['subscription_event_date'] = '{subscription_event_date}';
+                    $object->replace['subscription_event_date'] = $object->get_formatted_date( $object->object, $date_type );
+                    $object->find['time_until_renewal'] = '{time_until_renewal}';
+                    $object->replace['time_until_renewal'] = $object->get_time_until_date( $object->object, $date_type );
+                }
             }
 
             return $object;
@@ -1210,6 +1270,7 @@ if (!class_exists('RP_Decorator_Preview')) {
          * @param string $email_template the email template slug.
          */
         public static function get_email_class_name($email_template) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $class_names = apply_filters('wt_decorator_email_type_class_name_array', self::$wt_supported_email_class_names);
             if (isset($class_names[$email_template])) {
                 return $class_names[$email_template];
@@ -1224,6 +1285,7 @@ if (!class_exists('RP_Decorator_Preview')) {
          * @param string $email_template the template string name.
          */
         public static function get_email_order_status($email_template) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $order_status = apply_filters('wt_decorator_email_template_type_order_status_array', self::$wt_supported_email_order_status);
             if (isset($order_status[$email_template])) {
                 return $order_status[$email_template];
@@ -1532,16 +1594,28 @@ if (!class_exists('RP_Decorator_Preview')) {
 
             if(class_exists('WC_Subscriptions') && !class_exists('HF_Subscription'))
             {
+                // Do not use class_exists() on WCS email classes here: autoload runs before WC core
+                // email parents (e.g. WC_Email_Customer_On_Hold_Order) exist and causes a fatal error.
                 $classes = array_merge($classes, array(
                     // WooCommerce Subscriptions Plugin.
                     'new_renewal_order' => 'WCS_Email_New_Renewal_Order',
+                    'new_switch_order' => 'WCS_Email_New_Switch_Order',
                     'customer_processing_renewal_order' => 'WCS_Email_Processing_Renewal_Order',
+                    'customer_on_hold_renewal_order' => 'WCS_Email_Customer_On_Hold_Renewal_Order',
                     'customer_completed_renewal_order' => 'WCS_Email_Completed_Renewal_Order',
                     'customer_completed_switch_order' => 'WCS_Email_Completed_Switch_Order',
                     'customer_renewal_invoice' => 'WCS_Email_Customer_Renewal_Invoice',
-                    'customer_payment_retry' => 'WCS_Email_Customer_Payment_Retry',
-                    'admin_payment_retry' => 'WCS_Email_Payment_Retry',
                     'cancelled_subscription' => 'WCS_Email_Cancelled_Subscription',
+                    'expired_subscription' => 'WCS_Email_Expired_Subscription',
+                    'suspended_subscription' => 'WCS_Email_On_Hold_Subscription',
+                    'customer_notification_auto_renewal' => 'WCS_Email_Customer_Notification_Auto_Renewal',
+                    'customer_notification_manual_renewal' => 'WCS_Email_Customer_Notification_Manual_Renewal',
+                    'customer_notification_auto_trial_expiry' => 'WCS_Email_Customer_Notification_Auto_Trial_Expiration',
+                    'customer_notification_manual_trial_expiry' => 'WCS_Email_Customer_Notification_Manual_Trial_Expiration',
+                    'customer_notification_subscription_expiry' => 'WCS_Email_Customer_Notification_Subscription_Expiration',
+                    'customer_payment_retry' => 'WCS_Email_Customer_Payment_Retry',
+                    'payment_retry' => 'WCS_Email_Payment_Retry',
+                    'admin_payment_retry' => 'WCS_Email_Payment_Retry',
                 ));
 
             }else if(class_exists('WC_Subscriptions') && class_exists('HF_Subscription'))
@@ -1561,6 +1635,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                     'suspended_subscription' => 'HF_On_Hold_Subscription_Email', 
                 ));
             }
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $classes = apply_filters('wt_decorator_supported_email_classes', $classes);
             return $classes;
         }
@@ -1624,6 +1699,7 @@ if (!class_exists('RP_Decorator_Preview')) {
                 'failed_renewal_authentication' => 'failed',
                 'failed_authentication_requested' => 'failed',
             );
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             $statuses = apply_filters('wt_decorator_wt_supported_email_type_status', $statuses);
             return $statuses;
         }

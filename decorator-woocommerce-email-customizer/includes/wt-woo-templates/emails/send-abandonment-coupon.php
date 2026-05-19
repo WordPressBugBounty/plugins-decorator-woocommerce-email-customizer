@@ -9,18 +9,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$coupon_data = Wt_Smart_Coupon_Public::get_coupon_meta_data( $coupon );
-if ( ! $coupon_data || ! is_array( $coupon_data ) ) {
-	$coupon_data = array(
+$rp_decorator_coupon_data = Wt_Smart_Coupon_Public::get_coupon_meta_data( $coupon );
+if ( ! $rp_decorator_coupon_data || ! is_array( $rp_decorator_coupon_data ) ) {
+	$rp_decorator_coupon_data = array(
 		'coupon_code'        => __( 'coupon-code', 'decorator-woocommerce-email-customizer' ),
 		'coupon_amount'      => 10,
 		'coupon_description' => __( 'This is a sample coupon description', 'decorator-woocommerce-email-customizer' ),
 		'coupon_type'        => __( 'Cart discount', 'decorator-woocommerce-email-customizer' ),
 		'is_email_preview'   => true,
 	);
-	$coupon_code = $coupon_data['coupon_code'];
+	$rp_decorator_coupon_code = $rp_decorator_coupon_data['coupon_code'];
 } else {
-	$coupon_code = $coupon->get_code();
+	$rp_decorator_coupon_code = $coupon->get_code();
 }
 
 /**
@@ -35,7 +35,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email );
  *
  * @since 1.0.0
  */
-do_action( 'wt_decorator_email_body_content', $coupon, $sent_to_admin, $plain_text, $email );
+do_action( 'wt_decorator_email_body_content', $coupon, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 ?>
 
 <?php
@@ -53,43 +53,43 @@ if ( ! empty( $cart_data['cart'] ) ) :
 		</thead>
 		<tbody>
 			<?php
-			$cart_total = 0;
-			$tax_total  = 0;
-			foreach ( $cart_data['cart'] as $cart_item_key => $cart_item ) :
-				$_product = wc_get_product( $cart_item['product_id'] );
+			$rp_decorator_cart_total = 0;
+			$rp_decorator_tax_total  = 0;
+			foreach ( $cart_data['cart'] as $rp_decorator_cart_item_key => $rp_decorator_cart_item ) :
+				$rp_decorator_product = wc_get_product( $rp_decorator_cart_item['product_id'] );
 
 				/**
 				 * Filter the cart item product.
 				 *
 				 * @since 1.0.0
 				 *
-				 * @param object $_product The cart item product.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @param object $rp_decorator_product The cart item product.
+				 * @param array $rp_decorator_cart_item The cart item.
+				 * @param string $rp_decorator_cart_item_key The cart item key.
 				 */
-				$_product = apply_filters( 'woocommerce_cart_item_product', $_product, $cart_item, $cart_item_key );
+				$rp_decorator_product = apply_filters( 'woocommerce_cart_item_product', $rp_decorator_product, $rp_decorator_cart_item, $rp_decorator_cart_item_key );
 
 				/**
 				 * Filter the cart item product ID.
 				 *
 				 * @since 1.0.0
 				 *
-				 * @param int $product_id The cart item product ID.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @param int $rp_decorator_product_id The cart item product ID.
+				 * @param array $rp_decorator_cart_item The cart item.
+				 * @param string $rp_decorator_cart_item_key The cart item key.
 				 */
-				$product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
+				$rp_decorator_product_id = apply_filters( 'woocommerce_cart_item_product_id', $rp_decorator_cart_item['product_id'], $rp_decorator_cart_item, $rp_decorator_cart_item_key );
 
 				/**
 				 * Filter the cart item name.
 				 *
 				 * @since 1.0.0
 				 *
-				 * @param string $product_name The cart item name.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @param string $rp_decorator_product_name The cart item name.
+				 * @param array $rp_decorator_cart_item The cart item.
+				 * @param string $rp_decorator_cart_item_key The cart item key.
 				 */
-				$product_name = apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key );
+				$rp_decorator_product_name = apply_filters( 'woocommerce_cart_item_name', $rp_decorator_product->get_name(), $rp_decorator_cart_item, $rp_decorator_cart_item_key );
 
 				/**
 				 * Filter the cart item visibility.
@@ -97,13 +97,13 @@ if ( ! empty( $cart_data['cart'] ) ) :
 				 * @since 1.0.0
 				 *
 				 * @param bool $visible Whether the cart item is visible.
-				 * @param array $cart_item The cart item.
-				 * @param string $cart_item_key The cart item key.
+				 * @param array $rp_decorator_cart_item The cart item.
+				 * @param string $rp_decorator_cart_item_key The cart item key.
 				 */
-				if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) :
-					$unit_price  = $cart_item['line_subtotal'] / $cart_item['quantity'];
-					$cart_total += $cart_item['line_total'];
-					$tax_total  += $cart_item['line_tax'];
+				if ( $rp_decorator_product && $rp_decorator_product->exists() && $rp_decorator_cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $rp_decorator_cart_item, $rp_decorator_cart_item_key ) ) :
+					$rp_decorator_unit_price  = $rp_decorator_cart_item['line_subtotal'] / $rp_decorator_cart_item['quantity'];
+					$rp_decorator_cart_total += $rp_decorator_cart_item['line_total'];
+					$rp_decorator_tax_total  += $rp_decorator_cart_item['line_tax'];
 					?>
 					<tr>
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
@@ -115,26 +115,26 @@ if ( ! empty( $cart_data['cart'] ) ) :
 							 *
 							 * @param string $thumbnail The cart item thumbnail.
 							 */
-							echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array( 80, 80 ) ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+							echo apply_filters( 'woocommerce_cart_item_thumbnail', $rp_decorator_product->get_image( array( 80, 80 ) ), $rp_decorator_cart_item, $rp_decorator_cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 							?>
 						</td>
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
-							<?php echo wp_kses_post( $product_name ); ?>
+							<?php echo wp_kses_post( $rp_decorator_product_name ); ?>
 						</td>
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
-							<?php echo wp_kses_post( wc_price( $unit_price ) ); ?>
+							<?php echo wp_kses_post( wc_price( $rp_decorator_unit_price ) ); ?>
 						</td>
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
-							<?php echo esc_html( $cart_item['quantity'] ); ?>
+							<?php echo esc_html( $rp_decorator_cart_item['quantity'] ); ?>
 						</td>
 						<td style="border-bottom: 1px solid #e5e5e5; padding: 12px;">
-							<?php echo wp_kses_post( wc_price( $cart_item['line_subtotal'] ) ); ?>
+							<?php echo wp_kses_post( wc_price( $rp_decorator_cart_item['line_subtotal'] ) ); ?>
 						</td>
 					</tr>
 					<?php
 				endif;
 			endforeach;
-			$grand_total = $cart_total + $tax_total;
+			$rp_decorator_grand_total = $rp_decorator_cart_total + $rp_decorator_tax_total;
 			?>
 		</tbody>
 		<tfoot>
@@ -142,7 +142,7 @@ if ( ! empty( $cart_data['cart'] ) ) :
 				<td colspan="4" style="text-align: right; border-top: 1px solid #e5e5e5; padding: 12px;">
 					<strong>
 					<?php
-					if ( $tax_total > 0 ) {
+					if ( $rp_decorator_tax_total > 0 ) {
 						esc_html_e( 'Total (including tax):', 'decorator-woocommerce-email-customizer' );
 					} else {
 						esc_html_e( 'Total:', 'decorator-woocommerce-email-customizer' );
@@ -151,7 +151,7 @@ if ( ! empty( $cart_data['cart'] ) ) :
 					</strong>
 				</td>
 				<td style="text-align: left; border-top: 1px solid #e5e5e5; padding: 12px 12px 12px 0;">
-					<?php echo wp_kses_post( wc_price( $grand_total ) ); ?>
+					<?php echo wp_kses_post( wc_price( $rp_decorator_grand_total ) ); ?>
 				</td>
 			</tr>
 		</tfoot>
@@ -163,7 +163,7 @@ endif;
 <div style="margin-top: 20px; text-align: center;">
 	<div style="display: inline-block;">
 		<?php
-		echo Wt_Smart_Coupon_Public::get_coupon_html( $coupon, $coupon_data, 'email_coupon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo Wt_Smart_Coupon_Public::get_coupon_html( $coupon, $rp_decorator_coupon_data, 'email_coupon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 	</div>
 </div>
@@ -176,21 +176,21 @@ endif;
 
 <div style="margin: 16px 0;" class="wbte_decorator_button_container">
 	<?php
-	$style = 'display: inline-block; background: #3175A6; border-radius: 4px; color:#ffffff; text-decoration:none; padding: 8px 12px; text-align:center; font-weight: 500; font-size: 14px; font-family: Inter, sans-serif; border: 0px solid #3175A6';
+	$rp_decorator_style = 'display: inline-block; background: #3175A6; border-radius: 4px; color:#ffffff; text-decoration:none; padding: 8px 12px; text-align:center; font-weight: 500; font-size: 14px; font-family: Inter, sans-serif; border: 0px solid #3175A6';
 	/**
 	 * Alter the cart abandonment email button style.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $style The button style.
+	 * @param string $rp_decorator_style The button style.
 	 * @param object $coupon The coupon object.
 	 */
-	$style    = apply_filters( 'wt_sc_alter_abandonment_email_button_style', $style, $coupon );
-	$cart_url = add_query_arg( 'wt_coupon', $coupon_code, wc_get_cart_url() );
+	$rp_decorator_style    = apply_filters( 'wt_sc_alter_abandonment_email_button_style', $rp_decorator_style, $coupon ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
+	$rp_decorator_cart_url = add_query_arg( 'wt_coupon', $rp_decorator_coupon_code, wc_get_cart_url() );
 	?>
 	<span>
-		<a href="<?php echo esc_url( $cart_url ); ?>">
-			<button type="button" class="button" style="<?php echo esc_attr( $style ); ?>"><?php esc_html_e( 'Claim My Discount Now!', 'decorator-woocommerce-email-customizer' ); ?></button>
+		<a href="<?php echo esc_url( $rp_decorator_cart_url ); ?>">
+			<button type="button" class="button" style="<?php echo esc_attr( $rp_decorator_style ); ?>"><?php esc_html_e( 'Claim My Discount Now!', 'decorator-woocommerce-email-customizer' ); ?></button>
 		</a>
 	</span>
 	

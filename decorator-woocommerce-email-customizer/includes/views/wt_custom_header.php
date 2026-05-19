@@ -4,8 +4,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$recipients = get_option('wt_test_mail_recipients');
-$recipients_mail = isset($recipients) && !empty($recipients) ? $recipients : '';
+$rp_decorator_recipients      = get_option( 'wt_test_mail_recipients' );
+$rp_decorator_recipients_mail = ! empty( $rp_decorator_recipients ) ? $rp_decorator_recipients : '';
 if (!is_rtl()) {
     ?>
     <style>
@@ -46,9 +46,23 @@ if (!is_rtl()) {
             color: white;
         }
         .wt_dc_tbl{
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
             width: 100%;
-            margin: 10px 35px;
+            min-height: 95px;
+            padding: 0 20px;
+            margin: 0;
+            box-sizing: border-box;
         }
+        .topnav { overflow-x: auto; overflow-y: hidden; }
+        .wt_dc_cell { flex-shrink: 0; padding-bottom: 10px; }
+        .wt_dc_cell_hidden { display: none !important; }
+        .wt_dc_spacer { flex: 1 1 auto; min-width: 0; }
+        .wt_dc_cell_buttons { display: flex; align-items: center; padding-bottom: 10px; }
+        .wt_dc_cell_actions { display: flex; flex-direction: column; align-items: flex-end; padding-bottom: 10px; }
+        .wt_dc_apply_row { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; white-space: nowrap; }
+        .wt_dc_apply_row label { font-size: 14px; cursor: pointer; }
         .wt_dc_tbl label {
             font-size: 14px;
         }
@@ -289,7 +303,7 @@ if (!is_rtl()) {
             left:-12px;
             z-index:550000;
             width: 80%;
-            height: 75px;
+            height: 95px;
             display: none;
             border-bottom: 1px solid #dcdcde;
             border-right: 1px solid #dcdcde;
@@ -314,10 +328,23 @@ if (!is_rtl()) {
             color: white;
         }
         .wt_dc_tbl{
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
             width: 100%;
-            /*margin-top: 16px;*/
-            margin: 16px 35px;
+            min-height: 95px;
+            padding: 0 20px;
+            margin: 0;
+            box-sizing: border-box;
         }
+        .topnav { overflow-x: auto; overflow-y: hidden; }
+        .wt_dc_cell { flex-shrink: 0; padding-bottom: 10px; }
+        .wt_dc_cell_hidden { display: none !important; }
+        .wt_dc_spacer { flex: 1 1 auto; min-width: 0; }
+        .wt_dc_cell_buttons { display: flex; align-items: center; padding-bottom: 10px; }
+        .wt_dc_cell_actions { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 10px; }
+        .wt_dc_apply_row { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; white-space: nowrap; }
+        .wt_dc_apply_row label { font-size: 14px; cursor: pointer; }
         .wt_dc_tbl label {
             font-size: 14px;
         }
@@ -542,41 +569,38 @@ if (!is_rtl()) {
 <?php } ?>
 
 <div class="topnav" id="wt_decorator_topnav">
-    <div class="" id="t1">
-        <table class="wt_dc_tbl" id="t2">
-            <tbody><tr>
-                    <td style="width: 1%;padding-left: 15px;">
-                        <div id="wt_order_type_div" >
-                        </div>            </td> 
-                    <td style="width: 1%;padding-left: 15px;">
-                        <div id="wt_order_num_div">
-                        </div>           
-                    </td> 
-                    <td style="width: .1%;display: none !important">
-                        <div id="wt_div_publish">
-                        </div>           
-                    </td> 
-                    <td style="width: 4%;padding-left: 15px;padding-top: 22px">
-                        <div id="wt_header_right_div">
+    <div id="t1">
+        <div class="wt_dc_tbl" id="t2">
+            <div class="wt_dc_cell">
+                <div id="wt_order_type_div"></div>
+            </div>
+            <div class="wt_dc_cell">
+                <div id="wt_order_num_div"></div>
+            </div>
+            <div class="wt_dc_cell wt_dc_cell_hidden">
+                <div id="wt_div_publish"></div>
+            </div>
+            <div class="wt_dc_spacer"></div>
+            <div class="wt_dc_cell wt_dc_cell_buttons">
+                <div id="wt_header_right_div">
+                    <button class="button btn_send_mail" id="wt_send_test_email_btn">
+                        <span class="dashicons dashicons-email" style="margin-top: 3px;"></span> <?php echo 'Test email'; ?></button>
 
-                            <button class="button btn_send_mail" id="wt_send_test_email_btn">
-                                <span class="dashicons dashicons-email" style="margin-top: 3px;"></span> <?php echo 'Test email'; ?></button>
-
-                            <button class="button btn_send_mail_down" id="wt_btn_send_mail">
-                                <span class="dashicons dashicons-arrow-down" style="margin: 4px 2px 1px -3px;"></span></button>
-                            
-                        </div>         
-                    </td> 
-                     <td style="width: 5%;padding-left: 15px; padding-bottom: 10px;">
-                        <div id="wt_header_right_action_div">
-                            <table style="margin-bottom: 3px;"><tr><td><input type="checkbox" name="wt_apply_to_all_template" id="wt_apply_to_all_template"></td><td style="text-align:left"><label><?php esc_html_e('Apply changes to all email type', 'decorator-woocommerce-email-customizer'); ?></label></td></tr></table>
-                            <button class="btn_publish_settings" id="wt_btn_settings">
-                                <span class="dashicons dashicons-arrow-down" style="margin: 0px 0px 0px 0px;color: #FFFFFF"></span></button>
-
-                        </div>         
-                    </td> 
-                </tr>
-            </tbody></table>
+                    <button class="button btn_send_mail_down" id="wt_btn_send_mail">
+                        <span class="dashicons dashicons-arrow-down" style="margin: 4px 2px 1px -3px;"></span></button>
+                </div>
+            </div>
+            <div class="wt_dc_cell wt_dc_cell_actions">
+                <div id="wt_header_right_action_div">
+                    <div class="wt_dc_apply_row">
+                        <input type="checkbox" name="wt_apply_to_all_template" id="wt_apply_to_all_template">
+                        <label for="wt_apply_to_all_template"><?php esc_html_e('Apply changes to all email type', 'decorator-woocommerce-email-customizer'); ?></label>
+                    </div>
+                    <button class="btn_publish_settings" id="wt_btn_settings">
+                        <span class="dashicons dashicons-arrow-down" style="margin: 0px 0px 0px 0px;color: #FFFFFF"></span></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -588,7 +612,7 @@ if (!is_rtl()) {
             <label style="font-size: 17px">
                 <?php esc_html_e('Enter recipient email ID:', 'decorator-woocommerce-email-customizer'); ?>
             </label>
-            <input placeholder="<?php esc_html_e('samplemail@gmail.com', 'decorator-woocommerce-email-customizer'); ?>" type="text" name="wt_recipient_email" id="wt_recipient_email" class="wt-feedback-email" value="<?php echo esc_attr( $recipients_mail ); ?>" style="margin-top: 12px;" required/><span><img id="wt_mail_image" src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/assets/images/red-cross.svg' ) ?>" style="height:20px;width: 45px;margin-bottom: -4px;"> </span>
+            <input placeholder="<?php esc_html_e('samplemail@gmail.com', 'decorator-woocommerce-email-customizer'); ?>" type="text" name="wt_recipient_email" id="wt_recipient_email" class="wt-feedback-email" value="<?php echo esc_attr( $rp_decorator_recipients_mail ); ?>" style="margin-top: 12px;" required/><span><img id="wt_mail_image" src="<?php echo esc_url( RP_DECORATOR_PLUGIN_URL . '/assets/images/red-cross.svg' ) ?>" style="height:20px;width: 45px;margin-bottom: -4px;"> </span>
         </div>
         <div class="wt-feedback-terms-segment">
             <label >

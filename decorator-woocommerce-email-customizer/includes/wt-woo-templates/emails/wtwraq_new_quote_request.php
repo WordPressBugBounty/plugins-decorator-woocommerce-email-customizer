@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email );
 ?>
 <p>
-    <?php do_action( 'wt_decorator_email_body_content', $quote, $sent_to_admin, $plain_text, $email );?>
+    <?php do_action( 'wt_decorator_email_body_content', $quote, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility. ?>
 </p>
 <h2>
     <?php 
@@ -14,7 +14,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email );
 </h2>
 
 <?php
-do_action( 'wtwraq_email_quote_details', $quote, $sent_to_admin, $plain_text, $email );
+do_action( 'wtwraq_email_quote_details', $quote, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 
 if ( $additional_content ) { 
 	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );

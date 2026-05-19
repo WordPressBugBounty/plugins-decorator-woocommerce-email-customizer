@@ -4,14 +4,14 @@
  * Plugin Name:       WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer
  * Plugin URI: 
  * Description:       A complete marketing automation tool for WooCommerce to run email campaigns, popups, signup forms, and customize store emails.
- * Version:           2.1.5
+ * Version:           2.1.6
  * Author:            WebToffee
  * Author URI:        https://www.webtoffee.com
  * License:           GPLv3 or later
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.4
- * Tested up to:      6.9
- * WC tested up to:   10.4.3
+ * Tested up to:      7.0
+ * WC tested up to:   10.7.0
  * Text Domain:       decorator-woocommerce-email-customizer
  * Domain Path:       /languages
  * Requires PHP:      5.6
@@ -46,7 +46,7 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define('WT_WOOMAIL_PATH', realpath(plugin_dir_path(__FILE__)) . DIRECTORY_SEPARATOR);
-define('RP_DECORATOR_VERSION', '2.1.5');
+define('RP_DECORATOR_VERSION', '2.1.6');
 define('RP_DECORATOR_SUPPORT_PHP', '5.6');
 define('RP_DECORATOR_SUPPORT_WP', '4.4');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
@@ -506,6 +506,7 @@ if (!class_exists('RP_Decorator')) {
         public function wt_dec_load_plugin_textdomain()
         {
             // Load translation
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- "plugin_locale" is a WordPress core filter; not owned by this plugin.
             load_textdomain('decorator-woocommerce-email-customizer', WP_LANG_DIR . '/decorator-woocommerce-email-customizer/rp_decorator-' . apply_filters('plugin_locale', get_locale(), 'decorator-woocommerce-email-customizer') . '.mo');
             load_plugin_textdomain('decorator-woocommerce-email-customizer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
         }

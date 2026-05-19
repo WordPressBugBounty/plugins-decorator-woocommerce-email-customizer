@@ -11,14 +11,13 @@
  * the readme will list any important changes.
  *
  * @see https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates\Emails 
- * @version 3.7.0
+ * @package WooCommerce\Templates\Emails
+ * @version 10.4.0
  */
-//                                                                                                            <img src="https://woocommerce-319567-2037137.cloudwaysapps.com/wp-content/plugins/kadence-woocommerce-email-designer/assets/images/gray/facebook.png" style="border: none; font-weight: bold; height: auto; outline: none; text-decoration: none; text-transform: capitalize; font-size: 14px; line-height: 24px; width: 24px; max-width: 100%; display: inline-block; vertical-align: bottom;">
 
 defined( 'ABSPATH' ) || exit;
 
-  $social_icons =  array(
+  $rp_decorator_social_icons =  array(
                  'fa-facebook'=> 'facebook.png',
                   'fa-twitter' =>'twitter.png',
                   'fa-instagram' => 'instagram.png',
@@ -26,11 +25,11 @@ defined( 'ABSPATH' ) || exit;
                   'fa-linkedin' => 'linkedin.png',
                   'fa-vimeo' => 'vimeo.png'
                 );
-		$social_enable = get_option( 'footer_social_enable' );
-		$social_links  = get_option( 'footer_social_repeater' );
-                $social_position  = get_option( 'social_links_enable' );
-                $social_folder  = get_option( 'social_links_icon_color' );
-		$social_links  = isset($social_links) && !empty($social_links) ? json_decode( $social_links ):'';
+		$rp_decorator_social_enable = get_option( 'footer_social_enable' );
+		$rp_decorator_social_links  = get_option( 'footer_social_repeater' );
+                $rp_decorator_social_position  = get_option( 'social_links_enable' );
+                $rp_decorator_social_folder  = get_option( 'social_links_icon_color' );
+		$rp_decorator_social_links  = isset($rp_decorator_social_links) && !empty($rp_decorator_social_links) ? json_decode( $rp_decorator_social_links ):'';
 ?>
 															</div>
 														</td>
@@ -57,35 +56,35 @@ defined( 'ABSPATH' ) || exit;
 										<tr>
                                                                                     <td colspan="2" valign="middle" id="credits" style="padding: 24px 0px">
 											 <?php 
-                                                                                         if(!empty($social_links) && $social_position == 'above'){
-                                                                                              $items = count($social_links);
+                                                                                         if(!empty($rp_decorator_social_links) && $rp_decorator_social_position == 'above'){
+                                                                                              $rp_decorator_items = count($rp_decorator_social_links);
                                                                                             ?>
                                                                                             <table style="margin-left: auto; margin-right: auto;" id="wt_social_footer"><tr> <?php
-                                                                                            foreach ($social_links as $social_link) {
+                                                                                            foreach ($rp_decorator_social_links as $rp_decorator_social_link) {
                                                                                                 ?>
                                                                                                <td> <div style="display: inline-block;">
-                                                                                                    <a href="<?php echo esc_url($social_link->link); ?>" class="wt-footer-social-links" style=" text-decoration: none;">
+                                                                                                    <a href="<?php echo esc_url($rp_decorator_social_link->link); ?>" class="wt-footer-social-links" style=" text-decoration: none;">
                                                                                                         <?php
-                                                                                                            if (isset($social_link->icon_color) && !empty($social_link->icon_color)) {
-                                                                                                                $color = $social_link->icon_color;
+                                                                                                            if (isset($rp_decorator_social_link->icon_color) && !empty($rp_decorator_social_link->icon_color)) {
+                                                                                                                $rp_decorator_color = $rp_decorator_social_link->icon_color;
                                                                                                             } else {
-                                                                                                                $color = 'default';
+                                                                                                                $rp_decorator_color = 'default';
                                                                                                             }
-                                                                                                               if(array_key_exists($social_link->choice, $social_icons)){
-                                                                                                                   if(isset($social_folder) && !empty($social_folder)){
-                                                                                                                       $base = RP_DECORATOR_PLUGIN_URL . '/assets/images/'.$social_folder.'/';
+                                                                                                               if(array_key_exists($rp_decorator_social_link->choice, $rp_decorator_social_icons)){
+                                                                                                                   if(isset($rp_decorator_social_folder) && !empty($rp_decorator_social_folder)){
+                                                                                                                       $rp_decorator_base = RP_DECORATOR_PLUGIN_URL . '/assets/images/'.$rp_decorator_social_folder.'/';
                                                                                                                    }else{
-                                                                                                                       $base = RP_DECORATOR_PLUGIN_URL . '/assets/images/default/';
+                                                                                                                       $rp_decorator_base = RP_DECORATOR_PLUGIN_URL . '/assets/images/default/';
                                                                                                                    }
-                                                                                                                   $img_link = $base . $social_icons[$social_link->choice];
+                                                                                                                   $rp_decorator_img_link = $rp_decorator_base . $rp_decorator_social_icons[$rp_decorator_social_link->choice];
                                                                                                                    printf( 
                                                                                                                         '<span class="wt-social-link-icon" style="font-size: 20px;"><img src="%s" width="20" ></img></span>',
-                                                                                                                        esc_url( $img_link )
+                                                                                                                        esc_url( $rp_decorator_img_link )
                                                                                                                    );
                                                                                                                }
                                                                                                             
                                                                                                         ?>
-                                                                                                        <span class="wt-social-link-title" ><?php echo esc_html($social_link->title); ?></span>
+                                                                                                        <span class="wt-social-link-title" ><?php echo esc_html($rp_decorator_social_link->title); ?></span>
                                                                                                     </a>
                                                                                                 </div></td>
                                                                                                 <?php
@@ -98,34 +97,34 @@ defined( 'ABSPATH' ) || exit;
                                                                                                    }?><div id="credit" style="padding:0px;"><?php
                                                                                             echo wp_kses_post( wpautop( wptexturize( apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) ) ) ) ); 
                                                                                            ?></div> <?php 
-                                                                                            if(!empty($social_links) && $social_position == 'bellow'){
-                                                                                            $items = count($social_links);
+                                                                                            if(!empty($rp_decorator_social_links) && $rp_decorator_social_position == 'bellow'){
+                                                                                            $rp_decorator_items = count($rp_decorator_social_links);
                                                                                             ?>
                                                                                             <table style="margin-left: auto; margin-right: auto;" id="wt_social_footer"><tr> <?php
-                                                                                            foreach ($social_links as $social_link) {
+                                                                                            foreach ($rp_decorator_social_links as $rp_decorator_social_link) {
                                                                                                 ?>
                                                                                                <td> <div style="display: inline-block;">
-                                                                                                    <a href="<?php echo esc_url($social_link->link); ?>" class="wt-footer-social-links" style=" text-decoration: none;">
+                                                                                                    <a href="<?php echo esc_url($rp_decorator_social_link->link); ?>" class="wt-footer-social-links" style=" text-decoration: none;">
                                                                                                         <?php
-                                                                                                            if (isset($social_link->icon_color) && !empty($social_link->icon_color)) {
-                                                                                                                $color = $social_link->icon_color;
+                                                                                                            if (isset($rp_decorator_social_link->icon_color) && !empty($rp_decorator_social_link->icon_color)) {
+                                                                                                                $rp_decorator_color = $rp_decorator_social_link->icon_color;
                                                                                                             } else {
-                                                                                                                $color = 'black';
+                                                                                                                $rp_decorator_color = 'black';
                                                                                                             }
-                                                                                                            if(array_key_exists($social_link->choice, $social_icons)){
-                                                                                                                   if(isset($social_folder) && !empty($social_folder)){
-                                                                                                                       $base = RP_DECORATOR_PLUGIN_URL . '/assets/images/'.$social_folder.'/';
+                                                                                                            if(array_key_exists($rp_decorator_social_link->choice, $rp_decorator_social_icons)){
+                                                                                                                   if(isset($rp_decorator_social_folder) && !empty($rp_decorator_social_folder)){
+                                                                                                                       $rp_decorator_base = RP_DECORATOR_PLUGIN_URL . '/assets/images/'.$rp_decorator_social_folder.'/';
                                                                                                                    }else{
-                                                                                                                       $base = RP_DECORATOR_PLUGIN_URL . '/assets/images/black/';
+                                                                                                                       $rp_decorator_base = RP_DECORATOR_PLUGIN_URL . '/assets/images/black/';
                                                                                                                    }
-                                                                                                                   $img_link = $base . $social_icons[$social_link->choice];
+                                                                                                                   $rp_decorator_img_link = $rp_decorator_base . $rp_decorator_social_icons[$rp_decorator_social_link->choice];
                                                                                                                    printf( 
                                                                                                                         '<span class="wt-social-link-icon" style="font-size: 20px;"><img src="%s" width="20" ></img></span>',
-                                                                                                                        esc_url( $img_link )
+                                                                                                                        esc_url( $rp_decorator_img_link )
                                                                                                                    );
                                                                                                                }
                                                                                                         ?>
-                                                                                                        <span class="wt-social-link-title" ><?php echo esc_html($social_link->title); ?></span>
+                                                                                                        <span class="wt-social-link-title" ><?php echo esc_html($rp_decorator_social_link->title); ?></span>
                                                                                                     </a>
                                                                                                 </div></td>
                                                                                                 <?php

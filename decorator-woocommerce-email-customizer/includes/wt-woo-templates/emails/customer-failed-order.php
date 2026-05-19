@@ -12,7 +12,7 @@
  *
  * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 9.8.0
+ * @version 10.4.0
  */
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$email_improvements_enabled = class_exists( FeaturesUtil::class ) ? FeaturesUtil::feature_is_enabled( 'email_improvements' ) : false;
+$rp_decorator_email_improvements_enabled = class_exists( FeaturesUtil::class ) ? FeaturesUtil::feature_is_enabled( 'email_improvements' ) : false;
 
 /**
  * Hook for the woocommerce_email_header.
@@ -31,13 +31,13 @@ $email_improvements_enabled = class_exists( FeaturesUtil::class ) ? FeaturesUtil
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
-<?php echo $email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
+<?php echo $rp_decorator_email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
 
 <p>
-	<?php do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); ?>
+	<?php do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility. ?>
 </p>
 
-<?php echo $email_improvements_enabled ? '</div>' : ''; ?>
+<?php echo $rp_decorator_email_improvements_enabled ? '</div>' : ''; ?>
 
 <?php
 /**
@@ -71,9 +71,9 @@ do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_
  * Show user-defined additional content - this is set in each email's settings.
  */
 if ( $additional_content ) {
-	echo $email_improvements_enabled ? '<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td class="email-additional-content">' : '';
+	echo $rp_decorator_email_improvements_enabled ? '<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td class="email-additional-content">' : '';
 	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
-	echo $email_improvements_enabled ? '</td></tr></table>' : '';
+	echo $rp_decorator_email_improvements_enabled ? '</td></tr></table>' : '';
 }
 
 /**

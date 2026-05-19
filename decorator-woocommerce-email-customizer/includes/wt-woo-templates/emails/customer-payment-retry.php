@@ -13,15 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
-$override_content = RP_Decorator_Customizer::opt( 'customer_payment_retry_override' );
+$rp_decorator_override_content = RP_Decorator_Customizer::opt( 'customer_payment_retry_override' );
 
-if ( true == $override_content ) {
+if ( true == $rp_decorator_override_content ) {
 
-	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email );
+	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 
 
 } else {
-	$button_check = RP_Decorator_Customizer::opt( 'customer_payment_retry_btn_switch' );
+	$rp_decorator_button_check = RP_Decorator_Customizer::opt( 'customer_payment_retry_btn_switch' );
 	?>
 	<p>
 		<?php
@@ -30,7 +30,7 @@ if ( true == $override_content ) {
 		?>
 	</p>
 	<?php
-		if ( true == $button_check ) {
+		if ( true == $rp_decorator_button_check ) {
 			echo '<p>' . esc_html__( 'To reactivate the subscription now, you can also login and pay for the renewal from your account page:', 'decorator-woocommerce-email-customizer' ) . '</p>';
 			echo '<p class="btn-container"><a href="' . esc_url( $order->get_checkout_payment_url() ) . '" class="btn">' . esc_html__( 'Pay Now &raquo;', 'decorator-woocommerce-email-customizer' ) . '</a></p>';
 		} else {

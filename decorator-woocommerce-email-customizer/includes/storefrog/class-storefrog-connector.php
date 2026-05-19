@@ -30,14 +30,14 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *
 		 *  @var string
 		 */
-		private $storefrog_url = 'https://marketing.webtoffee.com/';
+		private $storefrog_url = 'https://staging-marketing.wtdev.xyz/';
 
 		/**
 		 *  Token db url.
 		 *
 		 *  @var string
 		 */
-		private $token_db_url = 'https://api.marketing.webtoffee.com/api/v1/';
+		private $token_db_url = 'https://ema-python-staging.storefrog.com/api/v1/';
 
 		/**
 		 *  Script url.
@@ -186,6 +186,23 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 				'callback'            => array( $this, 'clear_warning_rest' ),
 				'permission_callback' => '__return_true', // WooCommerce handles auth
 			) );
+
+			register_rest_route( 'wc/v3', '/decorator/disconnect', array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'disconnect_storefrog_rest' ),
+				'permission_callback' => array( $this, 'check_disconnect_permission' ),
+			) );
+		}
+
+		/**
+		 *  Permission callback for disconnect REST route (WooCommerce built-in).
+		 *  Requires manage_woocommerce. Works with WC REST API key auth and logged-in admin.
+		 *
+		 *  @param WP_REST_Request $request Request object.
+		 *  @return bool
+		 */
+		public function check_disconnect_permission( $request ) {
+			return wc_rest_check_manager_permissions( 'settings', 'edit' );
 		}
 
 		/**
@@ -231,6 +248,22 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			return new WP_REST_Response( array(
 				'success' => true,
 				'message' => 'Warning cleared successfully.',
+			), 200 );
+		}
+
+		/**
+		 *  Disconnect StoreFrog via REST API.
+		 *  Clears connector data, key, and warning option.
+		 *
+		 *  @return WP_REST_Response Response object.
+		 */
+		public function disconnect_storefrog_rest() {
+			delete_option( $this->data_option_name );
+			delete_option( $this->key_option_name );
+			update_option( $this->show_warning_option, false );
+			return new WP_REST_Response( array(
+				'success' => true,
+				'message' => __( 'Disconnected successfully.', 'decorator-woocommerce-email-customizer' ),
 			), 200 );
 		}
 
@@ -568,6 +601,7 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			if (wp_doing_ajax()) {
 				$load_cart_data = true;
 			}
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 			$load_cart_data = apply_filters('wt_ema_load_cart_html_table_data', $load_cart_data);
 
 			$last_added_product_id = $this->get_last_added_product_id();
@@ -591,6 +625,8 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 					'last_added_product_id_parent' => isset( $last_added_product_id['product_id'] ) ? $last_added_product_id['product_id'] : 0,
 					'last_added_product_category' => $this->get_last_added_product_category(),
 					'store_currency' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '$',	
+					// Store base country code (WooCommerce option can be "US" or "US:CA").
+					'country_code' => $this->get_store_country_code(),
 				),
 				'page' => array(
 					'page_type'  => 'generic',
@@ -958,6 +994,23 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 			}
 
 			return 0;
+		}
+
+		/**
+		 * Get the store base country code from WooCommerce settings.
+		 *
+		 * @return string Two-letter country code (e.g. US, GB) or empty string.
+		 */
+		private function get_store_country_code() {
+			if ( function_exists( 'wc_get_base_location' ) ) {
+				$location = wc_get_base_location();
+				return isset( $location['country'] ) ? $location['country'] : '';
+			}
+			$base = get_option( 'woocommerce_default_country', '' );
+			if ( ! $base ) {
+				return '';
+			}
+			return strpos( $base, ':' ) !== false ? strstr( $base, ':', true ) : $base;
 		}
 
 		/**

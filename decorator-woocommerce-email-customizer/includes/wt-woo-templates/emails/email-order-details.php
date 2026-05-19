@@ -12,12 +12,20 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 3.7.0
+ * @version 10.7.0
  */
+
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 defined( 'ABSPATH' ) || exit;
 
-$text_align = is_rtl() ? 'right' : 'left';
+$rp_decorator_text_align = is_rtl() ? 'right' : 'left';
+
+$rp_decorator_email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+
+if ( $rp_decorator_email_improvements_enabled ) {
+	add_filter( 'woocommerce_order_shipping_to_display_shipped_via', '__return_false' );
+}
 
 do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email ); ?>
 
@@ -26,34 +34,35 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 <h2>
 	<?php
 	if ( $sent_to_admin ) {
-		$before = '<a class="link" href="' . esc_url( $order->get_edit_order_url() ) . '">';
-		$after  = '</a>';
+		$rp_decorator_before = '<a class="link" href="' . esc_url( $order->get_edit_order_url() ) . '">';
+		$rp_decorator_after  = '</a>';
 	} else {
-		$before = '';
-		$after  = '';
+		$rp_decorator_before = '';
+		$rp_decorator_after  = '';
 	}
 	/* translators: %s: Order ID. */
-	echo wp_kses_post( $before . sprintf( __( '[Order #%s]', 'decorator-woocommerce-email-customizer' ) . $after . ' (<time datetime="%s">%s</time>)', $order->get_order_number(), $order->get_date_created()->format( 'c' ), wc_format_datetime( $order->get_date_created() ) ) );
+	echo wp_kses_post( $rp_decorator_before . sprintf( __( '[Order #%s]', 'decorator-woocommerce-email-customizer' ) . $rp_decorator_after . ' (<time datetime="%s">%s</time>)', $order->get_order_number(), $order->get_date_created()->format( 'c' ), wc_format_datetime( $order->get_date_created() ) ) );
 	?>
 </h2>
 
-<div style="margin-bottom: 40px;">
+<div style="margin-bottom: <?php echo $rp_decorator_email_improvements_enabled ? '24px' : '40px'; ?>;">
 	<table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">
 		<thead>
 			<tr>
-				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $text_align ); ?>;"><?php esc_html_e( 'Product', 'decorator-woocommerce-email-customizer' ); ?></th>
-				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $text_align ); ?>;"><?php esc_html_e( 'Quantity', 'decorator-woocommerce-email-customizer' ); ?></th>
-				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $text_align ); ?>;"><?php esc_html_e( 'Price', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>;"><?php esc_html_e( 'Product', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>;"><?php esc_html_e( 'Quantity', 'decorator-woocommerce-email-customizer' ); ?></th>
+				<th class="td" scope="col" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>;"><?php esc_html_e( 'Price', 'decorator-woocommerce-email-customizer' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
-			echo wc_get_email_order_items( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$rp_decorator_image_size = $rp_decorator_email_improvements_enabled ? 48 : 32;
+				echo wc_get_email_order_items( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				$order,
 				array(
 					'show_sku'      => $sent_to_admin,
-					'show_image'    => false,
-					'image_size'    => array( 32, 32 ),
+					'show_image'    => $rp_decorator_email_improvements_enabled,
+					'image_size'    => array( $rp_decorator_image_size, $rp_decorator_image_size ),
 					'plain_text'    => $plain_text,
 					'sent_to_admin' => $sent_to_admin,
 				)
@@ -62,16 +71,16 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 		</tbody>
 		<tfoot>
 			<?php
-			$item_totals = $order->get_order_item_totals();
+			$rp_decorator_item_totals = $order->get_order_item_totals();
 
-			if ( $item_totals ) {
-				$i = 0;
-				foreach ( $item_totals as $total ) {
-					$i++;
+			if ( $rp_decorator_item_totals ) {
+				$rp_decorator_i = 0;
+				foreach ( $rp_decorator_item_totals as $rp_decorator_total ) {
+					$rp_decorator_i++;
 					?>
 					<tr>
-						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $total['label'] ); ?></th>
-						<td class="td" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $total['value'] ); ?></td>
+						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>; <?php echo ( 1 === $rp_decorator_i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $rp_decorator_total['label'] ); ?></th>
+						<td class="td" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>; <?php echo ( 1 === $rp_decorator_i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $rp_decorator_total['value'] ); ?></td>
 					</tr>
 					<?php
 				}
@@ -79,8 +88,8 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 			if ( $order->get_customer_note() ) {
 				?>
 				<tr>
-					<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $text_align ); ?>;"><?php esc_html_e( 'Note:', 'decorator-woocommerce-email-customizer' ); ?></th>
-					<td class="td" style="text-align:<?php echo esc_attr( $text_align ); ?>;"><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
+					<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>;"><?php esc_html_e( 'Note:', 'decorator-woocommerce-email-customizer' ); ?></th>
+					<td class="td" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>;"><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
 				</tr>
 				<?php
 			}
@@ -90,4 +99,9 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
     </div>
 </div>
 
-<?php do_action( 'woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email ); ?>
+<?php
+if ( $rp_decorator_email_improvements_enabled ) {
+	remove_filter( 'woocommerce_order_shipping_to_display_shipped_via', '__return_false' );
+}
+
+do_action( 'woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email ); ?>

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 	<?php
 	// translators: placeholder is the name of the site
-	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email );
+	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 	?>
 </p>
 

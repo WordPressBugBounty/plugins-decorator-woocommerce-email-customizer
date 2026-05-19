@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); 
 
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email );
 
 /**

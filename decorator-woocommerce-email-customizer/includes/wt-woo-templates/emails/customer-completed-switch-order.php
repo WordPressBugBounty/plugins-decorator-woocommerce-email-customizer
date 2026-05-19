@@ -16,15 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php 
-do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); ?>
+do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility. ?>
 
 <?php do_action( 'woocommerce_subscriptions_email_order_details', $order, $sent_to_admin, $plain_text, $email ); ?>
 
 <?php do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email ); ?>
 
 <h2><?php echo esc_html__( 'New Subscription Details', 'decorator-woocommerce-email-customizer' ); ?></h2>
-<?php foreach ( $subscriptions as $subscription ) : ?>
-	<?php do_action( 'woocommerce_subscriptions_email_order_details', $subscription, $sent_to_admin, $plain_text, $email ); ?>
+<?php foreach ( $subscriptions as $rp_decorator_subscription ) : ?>
+	<?php do_action( 'woocommerce_subscriptions_email_order_details', $rp_decorator_subscription, $sent_to_admin, $plain_text, $email ); ?>
 <?php endforeach; ?>
 
 <?php

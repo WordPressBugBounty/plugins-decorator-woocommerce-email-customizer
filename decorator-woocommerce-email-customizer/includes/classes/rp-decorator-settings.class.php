@@ -2477,21 +2477,25 @@ if (!class_exists('RP_Decorator_Settings')) {
                     // translators: 1: site title 2: order number
                     'activated_subscription_subject' => sprintf(__('[%1$s] Subscription Activated (%2$s)', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
                     // translators: 1: site title
-                    'activated_subscription_body' => sprintf(__('Hi there. Your subscription with (%s) has been activated. Your order details are shown below for your reference:', 'decorator-woocommerce-email-customizer'),'{site_title}'),              
+                    'activated_subscription_body' => sprintf(__('Hi there. Your subscription with (%s) has been activated. Your order details are shown below for your reference:', 'decorator-woocommerce-email-customizer'),'{site_title}'),
+                    'activated_subscription_additional_content' => '',
                     'reactivated_subscription_heading' => __('Subscription Reactivated order', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title 2: order number 3: order date
                     'reactivated_subscription_subject' => sprintf(__('[%1$s] Subscription Reactivated order (%2$s) - %3$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}','{order_date}'),
                     // translators: 1: customer full name
-                    'reactivated_subscription_body' => sprintf(__('A subscription belonging to %s has been reactivated from their account page. Subscription details are follows:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),              
+                    'reactivated_subscription_body' => sprintf(__('A subscription belonging to %s has been reactivated from their account page. Subscription details are follows:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),
+                    'reactivated_subscription_additional_content' => '',
                     'subscription_intimation_heading' => __('Subscription renewal intimation', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title
                     'subscription_intimation_subject' => sprintf(__('%s Subscription renewal intimation', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     // translators: 1: break tag 2: site title 3: subscription next payment date
                     'subscription_intimation_body' => sprintf(__('Hi there,%1$s Your subscription with %2$s will be renewed on <b>%3$s</b>. Subscription details are as follows:', 'decorator-woocommerce-email-customizer'),'<br>','{site_title}','{subscription_next_payment_date}'),
+                    'subscription_intimation_additional_content' => '',
                     'subscription_expiry_intimation_heading' => __('Subscription expiry reminder', 'decorator-woocommerce-email-customizer'),
                     'subscription_expiry_intimation_subject' => __('Subscription expiry reminder', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: break tag 2: site title 3: subscription end date
                     'subscription_expiry_intimation_body' => sprintf(__('Hi there, %1$s Your subscription with %2$s will expire on <b>%3$s</b>. Subscription details are as follows:', 'decorator-woocommerce-email-customizer'),'<br>','{site_title}','{subscription_end_date}'),
+                    'subscription_expiry_intimation_additional_content' => '',
                     'customer_processing_renewal_order_heading' => __('Thank you for your order', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title 2: order date
                     'customer_processing_renewal_order_subject' => sprintf(__('Your %1$s order receipt from %2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
@@ -2506,20 +2510,77 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'customer_completed_switch_order_subject' => sprintf(__('Your %1$s order from %2$s is complete', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_date}'),
                     // translators: 1: site title
                     'customer_completed_switch_order_body' => sprintf(__('Hi there. You have successfully changed your subscription items on %s. Your new order and subscription details are shown below for your reference:', 'decorator-woocommerce-email-customizer'),'{site_title}'),
+                    'new_renewal_order_additional_content' => '',
+                    'customer_processing_renewal_order_additional_content' => '',
+                    'customer_completed_renewal_order_additional_content' => '',
+                    'customer_completed_switch_order_additional_content' => '',
+                    'new_switch_order_heading' => __('Subscription Switched', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number 3: order date
+                    'new_switch_order_subject' => sprintf(__('[%1$s] Subscription Switched (%2$s) - %3$s', 'decorator-woocommerce-email-customizer'), '{site_title}', '{order_number}', '{order_date}'),
+                    // translators: 1: customer full name
+                    'new_switch_order_body' => sprintf(__('Customer %s has switched their subscription. The details of their new subscription are as follows:', 'decorator-woocommerce-email-customizer'), '{customer_full_name}'),
+                    'new_switch_order_additional_content' => '',
+                    'customer_on_hold_renewal_order_heading' => __('Thank you for your renewal order', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title
+                    'customer_on_hold_renewal_order_subject' => sprintf(__('Your %s renewal order has been received!', 'decorator-woocommerce-email-customizer'), '{site_title}'),
+                    // translators: 1: customer first name
+                    'customer_on_hold_renewal_order_body' => sprintf(__("Hi %s,\n\nThanks for your renewal order. It's on-hold until we confirm that payment has been received. In the meantime, here's a reminder of your order:", 'decorator-woocommerce-email-customizer'), '{customer_first_name}'),
+                    'customer_on_hold_renewal_order_additional_content' => '',
+                    'customer_notification_auto_renewal_heading' => __('Automatic renewal notice', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: customer first name 3: time until renewal
+                    'customer_notification_auto_renewal_subject' => sprintf(__('[%1$s] %2$s, your subscription automatically renews in %3$s!', 'decorator-woocommerce-email-customizer'), '{site_title}', '{customer_first_name}', '{time_until_renewal}'),
+                    // translators: 1: customer first name 2: time until renewal 3: renewal date
+                    'customer_notification_auto_renewal_body' => sprintf(__("Hi %1\$s.\n\nYour subscription will automatically renew in %2\$s — that's %3\$s.", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{time_until_renewal}', '{subscription_event_date}'),
+                    'customer_notification_auto_renewal_additional_content' => __('Thank you for being a loyal customer, {customer_first_name} — we appreciate your business.', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_manual_renewal_heading' => __('Manual renewal notice', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: customer first name
+                    'customer_notification_manual_renewal_subject' => sprintf(__('[%1$s] %2$s, your subscription is ready to be renewed!', 'decorator-woocommerce-email-customizer'), '{site_title}', '{customer_first_name}'),
+                    // translators: 1: customer first name 2: time until renewal 3: renewal date
+                    'customer_notification_manual_renewal_body' => sprintf(__("Hi %1\$s.\n\nYour subscription is up for renewal in %2\$s — that's %3\$s.\n\nThis subscription will not renew automatically.", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{time_until_renewal}', '{subscription_event_date}'),
+                    'customer_notification_manual_renewal_additional_content' => __('Thanks again for choosing {site_title}.', 'decorator-woocommerce-email-customizer'),
+                    'customer_notification_auto_trial_expiry_heading' => __('Free trial expiration: automatic payment notice', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: customer first name
+                    'customer_notification_auto_trial_expiry_subject' => sprintf(__('[%1$s] %2$s, your paid subscription starts soon!', 'decorator-woocommerce-email-customizer'), '{site_title}', '{customer_first_name}'),
+                    // translators: 1: customer first name 2: time until trial end 3: trial end date
+                    'customer_notification_auto_trial_expiry_body' => sprintf(__("Hi, %1\$s.\n\nYour paid subscription begins when your free trial expires in %2\$s — that's %3\$s.\n\nPayment will be deducted using the payment method on file.", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{time_until_renewal}', '{subscription_event_date}'),
+                    'customer_notification_auto_trial_expiry_additional_content' => '',
+                    'customer_notification_manual_trial_expiry_heading' => __('Free trial expiration: manual payment required', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: customer first name
+                    'customer_notification_manual_trial_expiry_subject' => sprintf(__('[%1$s] %2$s, your free trial is almost up!', 'decorator-woocommerce-email-customizer'), '{site_title}', '{customer_first_name}'),
+                    // translators: 1: customer first name 2: time until trial end 3: trial end date
+                    'customer_notification_manual_trial_expiry_body' => sprintf(__("Heads up, %1\$s.\n\nYour free trial expires in %2\$s — that's %3\$s.", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{time_until_renewal}', '{subscription_event_date}'),
+                    'customer_notification_manual_trial_expiry_additional_content' => '',
+                    'customer_notification_subscription_expiry_heading' => __('Subscription expiration notice', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: customer first name
+                    'customer_notification_subscription_expiry_subject' => sprintf(__('[%1$s] %2$s, your subscription is about to expire!', 'decorator-woocommerce-email-customizer'), '{site_title}', '{customer_first_name}'),
+                    // translators: 1: customer first name 2: time until expiry 3: expiry date
+                    'customer_notification_subscription_expiry_body' => sprintf(__("Heads up, %1\$s.\n\nYour subscription expires in %2\$s — that's %3\$s.", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{time_until_renewal}', '{subscription_event_date}'),
+                    'customer_notification_subscription_expiry_additional_content' => __('Thank you for choosing {site_title}, {customer_first_name}.', 'decorator-woocommerce-email-customizer'),
+                    'payment_retry_heading' => __('Automatic renewal payment failed', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number 3: retry time
+                    'payment_retry_subject' => sprintf(__('[%1$s] Automatic payment failed for %2$s, retry scheduled to run %3$s', 'decorator-woocommerce-email-customizer'), '{site_title}', '{order_number}', '{retry_time}'),
+                    // translators: 1: order number 2: customer full name 3: retry time
+                    'payment_retry_body' => sprintf(__('The automatic recurring payment for order #%1$s from %2$s has failed. The payment will be retried %3$s.\n\nThe renewal order is as follows:', 'decorator-woocommerce-email-customizer'), '{order_number}', '{customer_full_name}', '{retry_time}'),
+                    'payment_retry_override' => false,
+                    'payment_retry_additional_content' => '',
                     // translators: 1: order number
                     'customer_renewal_invoice_heading' => sprintf(__('Invoice for order %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     // translators: 1: order number
                     'customer_renewal_invoice_subject' => sprintf(__('Invoice for order %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     'customer_renewal_invoice_btn_switch' => false,
+                    // translators: 1: site title 2: invoice pay link (pending renewal invoice — default body key used by customizer)
+                    'customer_renewal_invoice_body' => sprintf(__('An invoice has been created for you to renew your subscription with %1$s. To pay for this invoice please use the following link: %2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{invoice_pay_link}'),
                     // translators: 1: site title 2: invoice pay link
                     'customer_renewal_invoice_body_failed' =>sprintf(__('The automatic payment to renew your subscription with %1$s has failed. To reactivate the subscription, please login and pay for the renewal from your account page: %2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{invoice_pay_link}'),
                     // translators: 1: site title 2: invoice pay link
                     'customer_renewal_invoice_body_pending' => sprintf(__('An invoice has been created for you to renew your subscription with %1$s. To pay for this invoice please use the following link: %2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{invoice_pay_link}'),
+                    'customer_renewal_invoice_additional_content' => '',
                     'cancelled_subscription_heading' => __('Subscription Cancelled', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title
                     'cancelled_subscription_subject' => sprintf(__('[%s] Subscription Cancelled', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     // translators: 1: customer full name
                     'cancelled_subscription_body' => sprintf(__('A subscription belonging to %s has been cancelled. Their subscription\'s details are as follows:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),
+                    'cancelled_subscription_additional_content' => '',
                     // translators: 1: quote id
                     'wtwraq_new_quote_request_email_heading' => sprintf(__('New quote request: #%s', 'decorator-woocommerce-email-customizer'),'{quote_id}'),
                     // translators: 1: site title 2: quote id
@@ -2563,18 +2624,23 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'expired_subscription_subject' => sprintf(__('[%s] Subscription Expired', 'decorator-woocommerce-email-customizer'),'{site_title}'),
                     // translators: 1: customer full name
                     'expired_subscription_body' =>  sprintf(__('A subscription belonging to %s has been expired. Subscription details are follows:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),
+                    'expired_subscription_additional_content' => '',
                     // translators: 1: order number
                     'customer_payment_retry_heading' => sprintf(__('Automatic payment failed for order %s', 'decorator-woocommerce-email-customizer'),'{order_number}'),
                     // translators: 1: order number 2: retry time
                     'customer_payment_retry_subject' => sprintf(__('Automatic payment failed for %1$s, we will retry %2$s', 'decorator-woocommerce-email-customizer'),'{order_number}','{retry_time}'),
-                    'customer_payment_retry_body' => '',
+                    // translators: 1: customer first name 2: retry time 3: pay link HTML
+                    'customer_payment_retry_body' => sprintf(__("Hi %1\$s,\n\nThe automatic payment to renew your subscription has failed. We will retry the payment %2\$s.\n\nTo reactivate the subscription now, you can also log in and pay for the renewal from your account page: %3\$s", 'decorator-woocommerce-email-customizer'), '{customer_first_name}', '{retry_time}', '{invoice_pay_link}'),
                     'customer_payment_retry_override' => false,
                     'customer_payment_retry_btn_switch' => false,
+                    'customer_payment_retry_additional_content' => '',
                     'admin_payment_retry_heading' => __('Automatic renewal payment failed', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title 2: order number 3: retry time
                     'admin_payment_retry_subject' => sprintf(__('[%1$s] Automatic payment failed for %2$s, retry scheduled to run %3$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}','{retry_time}'),
-                    'admin_payment_retry_body' => '',
+                    // translators: 1: order number 2: customer full name 3: retry time
+                    'admin_payment_retry_body' => sprintf(__('The automatic recurring payment for order #%1$s from %2$s has failed. The payment will be retried %3$s.\n\nThe renewal order is as follows:', 'decorator-woocommerce-email-customizer'), '{order_number}', '{customer_full_name}', '{retry_time}'),
                     'admin_payment_retry_override' => false,
+                    'admin_payment_retry_additional_content' => '',
                     'billing_address_subtitle' => __('Billing address', 'decorator-woocommerce-email-customizer'),
                     'shipping_address_subtitle' => __('Shipping address', 'decorator-woocommerce-email-customizer'),
                     'new_order_heading' => __('New order', 'decorator-woocommerce-email-customizer'),
@@ -2744,6 +2810,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                     // translators: 1: customer full name
                     'suspended_subscription_body' => sprintf(__('A subscription belonging to %s has been suspended by the user. Their subscription\'s details are as follows: ', 'decorator-woocommerce-email-customizer'),'{customer_full_name}'),
                     'suspended_subscription_heading' => __('Subscription Suspended', 'decorator-woocommerce-email-customizer'),
+                    'suspended_subscription_additional_content' => '',
                     'wt_smart_coupon_abandonment_coupon_email_heading' => __('Your favourites are runnung out of stock!', 'decorator-woocommerce-email-customizer'),
                     'wt_smart_coupon_gift_heading' => __('You\'ve got a gift!', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: membership plan
@@ -2910,6 +2977,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                 'times' => __('Times new roman', 'decorator-woocommerce-email-customizer'),
                 'verdana' => __('Verdana', 'decorator-woocommerce-email-customizer'),
             );
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
             return apply_filters('wbte_dec_custom_font_addition',$font_families);
         }
 
@@ -2928,8 +2996,10 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                 $args = array(
                     'type' => 'shop_order',
                     'post_status' => array_keys(wc_get_order_statuses()),
-                    'order' => 'ASC',
-                    'limit' => 10
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
+                    'order' => apply_filters('wt_decorator_preview_order_ids_sort_order', 'DESC'),
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
+                    'limit' => max(1, (int) apply_filters('wt_decorator_preview_order_ids_limit', 100)),
                 );
                 $orders = RP_Decorator_WC::get_orders($args);
 
@@ -2944,6 +3014,33 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
         }
 
         /**
+         * Option name (without [field]) for WC_Email settings — must match WC_Settings_API::get_option_key().
+         *
+         * WooCommerce Subscriptions "Customer notification" emails set plugin_id to woocommerce-subscriptions_,
+         * so options are woocommerce-subscriptions_{id}_settings. Decorator previously used woocommerce_{id}_settings
+         * for all types, so heading/subject saved in Customizer never loaded in preview for those five emails.
+         *
+         * @param string $email_type_key Same as WC_Email::$id (e.g. customer_notification_manual_renewal).
+         * @return string e.g. woocommerce_new_order_settings or woocommerce-subscriptions_customer_notification_manual_renewal_settings.
+         */
+        public static function get_wc_email_settings_option_base( $email_type_key ) {
+            static $wcs_customer_notifications = null;
+            if ( null === $wcs_customer_notifications ) {
+                $wcs_customer_notifications = array(
+                    'customer_notification_auto_renewal',
+                    'customer_notification_manual_renewal',
+                    'customer_notification_auto_trial_expiry',
+                    'customer_notification_manual_trial_expiry',
+                    'customer_notification_subscription_expiry',
+                );
+            }
+            if ( in_array( $email_type_key, $wcs_customer_notifications, true ) ) {
+                return 'woocommerce-subscriptions_' . $email_type_key . '_settings';
+            }
+            return 'woocommerce_' . $email_type_key . '_settings';
+        }
+
+        /**
          * Get woocommerce settings that the plugin will allow editing of
          *
          * @access public
@@ -2954,6 +3051,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
             if (is_null(self::$custom_settings_for_textedit)) {
                 $email_text = array();
                 foreach (RP_Decorator_Preview::get_email_types() as $key => $value) {
+                    $wc_email_settings_opt = self::get_wc_email_settings_option_base( $key );
 
                     $email_text['social_links_enable'] = array(
                         'title' => __('Set social links', 'decorator-woocommerce-email-customizer'),
@@ -3015,7 +3113,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
 
                     // Email recipients Text.
                     if ('cancelled_order' == $key || 'new_order' == $key || 'failed_order' == $key) {
-                        $email_text['woocommerce_' . $key . '_settings[recipient]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[recipient]' ] = array(
                             'title' => __('Recipient(s)', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3036,7 +3134,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
 
                     if ('customer_refunded_order' == $key) {
                         // Email Subject.
-                        $email_text['woocommerce_' . $key . '_settings[subject_full]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[subject_full]' ] = array(
                             'title' => __('Full refund subject', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3048,7 +3146,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             ),
                         );
                         // Email Subject.
-                        $email_text['woocommerce_' . $key . '_settings[subject_partial]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[subject_partial]' ] = array(
                             'title' => __('Partial refund subject', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3060,7 +3158,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             ),
                         );
                         // Email Header Text.
-                        $email_text['woocommerce_' . $key . '_settings[heading_full]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[heading_full]' ] = array(
                             'title' => __('Full refund heading text', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3076,7 +3174,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             ),
                         );
                         // Email Header Text.
-                        $email_text['woocommerce_' . $key . '_settings[heading_partial]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[heading_partial]' ] = array(
                             'title' => __('Partial refund heading text', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3088,7 +3186,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             ),
                         );
                         if (version_compare(WC_VERSION, '3.7', '>')) {
-                            $email_text['woocommerce_' . $key . '_settings[additional_content]'] = array(
+                            $email_text[ $wc_email_settings_opt . '[additional_content]' ] = array(
                                 'title' => __('Additional content', 'decorator-woocommerce-email-customizer'),
                                 'type' => 'textarea',
                                 'section' => 'text_editor',
@@ -3104,7 +3202,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                     }else {
 
                         // Email Subject.
-                        $email_text['woocommerce_' . $key . '_settings[subject]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[subject]' ] = array(
                             'title' => __('Subject text', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3116,7 +3214,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             ),
                         );
                         if ('customer_invoice' == $key) {
-                            $email_text['woocommerce_' . $key . '_settings[subject_paid]'] = array(
+                            $email_text[ $wc_email_settings_opt . '[subject_paid]' ] = array(
                                 'title' => __('Subject (paid) text', 'decorator-woocommerce-email-customizer'),
                                 'type' => 'text',
                                 'section' => 'text_editor',
@@ -3129,7 +3227,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             );
                         }
                         // Email Header Text.
-                        $email_text['woocommerce_' . $key . '_settings[heading]'] = array(
+                        $email_text[ $wc_email_settings_opt . '[heading]' ] = array(
                             'title' => __('Heading text', 'decorator-woocommerce-email-customizer'),
                             'type' => 'text',
                             'section' => 'text_editor',
@@ -3144,7 +3242,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             'selectors' => array('#header_wrapper h1'),
                         );
                         if ('customer_invoice' == $key) {
-                            $email_text['woocommerce_' . $key . '_settings[heading_paid]'] = array(
+                            $email_text[ $wc_email_settings_opt . '[heading_paid]' ] = array(
                                 'title' => __('Heading (paid) text', 'decorator-woocommerce-email-customizer'),
                                 'type' => 'text',
                                 'section' => 'text_editor',
@@ -3158,7 +3256,7 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                             );
                         }
                         if (version_compare(WC_VERSION, '3.7', '>') ) {
-                            $email_text['woocommerce_' . $key . '_settings[additional_content]'] = array(
+                            $email_text[ $wc_email_settings_opt . '[additional_content]' ] = array(
                                 'title' => __('Additional content', 'decorator-woocommerce-email-customizer'),
                                 'type' => 'textarea',
                                 'section' => 'text_editor',

@@ -16,6 +16,21 @@ jQuery(document).ready(function () {
     var btn_id;
     jQuery("#publish-settings").appendTo("#wt_div_publish");
     var email_type = jQuery('#_customize-input-rp_decorator_email_type').val();
+
+    /** Match PHP RP_Decorator_Settings::get_wc_email_settings_option_base() for control list item IDs. */
+    function wt_decorator_wc_email_settings_optionSubstring(type) {
+        var wcsNotifications = [
+            'customer_notification_auto_renewal',
+            'customer_notification_manual_renewal',
+            'customer_notification_auto_trial_expiry',
+            'customer_notification_manual_trial_expiry',
+            'customer_notification_subscription_expiry'
+        ];
+        if (wcsNotifications.indexOf(type) !== -1) {
+            return 'woocommerce-subscriptions_' + type + '_settings';
+        }
+        return 'woocommerce_' + type + '_settings';
+    }
     
     let content_tab = document.getElementById("sub-accordion-section-rp_decorator_text_editor").querySelectorAll('li');
     let content_inside_tab = document.getElementById("sub-accordion-panel-rp_decorator_content").querySelectorAll('li');
@@ -94,7 +109,8 @@ jQuery(document).ready(function () {
                 }
 
             } else {
-                if (content_li.indexOf( 'customize-control-woocommerce_' + email_type ) > -1 || content_li.indexOf( 'customize-control-rp_decorator_' + email_type ) > -1 ) {
+                var wcSettingsFragment = wt_decorator_wc_email_settings_optionSubstring(email_type);
+                if (content_li.indexOf(wcSettingsFragment) > -1 || content_li.indexOf('customize-control-rp_decorator_' + email_type) > -1) {
                     jQuery('#' + content_li).show();
                 } else {
                     jQuery('#' + content_li).hide();

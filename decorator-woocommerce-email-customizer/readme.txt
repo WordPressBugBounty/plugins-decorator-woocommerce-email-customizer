@@ -1,12 +1,12 @@
 === WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer  ===
 Contributors: webtoffee
-Version: 2.1.5
+Version: 2.1.6
 Tags: email automation, email marketing, popups, WooCommerce marketing, email customizer
 Donate link: https://www.webtoffee.com/plugins
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.9
-Stable tag: 2.1.5
+Tested up to: 7.0
+Stable tag: 2.1.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -214,150 +214,18 @@ Yes, you can add social links at the footer of the email.
 
 == Changelog ==
 
-= 2.1.5 - 2026-1-21 =
-* [Enhancement] - Code stability improved.
+= 2.1.6 - 2026-05-19 =
+* [Compatibility] - Tested OK with WC 10.7
+* [Compatibility] - Tested OK with WP 7.0
+* [Improvement] - Updated email content for Woocommerce Subscription plugin v8.3.1.
+* [Tweak] - Performance optimization and bug fixes.
 
-= 2.1.4 - 2026-1-13 =
-* [Compatibility] - Tested OK with WC 10.4.3
-
-= 2.1.3 - 2025-12-15 =
-* [Compatibility] - Tested OK with WP 6.9
-* [Compatibility] - Tested OK with WC 10.4.0
-
-= 2.1.2 - 2025-11-28 =
-* [Fix] Vulnerability. Props to **Legion Hunter** and **Patchstack**.
-
-= 2.1.1 - 2025-11-05 =
-* [Compatibility] - Tested OK with WC 10.2.2
-* [Enhancement] - Code stability improved.
-* [Fix] - Plugin Check Plugin fixes.
-
-= 2.1.0 - 2025-10-13 =
-* [Compatibility] - Tested OK with WP 6.8.3
-* [Compatibility] - Tested OK with WC 10.2.2
-
-= 2.0.9 - 2025-09-08 =
-* [Compatibility] - Tested OK with WC 10.1.2
-
-= 2.0.6 - 2025-06-23 =
-* [Compatibility] - Tested OK with WP 6.8.1
-* [Compatibility] - Tested OK with WC 9.9.4
-
-= 2.0.5 - 2025-05-20 =
-* [Enhancement] - API Changes
-
-= 2.0.4 - 2025-05-07 =
-* [Compatibility] - Tested OK with WP 6.8
-* [Compatibility] - Tested OK with WC 9.8
-
-= 2.0.3 - 2025-02-18 =
-* [Enhancement] - Enhanced functionality and UI/UX.
-* [Compatibility] - Tested OK with WP 6.7.2
-* [Compatibility] - Tested OK with WC 9.6.2
-
-= 2.0.2 - 2025-02-05 =
-* [Fix] - Admin AJAX functionality is not working for non-logged-in users.
-
-= 2.0.1 - 2025-02-04 =
-* [Enhancement] - Enhanced functionality and UI/UX.
-* [Compatibility] - Tested OK with WooCommerce 9.6.0
-
-= 2.0.0 - 2025-01-20 =
-* [New] - Added support for integration with WebToffee E-commerce Marketing Automation app
-* [Fix] - Translation is not working properly
-
-= 1.3.1 - 22-11-2024 =
-* [Compatibility] - Tested OK with WooCommerce 9.4.2
-* [Compatibility] - Tested OK with WordPress 6.7
-
-= 1.3.0 - 11-07-2024 =
-* [Add] - Filters for adding Custom fonts
-* [Compatibility] - Tested OK with WooCommerce 9.0.2
-* [Compatibility] - Tested OK with WordPress 6.6(RC3)
-
-= 1.2.9 - 11-01-2024 =
-* [Compatibility] - Tested OK with WooCommerce 8.4.0
-* [Compatibility] - Tested OK with WordPress 6.4.2
-
-= 1.2.8 - 02-11-2023 =
-* [Fix] - Security Updates ( reported by Thiennv )
-
-= 1.2.7 - 11-10-2023 =
-* [Fix] - Border radius working
-* [Compatibility] - Tested OK with WooCommerce 8.2
-* [Compatibility] - Tested OK with WordPress 6.3.1
-
-= 1.2.6 - 8-8-2023 =
-* [Add] - Added WooCommerce HPOS
-* [Compatibility] - Tested OK with WooCommerce 7.9
-
-= 1.2.5 - 09-06-2023 =
-* [Compatibility] - Tested OK with Subscriptions for Woocommerce Webtoffee 3.2.7
-* [Compatibility] - Tested OK with Webtoffee Woocommerce Request a Quote 1.0.3
-* [Compatibility] - Tested OK with WordPress 6.2
-* [Compatibility] - Tested OK with WooCommerce 7.7
-
-= 1.2.4 - 2023-02-22 = 
-* [Enhancement] - Improved functionality.
-* [Fix] - Prebuilt template switching issue has been resolved
-* [Fix] - Order addresses padding issue has been resolved
-* [Compatibility] - Tested OK with WP 6.1.1
-* [Compatibility] - Tested OK with WC 7.4.0 
-
-= 1.2.3 =
-* [Add] - Prebuilt templates
-* [Enhancement] - Improved functionality.
-* [Fix] - Template switching issue has been resolved
-* [Fix] - Body text enable/disable issue has been resolved
-* [Enhancement] Improved user interface and user experience
-* [Compatibility] - Tested OK with WP 6.1.1
-* [Compatibility] - Tested OK with WC 7.1.1
-
-= 1.2.2 =
-* [Compatibility] - Tested OK with WP 6.0
-* Fix:- Multisite Compatibility issues.
-* Improvement: Button customization improved.
-* Improvement: Code stability improved.
-
-= 1.2.1 =
-* [Compatibility] - Tested OK with WP 5.9.3
-* [Compatibility] - Tested OK with WC 6.5.1
-* Fix:- Email client Compatibility issues.
-* Improvement: Code stability improved.
-* Improvement: Header image section improved.
-
-= 1.2.0 =
-* Improved UI/UX
-* Apply the customisations to all emails.
-* Test email to your inbox.
-* Social media links in footer
-* Dynamic order preview
-* Add more customisation options in each section
-* [Compatibility] - Tested OK with WP 5.9.1
-* [Compatibility] - Tested OK with WC 6.2.1
-
-= 1.1.3 =
-* [Compatibility] - Tested OK with WP 5.8.3
-* [Compatibility] - Tested OK with WC 6.1.0
-* Fix:- WC compatibility with shipping phone number
-
-= 1.1.2 =
-* [Compatibility] - Tested OK with WP 5.8.2
-* [Compatibility] - Tested OK with WC 6.0.0
-* Improvement: Code stability improved.
-
-= 1.1.1 =
-* [Compatibility] - Tested OK with WP 5.8.
-* [Compatibility] - Tested OK with WC 5.6.
-
-= 1.1.0 =
-* Tested OK with WC 5.1
-
-= 1.0.9 =
-* Tested OK with WP 5.6
-* Tested OK with WC 4.8
+[See changelog for all versions](https://plugins.svn.wordpress.org/decorator-woocommerce-email-customizer/trunk/changelog.txt)
 
 == Upgrade Notice ==
 
-= 2.1.5 - 2026-1-21 =
-* [Enhancement] - Code stability improved.
+= 2.1.6 - 2026-05-19 =
+* [Compatibility] - Tested OK with WC 10.7
+* [Compatibility] - Tested OK with WP 7.0
+* [Improvement] - Updated email content for Woocommerce Subscription plugin v8.3.1.
+* [Tweak] - Performance optimization and bug fixes.

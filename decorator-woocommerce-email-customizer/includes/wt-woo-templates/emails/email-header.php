@@ -12,38 +12,37 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 4.0.0
+ * @version 10.7.0
  */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-$wt_custom_style = RP_Decorator_Customizer::$wt_template_type;
-$wt_template_object = RP_Decorator_Customizer::$wt_template_object;
+$rp_decorator_custom_style = RP_Decorator_Customizer::$wt_template_type;
+$rp_decorator_template_object = RP_Decorator_Customizer::$wt_template_object;
 
-if (empty($wt_custom_style)) {
-    $wt_custom_style = RP_Decorator_Customizer::wt_get_current_template();
-}
-
-if (!empty($wt_custom_style) && $wt_custom_style == 'customer_partially_refunded_order') {
-    $wt_custom_style = 'customer_refunded_order';
+if (empty($rp_decorator_custom_style)) {
+    $rp_decorator_custom_style = RP_Decorator_Customizer::wt_get_current_template();
 }
 
-$key = 'rp_decorator_' . $wt_custom_style . '_subtitle';
+if (!empty($rp_decorator_custom_style) && $rp_decorator_custom_style == 'customer_partially_refunded_order') {
+    $rp_decorator_custom_style = 'customer_refunded_order';
+}
 
-$email_subtitle = get_option('rp_decorator_' . $wt_custom_style . '_subtitle');
-$image_link_btn = get_option('wt_decorator_' . $wt_custom_style . '_image_link_btn_switch');
-if (!empty($email_subtitle)) {
-    $email_subtitle = RP_Decorator_Customizer::wt_subtitle_shortcode_replace($email_subtitle, $wt_template_object);
+
+$rp_decorator_email_subtitle = get_option('rp_decorator_' . $rp_decorator_custom_style . '_subtitle');
+$rp_decorator_image_link_btn = get_option('wt_decorator_' . $rp_decorator_custom_style . '_image_link_btn_switch');
+if (!empty($rp_decorator_email_subtitle)) {
+    $rp_decorator_email_subtitle = RP_Decorator_Customizer::wt_subtitle_shortcode_replace($rp_decorator_email_subtitle, $rp_decorator_template_object);
 }
-$subtitle_placement = RP_Decorator_Customizer::opt('subtitle_placement');
-$header_placement = RP_Decorator_Customizer::opt( 'header_image_placement' );
-if ( empty( $header_placement ) ) {
-	$header_placement = 'outside';
+$rp_decorator_subtitle_placement = RP_Decorator_Customizer::opt('subtitle_placement');
+$rp_decorator_header_placement = RP_Decorator_Customizer::opt( 'header_image_placement' );
+if ( empty( $rp_decorator_header_placement ) ) {
+	$rp_decorator_header_placement = 'outside';
 }
-if (!empty($email_heading)) {
-    $email_heading = RP_Decorator_Customizer::wt_subtitle_shortcode_replace($email_heading, $wt_template_object);
-}
-$header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce_email_header_image',''), $wt_custom_style);
+$rp_decorator_email_heading = ! empty( $email_heading )
+    ? RP_Decorator_Customizer::wt_subtitle_shortcode_replace( $email_heading, $rp_decorator_template_object )
+    : $email_heading;
+$rp_decorator_header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce_email_header_image',''), $rp_decorator_custom_style); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 
 ?>
 <!DOCTYPE html>
@@ -54,19 +53,19 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
     </head>
     <body <?php echo is_rtl() ? 'rightmargin' : 'leftmargin'; ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
         <div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
-            <?php if ( 'outside' == $header_placement ) { ?>
+            <?php if ( 'outside' == $rp_decorator_header_placement ) { ?>
             <table id="wt_wrapper_img_table" border="0" cellpadding="0" cellspacing="0" style="margin-left:auto; margin-right: auto;">
                 <tr>
                     <td align="center" valign="top">
                         <div id="template_header_image"  style="overflow: hidden;">
                             <?php
-                            if (!empty($header_img_src)) {
+                            if (!empty($rp_decorator_header_img_src)) {
                                 echo '<p style="margin-top:0;margin-bottom: 0;">';
-                                if (isset($image_link_btn) && $image_link_btn) {
+                                if (isset($rp_decorator_image_link_btn) && $rp_decorator_image_link_btn) {
                                     echo '<a href="' . esc_url(get_home_url()) . '" target="_blank" style="display:inline-block;text-decoration: none;">';
                                 }
-                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
-                                if (isset($image_link_btn) && $image_link_btn) {
+                                echo '<img src="' . esc_url($rp_decorator_header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
+                                if (isset($rp_decorator_image_link_btn) && $rp_decorator_image_link_btn) {
                                     echo '</a>';
                                 }
                                 echo '</p>';
@@ -78,18 +77,18 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
             </table>
             <?php } ?>
             <table id="wt_wrapper_table" border="0" cellpadding="0" cellspacing="0" height="100%" style="border: 0px solid;margin-left: auto;margin-right: auto;border-color: #dedede; overflow: hidden;">
-                <?php if ( 'inside' == $header_placement ) { ?>  
+                <?php if ( 'inside' == $rp_decorator_header_placement ) { ?>  
                 <tr>
                     <td align="center" valign="top">
                         <div id="template_header_image"  style="overflow: hidden;">
                             <?php
-                            if (!empty($header_img_src)) {
+                            if (!empty($rp_decorator_header_img_src)) {
                                 echo '<p style="margin-top:0;margin-bottom: 0;">';
-                                if (isset($image_link_btn) && $image_link_btn) {
+                                if (isset($rp_decorator_image_link_btn) && $rp_decorator_image_link_btn) {
                                     echo '<a href="' . esc_url(get_home_url()) . '" target="_blank" style="display:inline-block;text-decoration: none;">';
                                 }
-                                echo '<img src="' . esc_url($header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
-                                if (isset($image_link_btn) && $image_link_btn) {
+                                echo '<img src="' . esc_url($rp_decorator_header_img_src) . '" alt="' . esc_attr( get_bloginfo('name', 'display') ) . '" />';
+                                if (isset($rp_decorator_image_link_btn) && $rp_decorator_image_link_btn) {
                                     echo '</a>';
                                 }
                                 echo '</p>';
@@ -104,7 +103,7 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
                         <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_container" style="border: none;box-shadow: none !important">
                             <tr>
                                 <td align="center" valign="top">
-                                <?php if ( 'inside' == $header_placement ) { ?>
+                                <?php if ( 'inside' == $rp_decorator_header_placement ) { ?>
                                     <div id="wt_header_wrapper" style="border-top-left-radius: 0px !important; border-top-right-radius: 0px !important;">
                                 <?php } else { ?>
                                     <div id="wt_header_wrapper">
@@ -113,12 +112,12 @@ $header_img_src = apply_filters('wbte_dec_header_image', get_option('woocommerce
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" id="template_header">
                                             <tr>
                                                 <td id="header_wrapper">
-                                                    <?php if ('above' === $subtitle_placement && !empty($email_subtitle)) { ?>
-                                                        <div class="subtitle" style="padding-bottom: 10px;margin-left: 0px;padding-right: 0px"><?php echo wp_kses_post($email_subtitle); ?></div>
+                                                    <?php if ('above' === $rp_decorator_subtitle_placement && !empty($rp_decorator_email_subtitle)) { ?>
+                                                        <div class="subtitle" style="padding-bottom: 10px;margin-left: 0px;padding-right: 0px"><?php echo wp_kses_post($rp_decorator_email_subtitle); ?></div>
                                                     <?php } ?>
-                                                    <h1><?php echo esc_html( $email_heading ); ?></h1>
-                                                    <?php if ('below' === $subtitle_placement && !empty($email_subtitle)) { ?>
-                                                        <div class="subtitle" style="padding-top: 10px;padding-left: 0px;padding-right: 0px"><?php echo wp_kses_post($email_subtitle); ?></div>
+                                                    <h1><?php echo esc_html( $rp_decorator_email_heading ); ?></h1>
+                                                    <?php if ('below' === $rp_decorator_subtitle_placement && !empty($rp_decorator_email_subtitle)) { ?>
+                                                        <div class="subtitle" style="padding-top: 10px;padding-left: 0px;padding-right: 0px"><?php echo wp_kses_post($rp_decorator_email_subtitle); ?></div>
                                                     <?php } ?>
                                                 </td>
                                             </tr>

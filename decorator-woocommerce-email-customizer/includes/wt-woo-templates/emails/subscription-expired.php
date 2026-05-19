@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 <?php do_action('woocommerce_email_header', $email_heading, $email); ?>
 
 <p>
-    <?php do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); ?>
+    <?php do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility. ?>
 
 </p>
 
@@ -30,9 +30,9 @@ if (!defined('ABSPATH')) {
             </td>
             <td class="td" style="text-align:left; vertical-align:middle;">
                 <?php
-                $last_order_time_created = $subscription->get_time('last_order_date_created', 'site');
-                if (!empty($last_order_time_created)) {
-                    echo esc_html(date_i18n(wc_date_format(), $last_order_time_created));
+                $rp_decorator_last_order_time_created = $subscription->get_time('last_order_date_created', 'site');
+                if (!empty($rp_decorator_last_order_time_created)) {
+                    echo esc_html(date_i18n(wc_date_format(), $rp_decorator_last_order_time_created));
                 } else {
                     echo '-';
                 }

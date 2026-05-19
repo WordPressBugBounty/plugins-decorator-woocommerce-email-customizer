@@ -19,11 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); 
 
-$override_content = RP_Decorator_Customizer::opt( 'admin_payment_retry_override' );
+if ( true == RP_Decorator_Customizer::opt( 'admin_payment_retry_override' ) ) {
 
-if ( true == $override_content ) {
-
-	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email );
+	do_action( 'wt_decorator_email_body_content', $order, $sent_to_admin, $plain_text, $email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
 
 
 } else {
