@@ -30,14 +30,14 @@ if ( ! class_exists( 'Storefrog_Connector' ) ) {
 		 *
 		 *  @var string
 		 */
-		private $storefrog_url = 'https://staging-marketing.wtdev.xyz/';
+		private $storefrog_url = 'https://marketing.webtoffee.com/';
 
 		/**
 		 *  Token db url.
 		 *
 		 *  @var string
 		 */
-		private $token_db_url = 'https://ema-python-staging.storefrog.com/api/v1/';
+		private $token_db_url = 'https://api.marketing.webtoffee.com/api/v1/';
 
 		/**
 		 *  Script url.
