@@ -12,7 +12,7 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 10.7.0
+ * @version 10.8.0
  */
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -31,19 +31,40 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 
 <div id="wt_order_items_table">
 
+<?php
+	$rp_decorator_order_details_heading = '';
+	if ( $rp_decorator_email_improvements_enabled ) {
+		/** This filter is documented in woocommerce/templates/emails/email-order-details.php */
+		$rp_decorator_order_details_heading = apply_filters( 'woocommerce_email_order_details_heading', '', $order, $email );
+	}
+
+	/** This filter is documented in woocommerce/templates/emails/email-order-details.php */
+	$rp_decorator_display_order_number = (bool) apply_filters( 'woocommerce_email_display_order_number', true, $order, $email );
+
+	if ( $rp_decorator_order_details_heading || $rp_decorator_display_order_number ) :
+	?>
 <h2>
 	<?php
-	if ( $sent_to_admin ) {
-		$rp_decorator_before = '<a class="link" href="' . esc_url( $order->get_edit_order_url() ) . '">';
-		$rp_decorator_after  = '</a>';
-	} else {
-		$rp_decorator_before = '';
-		$rp_decorator_after  = '';
+	if ( $rp_decorator_order_details_heading ) {
+		echo wp_kses_post( $rp_decorator_order_details_heading );
 	}
-	/* translators: %s: Order ID. */
-	echo wp_kses_post( $rp_decorator_before . sprintf( __( '[Order #%s]', 'decorator-woocommerce-email-customizer' ) . $rp_decorator_after . ' (<time datetime="%s">%s</time>)', $order->get_order_number(), $order->get_date_created()->format( 'c' ), wc_format_datetime( $order->get_date_created() ) ) );
+	if ( $rp_decorator_display_order_number ) {
+		if ( $sent_to_admin ) {
+			$rp_decorator_before = '<a class="link" href="' . esc_url( $order->get_edit_order_url() ) . '">';
+			$rp_decorator_after  = '</a>';
+		} else {
+			$rp_decorator_before = '';
+			$rp_decorator_after  = '';
+		}
+		if ( $rp_decorator_order_details_heading ) {
+			echo '<br>';
+		}
+		/* translators: %s: Order ID. */
+		echo wp_kses_post( $rp_decorator_before . sprintf( __( '[Order #%s]', 'decorator-woocommerce-email-customizer' ) . $rp_decorator_after . ' (<time datetime="%s">%s</time>)', $order->get_order_number(), $order->get_date_created()->format( 'c' ), wc_format_datetime( $order->get_date_created() ) ) );
+	}
 	?>
 </h2>
+<?php endif; ?>
 
 <div style="margin-bottom: <?php echo $rp_decorator_email_improvements_enabled ? '24px' : '40px'; ?>;">
 	<table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">

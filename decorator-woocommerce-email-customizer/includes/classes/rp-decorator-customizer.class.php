@@ -82,6 +82,9 @@ if (!class_exists('RP_Decorator_Customizer')) {
             add_action('woocommerce_email_header', array($this, 'wt_email_header_before'), 1, 2);
             
             add_action('woocommerce_email_header', array($this, 'maybe_add_custom_temp_style'), 1, 2);
+
+            // Webtoffee EU Order Withdrawal Button: keep its site footer link out of the preview canvas.
+            add_filter('wbte_ewb_show_footer_withdrawal_link', array($this, 'wt_hide_ewb_footer_link_in_preview'));
             // Ajax handler
             add_action('wp_ajax_rp_decorator_reset', array($this, 'ajax_reset'));
 
@@ -908,7 +911,13 @@ if (!class_exists('RP_Decorator_Customizer')) {
                 $value = $value . ' !important';
             }
 
-            if ($key == 'button_color' && ($selector == 'a.wt_template_button'||$selector == 'a.button' ||$selector == 'button')) {
+            if ($key == 'button_color' && in_array($selector, array(
+                'a.wt_template_button',
+                'a.button',
+                'button',
+                '#body_content_inner a.wt_template_button',
+                '#body_content_inner a.button',
+            ), true)) {
                 $value = trim(str_replace('!important', '', $value));
                 $value = $value . ' !important';
             }
@@ -963,7 +972,7 @@ if (!class_exists('RP_Decorator_Customizer')) {
                     'header_padding_left_right' => 'px',
                     'heading_font_size' => 'px',
                     'footer_padding' => 'px',
-                    'footer_top_bottom_padding' => 'px',
+                    'footer_top_bottom_padding' => 'px !important',
                     'footer_left_right_padding' => 'px !important',
                     'footer_font_size' => 'px',
                     'footer_link_color' => ' !important',
@@ -1203,8 +1212,26 @@ if (!class_exists('RP_Decorator_Customizer')) {
                 }
             }
 
-            $rest_arr = array('social_links_enable', 'wt_decorator_' . $email_type . '_image_link_btn_switch', 'footer_social_repeater', RP_Decorator_Settings::get_wc_email_settings_option_base( $email_type ), 'rp_decorator_' . $email_type . '_subtitle', 'rp_decorator_' . $email_type . '_btn_switch', 'rp_decorator_' . $email_type . '_body_full', 'rp_decorator_' . $email_type . '_body_partial', 'rp_decorator_' . $email_type . '_btn_switch',
-                'rp_decorator_' . $email_type . '_body', 'rp_decorator_' . $email_type . '_body_failed','rp_decorator_' . $email_type . '_billing_address_subtitle','rp_decorator_' . $email_type . '_shipping_address_subtitle','social_links_icon_color');
+            // Each per-email setting is its own option, so all of them must be listed here.
+            $rest_arr = array(
+                'social_links_enable',
+                'social_links_icon_color',
+                'footer_social_repeater',
+                RP_Decorator_Settings::get_wc_email_settings_option_base( $email_type ),
+                'wt_decorator_' . $email_type . '_image_link_btn_switch',
+                'rp_decorator_' . $email_type . '_subtitle',
+                'rp_decorator_' . $email_type . '_billing_address_subtitle',
+                'rp_decorator_' . $email_type . '_shipping_address_subtitle',
+                'rp_decorator_' . $email_type . '_btn_switch',
+                'rp_decorator_' . $email_type . '_body',
+                'rp_decorator_' . $email_type . '_body_full',
+                'rp_decorator_' . $email_type . '_body_partial',
+                'rp_decorator_' . $email_type . '_body_failed',
+                'rp_decorator_' . $email_type . '_body_paid',
+                'rp_decorator_' . $email_type . '_body_pending',
+                'rp_decorator_' . $email_type . '_body_text_enable_switch',
+                'rp_decorator_' . $email_type . '_button_text',
+            );
             foreach ($rest_arr as $rest_key => $rest_value) {
                 delete_option($rest_value);
             }
@@ -1221,6 +1248,9 @@ if (!class_exists('RP_Decorator_Customizer')) {
             // Check if custom styles need to be applied
             if (RP_Decorator_WC::overwrite_options()) {
 
+                // Neutralise the Email improvements declarations the customizer cannot reach.
+                $styles .= RP_Decorator_Customizer::get_email_improvements_reset_styles();
+
                 // Add custom styles
                 $styles .= RP_Decorator_Customizer::get_styles_string();
 
@@ -1229,6 +1259,7 @@ if (!class_exists('RP_Decorator_Customizer')) {
             }
             // Otherwise apply some fixes for Customizer Preview
             else if (RP_Decorator::is_own_preview_request()) {
+                $styles .= RP_Decorator_Customizer::get_email_improvements_reset_styles();
                 $styles .= 'body { background-color: ' . get_option('woocommerce_email_background_color') . '; }';
                 $styles .= RP_Decorator_Customizer::get_static_styles();
             }
@@ -1264,6 +1295,72 @@ if (!class_exists('RP_Decorator_Customizer')) {
                 border-bottom-style: solid;
             }
         ";
+        }
+
+        /**
+         * Neutralise the WooCommerce "Email improvements" declarations the customizer cannot reach.
+         *
+         * @access public
+         * @return string
+         */
+        public static function get_email_improvements_reset_styles() {
+            if (!class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')
+                || !\Automattic\WooCommerce\Utilities\FeaturesUtil::feature_is_enabled('email_improvements')) {
+                return '';
+            }
+
+            $styles = "
+            #template_header_image {
+                padding-top: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            #header_wrapper {
+                padding-left: 48px;
+                padding-right: 48px;
+            }
+            #template_footer td {
+                border-radius: 6px;
+            }
+            #template_footer #credit {
+                border-top: 0;
+                line-height: 150%;
+            }
+            #template_footer #credit p {
+                margin: 0 0 16px;
+            }
+        ";
+
+            // The feature also ships a narrow-viewport block whose declarations are !important,
+            // so it overrides the rules above wherever the viewport is under 600px -- real mobile
+            // clients, and the WP Mail Logging viewer, which renders the message in a 598px wide
+            // iframe. These counterparts are deliberately !important too, and carry an extra id so
+            // they outrank WooCommerce's by specificity rather than relying on rule order.
+            $heading_font_size = trim(str_replace('!important', '', (string) self::opt('heading_font_size', '#template_header h1', 'font-size')));
+
+            $styles .= "
+            @media screen and (max-width: 600px) {
+                #wrapper #template_header_image {
+                    padding: 0 !important;
+                }
+                #wrapper #header_wrapper {
+                    padding: 27px 36px !important;
+                }
+        ";
+
+            if ('' !== $heading_font_size) {
+                $styles .= "
+                #wrapper #header_wrapper h1 {
+                    font-size: " . $heading_font_size . " !important;
+                }
+            ";
+            }
+
+            $styles .= "
+            }
+        ";
+
+            return $styles;
         }
 
         /**
@@ -1669,6 +1766,23 @@ if (!class_exists('RP_Decorator_Customizer')) {
             wp_send_json_success($deafault);
         }
         
+        /**
+         * Suppress the EU Order Withdrawal Button site footer link inside the email preview.
+         *
+         * @access public
+         * @since 2.1.8   Webtoffee EU Order Withdrawal Button compatibility
+         * @param bool $show Whether the source plugin intends to render the link.
+         * @return bool
+         */
+        public function wt_hide_ewb_footer_link_in_preview($show) {
+
+            if (class_exists('RP_Decorator') && RP_Decorator::is_own_preview_request()) {
+                return false;
+            }
+
+            return $show;
+        }
+
         /**
          * Replace shortcodes in subtitle
          *

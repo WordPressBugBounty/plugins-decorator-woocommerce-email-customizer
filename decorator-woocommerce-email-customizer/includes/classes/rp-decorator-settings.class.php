@@ -1628,6 +1628,7 @@ if (!class_exists('RP_Decorator_Settings')) {
                         'choices' => RP_Decorator_Settings::get_text_aligns(),
                         'selectors' => array(
                             '#template_header_image' => array('text-align'),
+                            '#template_header_image p' => array('text-align'),
                         ),
                     ),
                     'header_image_placement' => array(
@@ -1975,6 +1976,8 @@ if (!class_exists('RP_Decorator_Settings')) {
                             'a.wt_template_button' => array('color'),
                             'a.button' => array('color'),
                             'button' => array('color'),
+                            '#body_content_inner a.wt_template_button' => array('color'),
+                            '#body_content_inner a.button' => array('color'),
                         ),
                         'control_type' => 'color',
                     ),
@@ -2619,6 +2622,45 @@ if (!class_exists('RP_Decorator_Settings')) {
                     'wtwraq_quote_reminder_email_subject' => __( 'You have a pending quote', 'decorator-woocommerce-email-customizer' ),
                     // translators: 1: customer full name 2: break tag 3: break tag 4: quote id 5: site title
                     'wtwraq_quote_reminder_email_body' => sprintf(__('Hi %1$s , %2$s %3$s You have a pending quote #%4$s on %5$s. Do not forgot it! Our proposal is as follows:', 'decorator-woocommerce-email-customizer'),'{customer_full_name}','<br>','<br>','{quote_id}','{site_title}'),
+                    // Webtoffee EU Order Withdrawal Button. Same wording as the source plugin, so upgrades look unchanged.
+                    'wbte_ewb_request_submitted_customer_heading' => __('Withdrawal Request Received', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_request_submitted_customer_subject' => sprintf(__('[%1$s]: Withdrawal request for order #%2$s received', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'wbte_ewb_request_submitted_admin_heading' => __('New Withdrawal Request', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_request_submitted_admin_subject' => sprintf(__('[%1$s]: New withdrawal request for order #%2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'wbte_ewb_request_approved_heading' => __('Withdrawal Request Approved', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_request_approved_subject' => sprintf(__('[%1$s]: Your withdrawal request for order #%2$s has been approved', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'wbte_ewb_request_rejected_heading' => __('Withdrawal Request Rejected', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_request_rejected_subject' => sprintf(__('[%1$s]: Your withdrawal request for order #%2$s has been rejected', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'wbte_ewb_guest_verification_heading' => __('Verify your withdrawal request', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_guest_verification_subject' => sprintf(__('[%1$s]: Verify your withdrawal request for order #%2$s', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    'wbte_ewb_guest_ineligible_heading' => __('Order not eligible for withdrawal', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: site title 2: order number
+                    'wbte_ewb_guest_ineligible_subject' => sprintf(__('[%1$s]: Your order #%2$s is not eligible for withdrawal', 'decorator-woocommerce-email-customizer'),'{site_title}','{order_number}'),
+                    // translators: 1: customer first name 2: break tag 3: break tag 4: order number
+                    'wbte_ewb_request_submitted_customer_body' => sprintf(__('Hi %1$s,%2$s%3$sWe have received your withdrawal request for order #%4$s. Thank you for letting us know.', 'decorator-woocommerce-email-customizer'),'{customer_first_name}','<br>','<br>','{order_number}'),
+                    // translators: 1: order number
+                    'wbte_ewb_request_submitted_admin_body' => sprintf(__('A new withdrawal request has been submitted for order #%s.', 'decorator-woocommerce-email-customizer'),'{order_number}'),
+                    // translators: 1: customer first name 2: break tag 3: break tag 4: order number
+                    'wbte_ewb_request_approved_body' => sprintf(__('Hi %1$s,%2$s%3$sGreat news! Your withdrawal request for order #%4$s has been approved.', 'decorator-woocommerce-email-customizer'),'{customer_first_name}','<br>','<br>','{order_number}'),
+                    // translators: 1: customer first name 2: break tag 3: break tag 4: order number
+                    'wbte_ewb_request_rejected_body' => sprintf(__('Hi %1$s,%2$s%3$sWe have reviewed your withdrawal request for order #%4$s. Unfortunately, we are unable to approve this request at this time.', 'decorator-woocommerce-email-customizer'),'{customer_first_name}','<br>','<br>','{order_number}'),
+                    'wbte_ewb_guest_verification_body' => __('We received your withdrawal request. To complete it, please verify your billing email address by clicking the button below.', 'decorator-woocommerce-email-customizer'),
+                    // translators: 1: order number
+                    'wbte_ewb_guest_ineligible_body' => sprintf(__('We received your withdrawal request for order #%s. Unfortunately, this order is not currently eligible for withdrawal.', 'decorator-woocommerce-email-customizer'),'{order_number}'),
+                    // Empty by default, like WooCommerce core. Rendered by our template overrides.
+                    'wbte_ewb_request_submitted_customer_additional_content' => '',
+                    'wbte_ewb_request_submitted_admin_additional_content' => '',
+                    'wbte_ewb_request_approved_additional_content' => '',
+                    'wbte_ewb_request_rejected_additional_content' => '',
+                    'wbte_ewb_guest_verification_additional_content' => '',
+                    'wbte_ewb_guest_ineligible_additional_content' => '',
+                    // Button label for the guest verification email. Same wording as the source plugin.
+                    'wbte_ewb_guest_verification_button_text' => __('Verify withdrawal request', 'decorator-woocommerce-email-customizer'),
                     'expired_subscription_heading' => __('Subscription Expired', 'decorator-woocommerce-email-customizer'),
                     // translators: 1: site title
                     'expired_subscription_subject' => sprintf(__('[%s] Subscription Expired', 'decorator-woocommerce-email-customizer'),'{site_title}'),
@@ -3459,6 +3501,26 @@ You\'ve got a coupon!', 'decorator-woocommerce-email-customizer'
                                 'transport' => 'refresh',
                             );
                         }
+                    }
+
+                    // Webtoffee EU Order Withdrawal Button. Only the guest verification email has a button; styling comes from the Button styles section.
+                    if ('wbte_ewb_guest_verification' === $key) {
+                        $email_text['rp_decorator_' . $key . '_button_text'] = array(
+                            'title' => __('Verification button text', 'decorator-woocommerce-email-customizer'),
+                            'type' => 'text',
+                            'section' => 'text_editor',
+                            'priority' => 25,
+                            'default' => self::get_default_value($key . '_button_text'),
+                            'original' => '',
+                            'transport' => 'refresh',
+                            'live_method' => 'replace',
+                            'input_attrs' => array(
+                                'placeholder' => self::get_default_value($key . '_button_text'),
+                            ),
+                            'selectors' => array(
+                                '#body_content_inner .wt_ewb_verify_button',
+                            ),
+                        );
                     }
                 }
                 self::$custom_settings_for_textedit = $email_text;

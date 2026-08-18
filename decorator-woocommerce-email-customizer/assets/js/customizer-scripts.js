@@ -49,7 +49,7 @@ jQuery(document).ready(function () {
         } 
     });
 
-    // Compatability with Webtoffee Quote plugin
+    // Compatability with Webtoffee Quote and EU Order Withdrawal Button plugins
     content_inside_tab.forEach((item, index) => {
         const content_inside_tab_li = item.id;
         const validEmailTypes = [
@@ -60,7 +60,13 @@ jQuery(document).ready(function () {
             'wtwraq_quote_received_email',
             'wtwraq_quote_expired_email',
             'wtwraq_quote_expiry_reminder_email',
-            'wtwraq_quote_reminder_email'
+            'wtwraq_quote_reminder_email',
+            'wbte_ewb_request_submitted_customer',
+            'wbte_ewb_request_submitted_admin',
+            'wbte_ewb_request_approved',
+            'wbte_ewb_request_rejected',
+            'wbte_ewb_guest_verification',
+            'wbte_ewb_guest_ineligible'
         ];
         if (validEmailTypes.includes(email_type)) {
             if (content_inside_tab_li.indexOf('rp_decorator_items_table') !== -1 || content_inside_tab_li.indexOf('rp_decorator_address_table') !== -1)  { 

@@ -10,9 +10,9 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
+ * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 10.7.0
+ * @version 11.0.0
  */
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -86,7 +86,6 @@ foreach ( $items as $rp_decorator_item_id => $rp_decorator_item ) :
 		</td>
 		<td class="td" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>; vertical-align:middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
 			<?php
-			echo $rp_decorator_email_improvements_enabled ? '&times;' : '';
 			$rp_decorator_qty          = $rp_decorator_item->get_quantity();
 			$rp_decorator_refunded_qty = $order->get_qty_refunded_for_item( $rp_decorator_item_id );
 
@@ -95,7 +94,12 @@ foreach ( $items as $rp_decorator_item_id => $rp_decorator_item ) :
 			} else {
 				$rp_decorator_qty_display = esc_html( $rp_decorator_qty );
 			}
-			echo wp_kses_post( apply_filters( 'woocommerce_email_order_item_quantity', $rp_decorator_qty_display, $rp_decorator_item ) );
+			/** This filter is documented in woocommerce/templates/emails/email-order-items.php */
+			$rp_decorator_quantity = apply_filters( 'woocommerce_email_order_item_quantity', $rp_decorator_qty_display, $rp_decorator_item );
+			if ( '' !== $rp_decorator_quantity ) {
+				$rp_decorator_quantity_prefix = $rp_decorator_email_improvements_enabled ? '&times;' : '';
+				echo wp_kses_post( $rp_decorator_quantity_prefix . $rp_decorator_quantity );
+			}
 			?>
 		</td>
 		<td class="td" style="text-align:<?php echo esc_attr( $rp_decorator_text_align ); ?>; vertical-align:middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">

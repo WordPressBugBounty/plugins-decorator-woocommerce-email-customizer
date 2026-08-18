@@ -4,14 +4,14 @@
  * Plugin Name:       WebToffee eCommerce Marketing Automation - Email marketing, Popups, Email customizer
  * Plugin URI: 
  * Description:       A complete marketing automation tool for WooCommerce to run email campaigns, popups, signup forms, and customize store emails.
- * Version:           2.1.7
+ * Version:           2.1.8
  * Author:            WebToffee
  * Author URI:        https://www.webtoffee.com
  * License:           GPLv3 or later
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
- * Requires at least: 4.4
- * Tested up to:      7.0
- * WC tested up to:   10.7.0
+ * Requires at least: 6.0
+ * Tested up to:      7.1
+ * WC tested up to:   11.0.1
  * Text Domain:       decorator-woocommerce-email-customizer
  * Domain Path:       /languages
  * Requires PHP:      5.6
@@ -46,9 +46,9 @@ if (!defined('ABSPATH')) {
 define('RP_DECORATOR_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('RP_DECORATOR_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
 define('WT_WOOMAIL_PATH', realpath(plugin_dir_path(__FILE__)) . DIRECTORY_SEPARATOR);
-define('RP_DECORATOR_VERSION', '2.1.7');
+define('RP_DECORATOR_VERSION', '2.1.8');
 define('RP_DECORATOR_SUPPORT_PHP', '5.6');
-define('RP_DECORATOR_SUPPORT_WP', '4.4');
+define('RP_DECORATOR_SUPPORT_WP', '6.0');
 define('RP_DECORATOR_SUPPORT_WC', '2.4');
 define('WT_EMAIL_DECORATOR_VERSION', RP_DECORATOR_VERSION);
 

@@ -606,6 +606,17 @@ if (!class_exists('RP_Decorator_Preview')) {
                         
                     ));
                 }
+                // Webtoffee EU Order Withdrawal Button. Guard on the constant: this list is cached before WooCommerce loads its emails.
+                if (defined('WBTE_EWB_VERSION')) {
+                    $types = array_merge($types, array(
+                        'wbte_ewb_request_submitted_customer' => __('Withdrawal Request Submitted', 'decorator-woocommerce-email-customizer'),
+                        'wbte_ewb_request_submitted_admin' => __('New Withdrawal Request (Admin)', 'decorator-woocommerce-email-customizer'),
+                        'wbte_ewb_request_approved' => __('Withdrawal Request Approved', 'decorator-woocommerce-email-customizer'),
+                        'wbte_ewb_request_rejected' => __('Withdrawal Request Rejected', 'decorator-woocommerce-email-customizer'),
+                        'wbte_ewb_guest_verification' => __('Guest Withdrawal Verification', 'decorator-woocommerce-email-customizer'),
+                        'wbte_ewb_guest_ineligible' => __('Guest Order Not Eligible', 'decorator-woocommerce-email-customizer'),
+                    ));
+                }
 
                 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Hook name retained for backward compatibility.
                 self::$email_types = apply_filters('wt_decorator_email_template_types', $types);
@@ -701,6 +712,17 @@ if (!class_exists('RP_Decorator_Preview')) {
                     'wtwraq_quote_expiry_reminder_email' => __('Quote Expiry Reminder Email', 'decorator-woocommerce-email-customizer'),
                     'wtwraq_quote_reminder_email' => __('Quote Reminder Email', 'decorator-woocommerce-email-customizer'),
                     
+                ));
+            }
+            // Webtoffee EU Order Withdrawal Button. Editable only because Decorator ships its own copies of these templates.
+            if (defined('WBTE_EWB_VERSION')) {
+                $types = array_merge($types, array(
+                    'wbte_ewb_request_submitted_customer' => __('Withdrawal Request Submitted', 'decorator-woocommerce-email-customizer'),
+                    'wbte_ewb_request_submitted_admin' => __('New Withdrawal Request (Admin)', 'decorator-woocommerce-email-customizer'),
+                    'wbte_ewb_request_approved' => __('Withdrawal Request Approved', 'decorator-woocommerce-email-customizer'),
+                    'wbte_ewb_request_rejected' => __('Withdrawal Request Rejected', 'decorator-woocommerce-email-customizer'),
+                    'wbte_ewb_guest_verification' => __('Guest Withdrawal Verification', 'decorator-woocommerce-email-customizer'),
+                    'wbte_ewb_guest_ineligible' => __('Guest Order Not Eligible', 'decorator-woocommerce-email-customizer'),
                 ));
             }
 
@@ -1126,6 +1148,16 @@ if (!class_exists('RP_Decorator_Preview')) {
                             $email->recipient = $email->object->get_billing_email();
                         }
                         break;
+                    // Webtoffee EU Order Withdrawal Button. Cased explicitly rather than left to
+                    case 'wbte_ewb_request_submitted_customer':
+                    case 'wbte_ewb_request_submitted_admin':
+                    case 'wbte_ewb_request_approved':
+                    case 'wbte_ewb_request_rejected':
+                    case 'wbte_ewb_guest_verification':
+                    case 'wbte_ewb_guest_ineligible':
+                        $email->object = $order;
+                        $email = self::wt_prepare_ewb_preview_email($email, $order);
+                        break;
                     //default here.
                     default:
                         $email->object = $order;
@@ -1520,6 +1552,174 @@ if (!class_exists('RP_Decorator_Preview')) {
         }
 
         /**
+         * Prepare a Webtoffee EU Order Withdrawal Button email for preview and test-send.
+         *
+         * @access private
+         * @since 2.1.8   Webtoffee EU Order Withdrawal Button compatibility
+         * @param object      $email WC_Email instance.
+         * @param object|null $order Preview order, when one is available.
+         * @return object
+         */
+        private static function wt_prepare_ewb_preview_email($email, $order) {
+
+            if (! is_object($email) || ! isset($email->id) || ! defined('WBTE_EWB_VERSION')) {
+                return $email;
+            }
+
+            $order = ( is_object($order) && $order instanceof WC_Order ) ? $order : null;
+
+            // Guest-ineligible needs nothing extra: its template only uses the order in ->object.
+            if ('wbte_ewb_guest_ineligible' === $email->id) {
+
+                $email->placeholders = self::wt_merge_ewb_placeholders($email, array(
+                    '{order_number}' => $order ? $order->get_order_number() : '',
+                ));
+
+                return $email;
+            }
+
+            // Guest verification is shaped differently: it uses ->pending, not ->request/->order.
+            if ('wbte_ewb_guest_verification' === $email->id) {
+
+                $pending = self::wt_get_ewb_preview_pending($order);
+
+                if (! is_object($pending)) {
+                    $email->object = false;
+                    return $email;
+                }
+
+                $email->pending = $pending;
+
+                // Left empty on purpose: the template derives the URL from $pending->verify_token
+                // when this is blank, which keeps the preview link self-consistent.
+                if (! isset($email->verification_url)) {
+                    $email->verification_url = '';
+                }
+
+                $email->placeholders = self::wt_merge_ewb_placeholders($email, array(
+                    '{order_number}' => $order ? $order->get_order_number() : '',
+                ));
+
+                return $email;
+            }
+
+            $request = self::wt_get_ewb_preview_request($order);
+
+            if (! is_object($request)) {
+                // Cannot build anything usable. Signal the "not previewable" notice rather than
+                // letting the vendor template dereference null.
+                $email->object = false;
+                return $email;
+            }
+
+            $email->request = $request;
+            $email->order   = $order;
+
+            $email->placeholders = self::wt_merge_ewb_placeholders($email, array(
+                '{order_number}' => $order ? $order->get_order_number() : '',
+                '{customer_name}' => $order ? $order->get_formatted_billing_full_name() : '',
+                '{request_date}' => esc_html($request->get_created_at_formatted()),
+                '{request_type}' => esc_html($request->get_request_type_label()),
+            ));
+
+            return $email;
+        }
+
+        /**
+         * Merge preview placeholder values over whatever the email already declares.
+         *
+         * @access private
+         * @since 2.1.8   Webtoffee EU Order Withdrawal Button compatibility
+         * @param object $email WC_Email instance.
+         * @param array  $values Placeholder token => replacement.
+         * @return array
+         */
+        private static function wt_merge_ewb_placeholders($email, $values) {
+
+            $placeholders = ( isset($email->placeholders) && is_array($email->placeholders) ) ? $email->placeholders : array();
+
+            return array_merge($placeholders, $values);
+        }
+
+        /**
+         * Resolve a pending guest request to preview: newest real record, else a synthetic stand-in.
+         *
+         * @access private
+         * @since 2.1.8   Webtoffee EU Order Withdrawal Button compatibility
+         * @param object|null $order Preview order, when one is available.
+         * @return object|false Wbte_Ewb_Pending_Request instance, or false if one cannot be built.
+         */
+        private static function wt_get_ewb_preview_pending($order) {
+
+            if (! class_exists('Wbte_Ewb_Pending_Request') || ! method_exists('Wbte_Ewb_Pending_Request', 'from_row')) {
+                return false;
+            }
+
+            return Wbte_Ewb_Pending_Request::from_row((object) array(
+                'id' => 0,
+                'order_number' => $order ? $order->get_order_number() : '',
+                'customer_email' => $order ? $order->get_billing_email() : '',
+                'request_type' => 'full',
+                'items_json' => '[]',
+                'reason' => '',
+                'verify_token' => 'preview',
+                'created_at' => gmdate('Y-m-d H:i:s'),
+            ));
+        }
+
+        /**
+         * Resolve a withdrawal request to preview: newest real record, else a synthetic stand-in.
+         *
+         * @access private
+         * @since 2.1.8   Webtoffee EU Order Withdrawal Button compatibility
+         * @param object|null $order Preview order, when one is available.
+         * @return object|false Wbte_Ewb_Request instance, or false if one cannot be built.
+         */
+        private static function wt_get_ewb_preview_request($order) {
+
+            $request = false;
+
+            // Avoid the repository's query(): its count query trips a wpdb::prepare notice on every render.
+            if ($order && class_exists('Wbte_Ewb_Request_Repository')) {
+                $repository = new Wbte_Ewb_Request_Repository();
+
+                if (method_exists($repository, 'find_active_by_order')) {
+                    // Returns Wbte_Ewb_Request[], newest first; may legitimately be empty.
+                    $found = $repository->find_active_by_order($order->get_id());
+
+                    if (is_array($found) && ! empty($found) && is_object($found[0])) {
+                        $request = $found[0];
+                    }
+                }
+            }
+
+            if (is_object($request)) {
+                return $request;
+            }
+
+            // No records exist yet. Build a synthetic request so the template renders instead of
+            // fataling. from_row() isset()-guards every field, so a sparse row is safe.
+            if (! class_exists('Wbte_Ewb_Request') || ! method_exists('Wbte_Ewb_Request', 'from_row')) {
+                return false;
+            }
+
+            return Wbte_Ewb_Request::from_row((object) array(
+                'id' => 0,
+                'order_id' => $order ? $order->get_id() : 0,
+                'order_number' => $order ? $order->get_order_number() : '',
+                'customer_email' => $order ? $order->get_billing_email() : '',
+                'customer_user_id' => $order ? $order->get_customer_id() : 0,
+                'status' => 'pending',
+                'request_type' => 'full',
+                'items_json' => '[]',
+                'reason' => '',
+                'meta_json' => '{}',
+                'created_at' => gmdate('Y-m-d H:i:s'),
+                'updated_at' => gmdate('Y-m-d H:i:s'),
+            ));
+        }
+
+        /**
          * wt_supported_email_classes
          * @access public
          * @return array
@@ -1590,6 +1790,13 @@ if (!class_exists('RP_Decorator_Preview')) {
                 'wtwraq_quote_expired_email' => 'Wtwraq_Quote_Expired_Email',
                 'wtwraq_quote_expiry_reminder_email' => 'Wtwraq_Quote_Expiry_Reminder_Email',
                 'wtwraq_quote_reminder_email' => 'Wtwraq_Quote_Reminder_Email',
+                // Webtoffee EU Order Withdrawal Button
+                'wbte_ewb_request_submitted_customer' => 'Wbte_Ewb_Email_Request_Submitted_Customer',
+                'wbte_ewb_request_submitted_admin' => 'Wbte_Ewb_Email_Request_Submitted_Admin',
+                'wbte_ewb_request_approved' => 'Wbte_Ewb_Email_Request_Approved',
+                'wbte_ewb_request_rejected' => 'Wbte_Ewb_Email_Request_Rejected',
+                'wbte_ewb_guest_verification' => 'Wbte_Ewb_Email_Guest_Verification',
+                'wbte_ewb_guest_ineligible' => 'Wbte_Ewb_Email_Guest_Ineligible',
             );
 
             if(class_exists('WC_Subscriptions') && !class_exists('HF_Subscription'))

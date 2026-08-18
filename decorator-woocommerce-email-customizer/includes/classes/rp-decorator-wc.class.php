@@ -394,6 +394,11 @@ if (!class_exists('RP_Decorator_WC')) {
                 $body_text = str_replace( '{customer_username}', $user->user_login, $body_text );
             }
 
+            // Guest emails have no request and may have no order, so clear these tokens outside the order branch.
+            if (defined('WBTE_EWB_VERSION') && in_array($key, array('wbte_ewb_guest_verification', 'wbte_ewb_guest_ineligible'), true)) {
+                $body_text = str_replace(array('{request_date}', '{request_type}'), '', $body_text);
+            }
+
             if ($order && (($order instanceof WC_Order) || ($order instanceof WC_Subscription))) {
                 
                 if (0 === ( $user_id = (int) RP_Decorator_WC::get_order_meta($order->get_id(), '_customer_user') )) {
@@ -444,6 +449,37 @@ if (!class_exists('RP_Decorator_WC')) {
                             $body_text = str_replace('{quote_expiry_date}', esc_html( get_date_from_gmt( wtwraq_get_date( $email->object, '_wtwraq_quote_expiry_date' ), get_option( 'date_format' ) ) ), $body_text);
                             $body_text = str_replace('{quote_accepted_date}', esc_html( get_date_from_gmt( wtwraq_get_date( $email->object, '_wtwraq_quote_accepted_date' ), get_option( 'date_format' ) ) ), $body_text);
                             break;
+                    }
+                }
+
+                // Webtoffee EU Order Withdrawal Button. Only request tokens here; order and name tokens are handled above.
+                if (defined('WBTE_EWB_VERSION'))
+                {
+                    switch($key)
+                    {
+                        case 'wbte_ewb_request_submitted_customer' :
+                        case 'wbte_ewb_request_submitted_admin' :
+                        case 'wbte_ewb_request_approved' :
+                        case 'wbte_ewb_request_rejected' :
+
+                            // Guard: a preview can reach here without a request, and an unguarded call is fatal.
+                            $wt_ewb_request = isset($email->request) ? $email->request : null;
+                            $wt_ewb_date = '';
+                            $wt_ewb_type = '';
+
+                            if (is_object($wt_ewb_request)) {
+                                if (method_exists($wt_ewb_request, 'get_created_at_formatted')) {
+                                    $wt_ewb_date = $wt_ewb_request->get_created_at_formatted();
+                                }
+                                if (method_exists($wt_ewb_request, 'get_request_type_label')) {
+                                    $wt_ewb_type = $wt_ewb_request->get_request_type_label();
+                                }
+                            }
+
+                            $body_text = str_replace('{request_date}', esc_html($wt_ewb_date), $body_text);
+                            $body_text = str_replace('{request_type}', esc_html($wt_ewb_type), $body_text);
+                            break;
+
                     }
                 }
 
